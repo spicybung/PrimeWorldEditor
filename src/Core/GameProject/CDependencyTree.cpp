@@ -382,7 +382,7 @@ void CAreaDependencyTree::GetModuleDependencies(EGame Game, std::vector<TString>
 
             // Get the module list for this object type and check whether any of them are new before adding them to the output list
             const auto* pTemplate = pGame->TemplateByID(ObjType);
-            const auto& rkModules = pTemplate->RequiredModules();
+            const auto rkModules = pTemplate->RequiredModules();
 
             for (const auto& ModuleName : rkModules)
             {

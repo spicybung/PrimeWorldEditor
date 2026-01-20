@@ -6,6 +6,7 @@
 #include "Core/Scene/CSceneNode.h"
 
 #include <memory>
+#include <ranges>
 #include <vector>
 
 class CAnimation;
@@ -82,9 +83,8 @@ public:
     CTexture* ActiveBillboard() const;
     bool UsesModel() const;
 
-    size_t NumAttachments() const                        { return mAttachments.size(); }
-    CScriptAttachNode* Attachment(size_t Index) const    { return mAttachments[Index]; }
-    CResource* DisplayAsset() const                      { return mpDisplayAsset; }
+    auto Attachments() const        { return std::views::all(mAttachments); }
+    CResource* DisplayAsset() const { return mpDisplayAsset; }
 
 protected:
     void SetDisplayAsset(CResource *pRes);

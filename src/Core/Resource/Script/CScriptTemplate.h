@@ -9,6 +9,8 @@
 
 #include <list>
 #include <memory>
+#include <ranges>
+#include <span>
 #include <vector>
 
 class CBoolProperty;
@@ -161,9 +163,8 @@ public:
     bool IsVisible() const                           { return mVisible; }
     const TString& SourceFile() const                { return mSourceFile; }
     CStructProperty* Properties() const              { return mpProperties.get(); }
-    size_t NumAttachments() const                    { return mAttachments.size(); }
-    const SAttachment& Attachment(size_t Index) const    { return mAttachments[Index]; }
-    const std::vector<TString>& RequiredModules() const  { return mModules; }
+    auto Attachments() const                         { return std::views::all(mAttachments); }
+    std::span<const TString> RequiredModules() const { return mModules; }
 
     CStringProperty* NameProperty() const                { return mpNameProperty; }
     CVectorProperty* PositionProperty() const            { return mpPositionProperty; }

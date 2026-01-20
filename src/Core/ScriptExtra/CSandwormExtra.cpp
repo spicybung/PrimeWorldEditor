@@ -8,12 +8,10 @@ CSandwormExtra::CSandwormExtra(CScriptObject* pInstance, CScene* pScene, CScript
     : CScriptExtra(pInstance, pScene, pParent)
 {
     // The back pincers need to be flipped 180 degrees
-    for (size_t AttachIdx = 0; AttachIdx < pParent->NumAttachments(); AttachIdx++)
+    for (auto* attachment : pParent->Attachments())
     {
-        CScriptAttachNode *pAttach = pParent->Attachment(AttachIdx);
-
-        if (pAttach->LocatorName() == "L_back_claw" || pAttach->LocatorName() == "R_back_claw")
-            pAttach->SetRotation(CVector3f(0,0,180));
+        if (attachment->LocatorName() == "L_back_claw" || attachment->LocatorName() == "R_back_claw")
+            attachment->SetRotation(CVector3f(0, 0, 180));
     }
 
     // Get pincers scale
@@ -26,10 +24,7 @@ void CSandwormExtra::PropertyModified(IProperty* pProp)
 {
     if (pProp == mPincersScale)
     {
-        for (size_t AttachIdx = 0; AttachIdx < mpScriptNode->NumAttachments(); AttachIdx++)
-        {
-            CScriptAttachNode* pAttach = mpScriptNode->Attachment(AttachIdx);
-            pAttach->SetScale(CVector3f(mPincersScale));
-        }
+        for (auto* attachment : mpScriptNode->Attachments())
+            attachment->SetScale(CVector3f(mPincersScale));
     }
 }

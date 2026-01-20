@@ -64,11 +64,8 @@ CScriptNode::CScriptNode(CScene *pScene, uint32 NodeID, CSceneNode *pParent, CSc
         }
 
         // Create attachment nodes
-        for (size_t iAttach = 0; iAttach < pTemp->NumAttachments(); iAttach++)
-        {
-            const SAttachment& rkAttach = pTemp->Attachment(iAttach);
-            mAttachments.push_back(new CScriptAttachNode(pScene, rkAttach, this));
-        }
+        for (const auto& attachment : pTemp->Attachments())
+            mAttachments.push_back(new CScriptAttachNode(pScene, attachment, this));
 
         // Fetch LightParameters
         mpLightParameters = std::make_unique<CLightParameters>(mpInstance->LightParameters(), mpInstance->GameTemplate()->Game());
