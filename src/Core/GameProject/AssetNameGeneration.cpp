@@ -1,5 +1,6 @@
 #include "Core/GameProject/AssetNameGeneration.h"
 
+#include "Core/NRangeUtils.h"
 #include "Core/GameProject/CGameProject.h"
 #include "Core/GameProject/CPackage.h"
 #include "Core/Resource/CAudioGroup.h"
@@ -179,12 +180,10 @@ void GenerateAssetNames(CGameProject *pProj)
                 {
                     CMaterial *pMat = pSet->MaterialByIndex(mat, true);
 
-                    for (size_t pass = 0; pass < pMat->PassCount(); pass++)
+                    for (const auto* pass : pMat->Passes())
                     {
-                        CMaterialPass *pPass = pMat->Pass(pass);
-
-                        if (pPass->Texture())
-                            ApplyGeneratedName(pPass->Texture()->Entry(), WorldDir + "sky/sourceimages/", pPass->Texture()->Entry()->Name());
+                        if (pass->Texture())
+                            ApplyGeneratedName(pass->Texture()->Entry(), WorldDir + "sky/sourceimages/", pass->Texture()->Entry()->Name());
                     }
                 }
             }
@@ -249,13 +248,11 @@ void GenerateAssetNames(CGameProject *pProj)
                 CMaterial *pMat = pMaterials->MaterialByIndex(iMat, true);
                 bool FoundLightmap = false;
 
-                for (size_t iPass = 0; iPass < pMat->PassCount(); iPass++)
+                for (auto [idx, pass] : Utils::enumerate(pMat->Passes()))
                 {
-                    CMaterialPass *pPass = pMat->Pass(iPass);
-
-                    bool IsLightmap = ((pArea->Game() <= EGame::Echoes && pMat->Options().HasFlag(EMaterialOption::Lightmap) && iPass == 0) ||
-                                       (pArea->Game() >= EGame::CorruptionProto && pPass->Type() == CFourCC("DIFF")));
-                    bool IsBloomLightmap = (pArea->Game() >= EGame::CorruptionProto && pPass->Type() == CFourCC("BLOL"));
+                    bool IsLightmap = ((pArea->Game() <= EGame::Echoes && pMat->Options().HasFlag(EMaterialOption::Lightmap) && idx == 0) ||
+                                       (pArea->Game() >= EGame::CorruptionProto && pass->Type() == CFourCC("DIFF")));
+                    bool IsBloomLightmap = (pArea->Game() >= EGame::CorruptionProto && pass->Type() == CFourCC("BLOL"));
 
                     TString TexName;
 
@@ -270,9 +267,10 @@ void GenerateAssetNames(CGameProject *pProj)
 
                     if (!TexName.IsEmpty())
                     {
-                        CTexture *pLightmapTex = pPass->Texture();
-                        CResourceEntry *pTexEntry = pLightmapTex->Entry();
-                        if (pTexEntry->IsCategorized()) continue;
+                        CTexture* pLightmapTex = pass->Texture();
+                        CResourceEntry* pTexEntry = pLightmapTex->Entry();
+                        if (pTexEntry->IsCategorized())
+                            continue;
 
                         ApplyGeneratedName(pTexEntry, AreaCookedDir, TexName);
                         pTexEntry->SetHidden(true);
@@ -424,21 +422,19 @@ void GenerateAssetNames(CGameProject *pProj)
             {
                 CMaterial *pMat = pSet->MaterialByIndex(iMat, true);
 
-                for (size_t iPass = 0; iPass < pMat->PassCount(); iPass++)
+                for (auto [idx, pass] : Utils::enumerate(pMat->Passes()))
                 {
-                    CMaterialPass *pPass = pMat->Pass(iPass);
-
-                    const bool IsLightmap = (pMat->Version() <= EGame::Echoes && pMat->Options().HasFlag(EMaterialOption::Lightmap) && iPass == 0) ||
-                                            (pMat->Version() >= EGame::CorruptionProto && pPass->Type() == CFourCC("DIFF"));
+                    const bool IsLightmap = (pMat->Version() <= EGame::Echoes && pMat->Options().HasFlag(EMaterialOption::Lightmap) && idx == 0) ||
+                                            (pMat->Version() >= EGame::CorruptionProto && pass->Type() == CFourCC("DIFF"));
 
                     if (IsLightmap)
                     {
-                        CTexture *pLightmapTex = pPass->Texture();
-                        CResourceEntry *pTexEntry = pLightmapTex->Entry();
+                        CTexture* pLightmapTex = pass->Texture();
+                        CResourceEntry* pTexEntry = pLightmapTex->Entry();
                         if (pTexEntry->IsNamed() || pTexEntry->IsCategorized())
                             continue;
 
-                        TString TexName = TString::Format("%s_lightmap%zu", *It->Name(), LightmapNum);
+                        TString TexName = fmt::format("{}_lightmap{}", It->Name().ToStdString(), LightmapNum);
                         ApplyGeneratedName(pTexEntry, pModel->Entry()->DirectoryPath(), TexName);
                         pTexEntry->SetHidden(true);
                         LightmapNum++;

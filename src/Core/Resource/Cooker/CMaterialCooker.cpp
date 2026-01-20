@@ -1,5 +1,6 @@
 #include "Core/Resource/Cooker/CMaterialCooker.h"
 
+#include "Core/NRangeUtils.h"
 #include "Core/Resource/CMaterial.h"
 #include "Core/Resource/CMaterialSet.h"
 #include <Core/Resource/Model/EVertexAttribute.h>
@@ -42,13 +43,12 @@ void CMaterialCooker::WriteMatSetPrime(IOutputStream& rOut)
 
     for (size_t iMat = 0; iMat < NumMats; iMat++)
     {
-        const CMaterial *pMat = mpSet->mMaterials[iMat].get();
+        const CMaterial* pMat = mpSet->mMaterials[iMat].get();
 
-        const size_t NumPasses  = pMat->PassCount();
-        for (size_t iPass = 0; iPass < NumPasses; iPass++)
+        for (const auto* pass : pMat->Passes())
         {
-            if (const CTexture* pTex = pMat->Pass(iPass)->Texture())
-                mTextureIDs.push_back(pTex->ID().ToU32());
+            if (const auto* tex = pass->Texture())
+                mTextureIDs.push_back(tex->ID().ToU32());
         }
     }
 
@@ -103,16 +103,14 @@ void CMaterialCooker::WriteMaterialPrime(IOutputStream& rOut)
     uint32_t NumKonst = 0;
     std::vector<uint32_t> TexIndices;
 
-    for (uint32_t iPass = 0; iPass < mpMat->mPasses.size(); iPass++)
+    for (auto [idx, pass] : Utils::enumerate(mpMat->Passes()))
     {
-        CMaterialPass *pPass = mpMat->Pass(iPass);
-
-        if ((pPass->KColorSel() >= kKonst0_RGB) ||
-            (pPass->KAlphaSel() >= kKonst0_R))
+        if ((pass->KColorSel() >= kKonst0_RGB) ||
+            (pass->KAlphaSel() >= kKonst0_R))
         {
             // Determine the highest Konst index being used
-            const auto KColorIndex = static_cast<uint32_t>(pPass->KColorSel()) % 4;
-            const auto KAlphaIndex = static_cast<uint32_t>(pPass->KAlphaSel()) % 4;
+            const auto KColorIndex = static_cast<uint32_t>(pass->KColorSel()) % 4;
+            const auto KAlphaIndex = static_cast<uint32_t>(pass->KAlphaSel()) % 4;
 
             if (KColorIndex >= NumKonst)
                 NumKonst = KColorIndex + 1;
@@ -120,11 +118,11 @@ void CMaterialCooker::WriteMaterialPrime(IOutputStream& rOut)
                 NumKonst = KAlphaIndex + 1;
         }
 
-        CTexture *pPassTex = pPass->Texture();
+        CTexture* pPassTex = pass->Texture();
         if (pPassTex != nullptr)
         {
-            TexFlags |= (1 << iPass);
-            uint32_t TexID = pPassTex->ID().ToU32();
+            TexFlags |= (1U << idx);
+            const auto TexID = pPassTex->ID().ToU32();
 
             for (uint32_t iTex = 0; iTex < mTextureIDs.size(); iTex++)
             {
@@ -217,43 +215,41 @@ void CMaterialCooker::WriteMaterialPrime(IOutputStream& rOut)
     rOut.WriteU32(0x3000 | (mpMat->IsLightingEnabled() ? 1 : 0));
 
     // TEV
-    const uint32_t NumPasses = mpMat->PassCount();
-    rOut.WriteU32(NumPasses);
+    auto Passes = mpMat->Passes();
+    rOut.WriteU32(uint32_t(std::ranges::size(Passes)));
 
-    for (uint32_t iPass = 0; iPass < NumPasses; iPass++)
+    for (const auto* pass : Passes)
     {
-        CMaterialPass *pPass = mpMat->Pass(iPass);
+        const uint32_t ColorInputFlags = ((pass->ColorInput(0)) |
+                                          (pass->ColorInput(1) << 5) |
+                                          (pass->ColorInput(2) << 10) |
+                                          (pass->ColorInput(3) << 15));
+        const uint32_t AlphaInputFlags = ((pass->AlphaInput(0)) |
+                                          (pass->AlphaInput(1) << 5) |
+                                          (pass->AlphaInput(2) << 10) |
+                                          (pass->AlphaInput(3) << 15));
 
-        const uint32_t ColorInputFlags = ((pPass->ColorInput(0)) |
-                                          (pPass->ColorInput(1) << 5) |
-                                          (pPass->ColorInput(2) << 10) |
-                                          (pPass->ColorInput(3) << 15));
-        const uint32_t AlphaInputFlags = ((pPass->AlphaInput(0)) |
-                                          (pPass->AlphaInput(1) << 5) |
-                                          (pPass->AlphaInput(2) << 10) |
-                                          (pPass->AlphaInput(3) << 15));
-
-        const uint32_t ColorOpFlags = 0x100 | (pPass->ColorOutput() << 9);
-        const uint32_t AlphaOpFlags = 0x100 | (pPass->AlphaOutput() << 9);
+        const uint32_t ColorOpFlags = 0x100 | (pass->ColorOutput() << 9);
+        const uint32_t AlphaOpFlags = 0x100 | (pass->AlphaOutput() << 9);
 
         rOut.WriteU32(ColorInputFlags);
         rOut.WriteU32(AlphaInputFlags);
         rOut.WriteU32(ColorOpFlags);
         rOut.WriteU32(AlphaOpFlags);
         rOut.WriteU8(0); // Padding
-        rOut.WriteU8(static_cast<uint8_t>(pPass->KAlphaSel()));
-        rOut.WriteU8(static_cast<uint8_t>(pPass->KColorSel()));
-        rOut.WriteU8(static_cast<uint8_t>(pPass->RasSel()));
+        rOut.WriteU8(static_cast<uint8_t>(pass->KAlphaSel()));
+        rOut.WriteU8(static_cast<uint8_t>(pass->KColorSel()));
+        rOut.WriteU8(static_cast<uint8_t>(pass->RasSel()));
     }
 
     // TEV Tex/UV input selection
     uint32_t CurTexIdx = 0;
 
-    for (size_t iPass = 0; iPass < NumPasses; iPass++)
+    for (const auto* pass : mpMat->Passes())
     {
         rOut.WriteU16(0); // Padding
 
-        if (mpMat->Pass(iPass)->Texture() != nullptr)
+        if (pass->Texture() != nullptr)
         {
             rOut.WriteU8(static_cast<uint8_t>(CurTexIdx));
             rOut.WriteU8(static_cast<uint8_t>(CurTexIdx));
@@ -270,14 +266,13 @@ void CMaterialCooker::WriteMaterialPrime(IOutputStream& rOut)
     rOut.WriteU32(NumTexCoords);
     uint32_t CurTexMtx = 0;
 
-    for (size_t iPass = 0; iPass < NumPasses; iPass++)
+    for (const auto* pass : mpMat->Passes())
     {
-        CMaterialPass *pPass = mpMat->Pass(iPass);
-        if (pPass->Texture() == nullptr)
+        if (pass->Texture() == nullptr)
             continue;
 
-        const EUVAnimMode AnimType = pPass->AnimMode();
-        const uint32_t CoordSource = pPass->TexCoordSource();
+        const EUVAnimMode AnimType = pass->AnimMode();
+        const uint32_t CoordSource = pass->TexCoordSource();
 
         uint32_t TexMtxIdx, PostMtxIdx;
         bool Normalize;
@@ -317,10 +312,9 @@ void CMaterialCooker::WriteMaterialPrime(IOutputStream& rOut)
     const uint32_t AnimsStart = rOut.Tell();
     rOut.WriteU32(NumAnims);
 
-    for (uint32_t iPass = 0; iPass < NumPasses; iPass++)
+    for (const auto* pass : mpMat->Passes())
     {
-        CMaterialPass *pPass = mpMat->Pass(iPass);
-        EUVAnimMode AnimMode = pPass->AnimMode();
+        const auto AnimMode = pass->AnimMode();
         if (AnimMode == EUVAnimMode::NoUVAnim)
             continue;
 
@@ -328,13 +322,13 @@ void CMaterialCooker::WriteMaterialPrime(IOutputStream& rOut)
 
         if ((AnimMode >= EUVAnimMode::UVScroll) && (AnimMode != EUVAnimMode::ModelMatrix))
         {
-            rOut.WriteF32(pPass->AnimParam(0));
-            rOut.WriteF32(pPass->AnimParam(1));
+            rOut.WriteF32(pass->AnimParam(0));
+            rOut.WriteF32(pass->AnimParam(1));
 
             if ((AnimMode == EUVAnimMode::UVScroll) || (AnimMode == EUVAnimMode::HFilmstrip) || (AnimMode == EUVAnimMode::VFilmstrip))
             {
-                rOut.WriteF32(pPass->AnimParam(2));
-                rOut.WriteF32(pPass->AnimParam(3));
+                rOut.WriteF32(pass->AnimParam(2));
+                rOut.WriteF32(pass->AnimParam(3));
             }
         }
     }

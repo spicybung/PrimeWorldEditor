@@ -1,6 +1,7 @@
 #include "Core/OpenGL/CShaderGenerator.h"
 
 #include <Common/Macros.h>
+#include "Core/NRangeUtils.h"
 #include "Core/OpenGL/CShader.h"
 #include "Core/Resource/CMaterial.h"
 #include <array>
@@ -181,9 +182,11 @@ bool CShaderGenerator::CreateVertexShader(const CMaterial& rkMat)
     if (VtxDesc.HasFlag(EVertexAttribute::Color0)) ShaderCode  << "out vec4 Color0;\n";
     if (VtxDesc.HasFlag(EVertexAttribute::Color1)) ShaderCode  << "out vec4 Color1;\n";
 
-    for (uint32 iPass = 0; iPass < rkMat.PassCount(); iPass++)
-        if (rkMat.Pass(iPass)->TexCoordSource() != 0xFF)
-            ShaderCode << "out vec3 Tex" << iPass << ";\n";
+    for (const auto [idx, pass] : Utils::enumerate(rkMat.Passes()))
+    {
+        if (pass->TexCoordSource() != 0xFF)
+            ShaderCode << "out vec3 Tex" << idx << ";\n";
+    }
 
     ShaderCode  << "out vec4 COLOR0A0;\n"
                 << "out vec4 COLOR1A1;\n";
@@ -334,29 +337,26 @@ bool CShaderGenerator::CreateVertexShader(const CMaterial& rkMat)
     ShaderCode  << "    \n"
                 << "    // TexGen\n";
 
-    const auto PassCount = rkMat.PassCount();
-    for (uint32_t iPass = 0; iPass < PassCount; iPass++)
+    for (const auto [idx, pass] : Utils::enumerate(rkMat.Passes()))
     {
-        CMaterialPass* pPass = rkMat.Pass(iPass);
-        if (pPass->TexCoordSource() == 0xFF)
+        if (pass->TexCoordSource() == 0xFF)
             continue;
 
-        EUVAnimMode AnimMode = pPass->AnimMode();
-
+        const auto AnimMode = pass->AnimMode();
         if (AnimMode == EUVAnimMode::NoUVAnim) // No animation
         {
-            ShaderCode << "    Tex" << iPass << " = vec3(" << gkCoordSrc[pPass->TexCoordSource()] << ");\n";
+            ShaderCode << "    Tex" << idx << " = vec3(" << gkCoordSrc[pass->TexCoordSource()] << ");\n";
         }
         else // Animation used - texture matrix at least, possibly normalize/post-transform
         {
             // Texture Matrix
-            ShaderCode << "    Tex" << iPass << " = vec3(vec4(" << gkCoordSrc[pPass->TexCoordSource()] << ", 1.0) * TexMtx[" << iPass << "]).xyz;\n";
+            ShaderCode << "    Tex" << idx << " = vec3(vec4(" << gkCoordSrc[pass->TexCoordSource()] << ", 1.0) * TexMtx[" << idx << "]).xyz;\n";
 
             if ((AnimMode < EUVAnimMode::UVScroll) || (AnimMode > EUVAnimMode::VFilmstrip))
             {
                 // Normalization + Post-Transform
-                ShaderCode  << "    Tex" << iPass << " = normalize(Tex" << iPass << ");\n"
-                            << "    Tex" << iPass << " = vec3(vec4(Tex" << iPass << ", 1.0) * PostMtx[" << iPass << "]).xyz;\n";
+                ShaderCode  << "    Tex" << idx << " = normalize(Tex" << idx << ");\n"
+                            << "    Tex" << idx << " = vec3(vec4(Tex" << idx << ", 1.0) * PostMtx[" << idx << "]).xyz;\n";
             }
         }
 
@@ -411,10 +411,11 @@ bool CShaderGenerator::CreatePixelShader(const CMaterial& rkMat)
     if (VtxDesc.HasFlag(EVertexAttribute::Color0))   ShaderCode << "in vec4 Color0;\n";
     if (VtxDesc.HasFlag(EVertexAttribute::Color1))   ShaderCode << "in vec4 Color1;\n";
 
-    const auto PassCount = rkMat.PassCount();
-    for (uint32_t iPass = 0; iPass < PassCount; iPass++)
-        if (rkMat.Pass(iPass)->TexCoordSource() != 0xFF)
-            ShaderCode << "in vec3 Tex" << iPass << ";\n";
+    for (const auto [idx, pass] : Utils::enumerate(rkMat.Passes()))
+    {
+        if (pass->TexCoordSource() != 0xFF)
+            ShaderCode << "in vec3 Tex" << idx << ";\n";
+    }
 
     ShaderCode << "in vec4 COLOR0A0;\n"
                << "in vec4 COLOR1A1;\n"
@@ -428,9 +429,11 @@ bool CShaderGenerator::CreatePixelShader(const CMaterial& rkMat)
                << "    float LightmapMultiplier;\n"
                << "};\n\n";
 
-    for (uint32_t iPass = 0; iPass < PassCount; iPass++)
-        if (rkMat.Pass(iPass)->Texture() != nullptr)
-            ShaderCode << "uniform sampler2D Texture" << iPass << ";\n";
+    for (const auto [idx, pass] : Utils::enumerate(rkMat.Passes()))
+    {
+        if (pass->Texture() != nullptr)
+            ShaderCode << "uniform sampler2D Texture" << idx << ";\n";
+    }
 
     ShaderCode <<"\n";
 
@@ -445,68 +448,67 @@ bool CShaderGenerator::CreatePixelShader(const CMaterial& rkMat)
                << "    \n";
 
     bool Lightmap = false;
-    for (uint32_t iPass = 0; iPass < PassCount; iPass++)
+    for (const auto [idx, pass] : Utils::enumerate(rkMat.Passes()))
     {
-        const CMaterialPass* pPass = rkMat.Pass(iPass);
-        const CFourCC PassType = pPass->Type();
+        const CFourCC PassType = pass->Type();
 
-        ShaderCode << "    // TEV Stage " << iPass << " - " << PassType.ToString() << "\n";
+        ShaderCode << "    // TEV Stage " << idx << " - " << PassType.ToString() << "\n";
         if (PassType == CFourCC("DIFF"))
             Lightmap = true;
 
-        if (!pPass->IsEnabled())
+        if (!pass->IsEnabled())
         {
             ShaderCode << "    // Pass is disabled\n\n";
             continue;
         }
 
-        if (pPass->TexCoordSource() != 0xFF)
-            ShaderCode << "    TevCoord = (Tex" << iPass << ".z == 0.0 ? Tex" << iPass << ".xy : Tex" << iPass << ".xy / Tex" << iPass << ".z);\n";
+        if (pass->TexCoordSource() != 0xFF)
+            ShaderCode << "    TevCoord = (Tex" << idx << ".z == 0.0 ? Tex" << idx << ".xy : Tex" << idx << ".xy / Tex" << idx << ".z);\n";
 
-        if (pPass->Texture())
-            ShaderCode << "    Tex = texture(Texture" << iPass << ", TevCoord)";
+        if (pass->Texture())
+            ShaderCode << "    Tex = texture(Texture" << idx << ", TevCoord)";
 
         // Apply lightmap multiplier
         bool UseLightmapMultiplier = (PassType == CFourCC("DIFF")) ||
-                                     (PassType == CFourCC("CUST") && rkMat.Options().HasFlag(EMaterialOption::Lightmap) && iPass == 0);
-        if (UseLightmapMultiplier && pPass->Texture())
+                                     (PassType == CFourCC("CUST") && rkMat.Options().HasFlag(EMaterialOption::Lightmap) && idx == 0);
+        if (UseLightmapMultiplier && pass->Texture())
             ShaderCode << " * LightmapMultiplier";
 
         ShaderCode << ";\n";
 
-        ShaderCode << "    Konst = vec4(" << gkKonstColor[pPass->KColorSel()] << ", " << gkKonstAlpha[pPass->KAlphaSel()] << ");\n";
+        ShaderCode << "    Konst = vec4(" << gkKonstColor[pass->KColorSel()] << ", " << gkKonstAlpha[pass->KAlphaSel()] << ");\n";
 
-        if (pPass->RasSel() != kRasColorNull)
-            ShaderCode << "    Ras = " << gkRasSel[pPass->RasSel()] << ";\n";
+        if (pass->RasSel() != kRasColorNull)
+            ShaderCode << "    Ras = " << gkRasSel[pass->RasSel()] << ";\n";
 
         for (uint8_t iInput = 0; iInput < 4; iInput++)
         {
             char TevChar = iInput + 0x41; // the current stage number represented as an ASCII letter; eg 0 is 'A'
 
             ShaderCode << "    TevIn" << TevChar << " = vec4("
-                       << GetColorInputExpression(pPass, ETevColorInput(pPass->ColorInput(iInput) & 0xF))
+                       << GetColorInputExpression(pass, ETevColorInput(pass->ColorInput(iInput) & 0xF))
                        << ", "
-                       << GetAlphaInputExpression(pPass, ETevAlphaInput(pPass->AlphaInput(iInput) & 0x7))
+                       << GetAlphaInputExpression(pass, ETevAlphaInput(pass->AlphaInput(iInput) & 0x7))
                        << ")";
-            if (UseLightmapMultiplier && !pPass->Texture() && iInput == 1)
+            if (UseLightmapMultiplier && !pass->Texture() && iInput == 1)
                 ShaderCode << " * LightmapMultiplier";
             ShaderCode << ";\n";
         }
 
         ShaderCode << "    // RGB Combine\n"
                    << "    "
-                   << gkTevRigid[pPass->ColorOutput()]
+                   << gkTevRigid[pass->ColorOutput()]
                    << ".rgb = ";
 
-        ShaderCode << "clamp(vec3(TevInD.rgb + ((1.0 - TevInC.rgb) * TevInA.rgb + TevInC.rgb * TevInB.rgb)) * " << pPass->TevColorScale();
+        ShaderCode << "clamp(vec3(TevInD.rgb + ((1.0 - TevInC.rgb) * TevInA.rgb + TevInC.rgb * TevInB.rgb)) * " << pass->TevColorScale();
         ShaderCode << ", vec3(0, 0, 0), vec3(1.0, 1.0, 1.0));\n";
 
         ShaderCode << "    // Alpha Combine\n"
                    << "    "
-                   << gkTevRigid[pPass->AlphaOutput()]
+                   << gkTevRigid[pass->AlphaOutput()]
                    << ".a = ";
 
-        ShaderCode << "clamp((TevInD.a + ((1.0 - TevInC.a) * TevInA.a + TevInC.a * TevInB.a)) * " << pPass->TevAlphaScale() << ", 0.0, 1.0);\n\n";
+        ShaderCode << "clamp((TevInD.a + ((1.0 - TevInC.a) * TevInA.a + TevInC.a * TevInB.a)) * " << pass->TevAlphaScale() << ", 0.0, 1.0);\n\n";
     }
 
     if (rkMat.Options().HasFlag(EMaterialOption::Masked))

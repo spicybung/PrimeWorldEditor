@@ -7,6 +7,7 @@
 #include <Common/TString.h>
 #include <Common/FileIO/CFileInStream.h>
 #include <Common/FileIO/CFileOutStream.h>
+#include <Core/NRangeUtils.h>
 #include <Core/GameProject/CResourceStore.h>
 #include <Core/Resource/CFont.h>
 #include <Core/Resource/Cooker/CTextureEncoder.h>
@@ -262,24 +263,23 @@ void CModelEditorWindow::SetActiveMaterial(int MatIndex)
         iKonst++;
     }
 
-    const auto PassCount = mpCurrentMat->PassCount();
     ui->PassTable->clear();
-    ui->PassTable->setRowCount(PassCount);
 
-    for (uint32_t iPass = 0; iPass < PassCount; iPass++)
+    auto Passes = mpCurrentMat->Passes();
+    ui->PassTable->setRowCount(int(std::ranges::size(Passes)));
+
+    for (const auto [idx, pass] : Utils::enumerate(Passes))
     {
-        CMaterialPass *pPass = mpCurrentMat->Pass(iPass);
+        auto* pItemA = new QTableWidgetItem(tr("Pass #%1: %2").arg(idx + 1).arg(TO_QSTRING(pass->NamedType())));
+        auto* pItemB = new QTableWidgetItem();
 
-        auto *pItemA = new QTableWidgetItem(tr("Pass #%1: %2").arg(iPass + 1).arg(TO_QSTRING(pPass->NamedType())));
-        auto *pItemB = new QTableWidgetItem();
-
-        if (pPass->IsEnabled())
+        if (pass->IsEnabled())
             pItemB->setIcon(QIcon(QStringLiteral(":/icons/Show.svg")));
         else
             pItemB->setIcon(QIcon(QStringLiteral(":/icons/Hide.svg")));
 
-        ui->PassTable->setItem(iPass, 0, pItemA);
-        ui->PassTable->setItem(iPass, 1, pItemB);
+        ui->PassTable->setItem(int(idx), 0, pItemA);
+        ui->PassTable->setItem(int(idx), 1, pItemB);
     }
 
     // Set up the tex coord source combo box so it only shows vertex attributes that exist on this material
@@ -301,8 +301,8 @@ void CModelEditorWindow::SetActiveMaterial(int MatIndex)
     // Emit signal from Pass Table to set up the Pass UI
     mIgnoreSignals = false;
 
-    if (PassCount > 0)
-        ui->PassTable->cellClicked(0,0);
+    if (!std::ranges::empty(Passes))
+        ui->PassTable->cellClicked(0, 0);
 
     // Activate UI
     ActivateMatEditUI(true);
@@ -473,7 +473,6 @@ void CModelEditorWindow::UpdateMaterial(int ValueA, int ValueB)
         ui->PassTable->selectRow(ValueA);
         ui->PassTable->setSelectionMode(QAbstractItemView::NoSelection);
     }
-
     // Show/Hide Pass
     else if (ValueB == 1)
     {

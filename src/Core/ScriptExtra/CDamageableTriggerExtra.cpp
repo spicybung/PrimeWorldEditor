@@ -1,5 +1,6 @@
 #include "Core/ScriptExtra/CDamageableTriggerExtra.h"
 
+#include "Core/NRangeUtils.h"
 #include "Core/SRayIntersection.h"
 #include "Core/Render/CDrawUtil.h"
 #include "Core/Render/CGraphics.h"
@@ -188,16 +189,16 @@ void CDamageableTriggerExtra::PropertyModified(IProperty* pProperty)
     }
     else
     {
-        for (uint32_t TextureIdx = 0; TextureIdx < 3; TextureIdx++)
+        for (auto&& [idx, asset] : Utils::enumerate(mTextureAssets))
         {
-            if (pProperty == mTextureAssets[TextureIdx].Property())
+            if (pProperty == asset.Property())
             {
-                mpTextures[TextureIdx] = gpResourceStore->LoadResource<CTexture>( mTextureAssets[TextureIdx].Get() );
+                mpTextures[idx] = gpResourceStore->LoadResource<CTexture>(asset.Get());
 
-                if (mpTextures[TextureIdx] && mpTextures[TextureIdx]->Type() != EResourceType::Texture)
-                    mpTextures[TextureIdx] = nullptr;
+                if (mpTextures[idx] && mpTextures[idx]->Type() != EResourceType::Texture)
+                    mpTextures[idx] = nullptr;
 
-                mpMat->Pass(TextureIdx)->SetTexture(mpTextures[TextureIdx]);
+                mpMat->Pass(idx)->SetTexture(mpTextures[idx]);
                 break;
             }
         }

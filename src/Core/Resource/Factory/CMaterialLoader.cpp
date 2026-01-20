@@ -156,20 +156,19 @@ std::unique_ptr<CMaterial> CMaterialLoader::ReadPrimeMaterial()
         matPass = std::move(pPass);
     }
 
-    std::vector<uint8_t> TevCoordIndices(TevCount);
-    for (size_t iTev = 0; iTev < TevCount; iTev++)
+    std::vector<uint8_t> TevCoordIndices;
+    TevCoordIndices.reserve(TevCount);
+    for (auto* pass : pMat->Passes())
     {
         mpFile->Seek(0x2, SEEK_CUR);
-        CMaterialPass *pPass = pMat->Pass(iTev);
-
         const auto TexSel = mpFile->ReadU8();
 
         if (TexSel == 0xFF || TexSel >= TextureIndices.size())
-            pPass->mpTexture = nullptr;
+            pass->mpTexture = nullptr;
         else
-            pPass->mpTexture = mTextures[TextureIndices[TexSel]];
+            pass->mpTexture = mTextures[TextureIndices[TexSel]];
 
-        TevCoordIndices[iTev] = mpFile->ReadU8();
+        TevCoordIndices.push_back(mpFile->ReadU8());
     }
 
     // TexGens

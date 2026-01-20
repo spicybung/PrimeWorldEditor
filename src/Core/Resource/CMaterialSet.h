@@ -76,11 +76,10 @@ public:
             if (material->IndTexture())
                 rOut.insert(material->IndTexture()->ID());
 
-            for (size_t i = 0; i < material->PassCount(); i++)
+            for (const auto* pass : material->Passes())
             {
-                const CTexture *pTex = material->Pass(i)->Texture();
-                if (pTex)
-                    rOut.insert(pTex->ID());
+                if (const CTexture* tex = pass->Texture())
+                    rOut.insert(tex->ID());
             }
         }
     }

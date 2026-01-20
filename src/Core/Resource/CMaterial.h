@@ -11,7 +11,9 @@
 #include <Common/CColor.h>
 #include <Common/EGame.h>
 #include <Common/Flags.h>
+
 #include <cstdint>
+#include <ranges>
 
 class CMaterialSet;
 
@@ -137,7 +139,7 @@ public:
     bool IsLightingEnabled() const               { return mLightingEnabled; }
     uint32_t EchoesUnknownA() const              { return mEchoesUnknownA; }
     uint32_t EchoesUnknownB() const              { return mEchoesUnknownB; }
-    uint32_t PassCount() const                   { return mPasses.size(); }
+    auto Passes() const                          { return std::views::transform(mPasses, [](const auto& entry) { return entry.get(); }); }
     CMaterialPass* Pass(size_t PassIndex) const  { return mPasses[PassIndex].get(); }
     CMaterial* GetNextDrawPass() const           { return mpNextDrawPassMaterial.get(); }
     CMaterial* GetBloomVersion() const           { return mpBloomMaterial.get(); }
