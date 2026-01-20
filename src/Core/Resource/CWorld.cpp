@@ -1,5 +1,6 @@
 #include "Core/Resource/CWorld.h"
 
+#include "Core/NRangeUtils.h"
 #include "Core/GameProject/CDependencyTree.h"
 #include "Core/Resource/Script/CScriptLayer.h"
 
@@ -40,18 +41,16 @@ void CWorld::SetAreaLayerInfo(CGameArea *pArea)
         }
     }
 
-    SArea& AreaInfo = mAreas[pArea->WorldIndex()];
+    const SArea& AreaInfo = mAreas[pArea->WorldIndex()];
 
-    for (size_t iLyr = 0; iLyr < pArea->NumScriptLayers(); iLyr++)
+    for (const auto [idx, layer] : Utils::enumerate(pArea->ScriptLayers()))
     {
-        if (AreaInfo.Layers.size() <= iLyr)
+        if (AreaInfo.Layers.size() <= idx)
             break;
 
-        CScriptLayer *pLayer = pArea->ScriptLayer(iLyr);
-        SArea::SLayer& rLayerInfo = AreaInfo.Layers[iLyr];
-
-        pLayer->SetName(rLayerInfo.LayerName);
-        pLayer->SetActive(rLayerInfo.Active);
+        const SArea::SLayer& rLayerInfo = AreaInfo.Layers[idx];
+        layer->SetName(rLayerInfo.LayerName);
+        layer->SetActive(rLayerInfo.Active);
     }
 }
 

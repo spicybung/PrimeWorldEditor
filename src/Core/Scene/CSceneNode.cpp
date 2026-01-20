@@ -142,23 +142,21 @@ void CSceneNode::BuildLightList(CGameArea *pArea)
     if (NumLights == 0)
         mAmbientColor = CColor::TransparentWhite();
 
-    for (size_t iLight = 0; iLight < NumLights; iLight++)
+    for (auto& light : pArea->Lights(Index))
     {
-        CLight* pLight = pArea->Light(Index, iLight);
-
         // Ambient lights should only be present one per layer; need to check how the game deals with multiple ambients
-        if (pLight->Type() == ELightType::LocalAmbient)
+        if (light.Type() == ELightType::LocalAmbient)
         {
-            mAmbientColor = pLight->Color();
+            mAmbientColor = light.Color();
         }
         else // Other lights will be used depending which are closest to the node
         {
-            const bool IsInRange = AABox().IntersectsSphere(pLight->Position(), pLight->GetRadius());
+            const bool IsInRange = AABox().IntersectsSphere(light.Position(), light.GetRadius());
 
             if (IsInRange)
             {
-                const float Dist = mPosition.Distance(pLight->Position());
-                LightEntries.emplace_back(pLight, Dist);
+                const float Dist = mPosition.Distance(light.Position());
+                LightEntries.emplace_back(&light, Dist);
             }
         }
     }
@@ -167,7 +165,7 @@ void CSceneNode::BuildLightList(CGameArea *pArea)
     std::sort(LightEntries.begin(), LightEntries.end());
     mLightCount = (LightEntries.size() > 8) ? 8 : LightEntries.size();
 
-    for (uint32_t iLight = 0; iLight < mLightCount; iLight++)
+    for (size_t iLight = 0; iLight < mLightCount; iLight++)
         mLights[iLight] = LightEntries[iLight].pLight;
 }
 

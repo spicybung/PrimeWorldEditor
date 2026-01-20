@@ -2,6 +2,7 @@
 
 #include "Editor/UICommon.h"
 #include "Editor/WorldEditor/CWorldEditor.h"
+#include <Core/NRangeUtils.h>
 #include <Core/Resource/Script/CScriptLayer.h>
 
 #include <QCheckBox>
@@ -87,11 +88,11 @@ void WEditorProperties::SetLayerComboBox()
     {
         const auto* pScript = static_cast<const CScriptNode*>(mpDisplayNode);
         const auto* pLayer = pScript->Instance()->Layer();
-        for (size_t iLyr = 0; iLyr < mpEditor->ActiveArea()->NumScriptLayers(); iLyr++)
+        for (const auto [idx, scriptLayer] : Utils::enumerate(mpEditor->ActiveArea()->ScriptLayers()))
         {
-            if (mpEditor->ActiveArea()->ScriptLayer(iLyr) == pLayer)
+            if (scriptLayer == pLayer)
             {
-                mpLayersComboBox->setCurrentIndex(static_cast<int>(iLyr));
+                mpLayersComboBox->setCurrentIndex(static_cast<int>(idx));
                 break;
             }
         }
@@ -177,8 +178,8 @@ void WEditorProperties::OnLayersModified()
 
      if (pArea)
      {
-         for (size_t iLyr = 0; iLyr < pArea->NumScriptLayers(); iLyr++)
-             mpLayersComboBox->addItem(TO_QSTRING(pArea->ScriptLayer(iLyr)->Name()));
+         for (const auto* layer : pArea->ScriptLayers())
+             mpLayersComboBox->addItem(TO_QSTRING(layer->Name()));
      }
 
      SetLayerComboBox();

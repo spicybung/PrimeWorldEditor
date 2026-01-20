@@ -283,13 +283,11 @@ void GenerateAssetNames(CGameProject *pProj)
             }
 
             // Generate names from script instance names
-            for (size_t iLyr = 0; iLyr < pArea->NumScriptLayers(); iLyr++)
+            for (auto* layer : pArea->ScriptLayers())
             {
-                CScriptLayer *pLayer = pArea->ScriptLayer(iLyr);
-
-                for (size_t iInst = 0; iInst < pLayer->NumInstances(); iInst++)
+                for (size_t iInst = 0; iInst < layer->NumInstances(); iInst++)
                 {
-                    CScriptObject* pInst = pLayer->InstanceByIndex(iInst);
+                    CScriptObject* pInst = layer->InstanceByIndex(iInst);
                     CStructProperty* pProperties = pInst->Template()->Properties();
 
                     if (pInst->ObjectTypeID() == 0x42 || pInst->ObjectTypeID() == FOURCC('POIN'))
@@ -331,7 +329,6 @@ void GenerateAssetNames(CGameProject *pProj)
                             }
                         }
                     }
-
                     else if (pInst->ObjectTypeID() == 0x17 || pInst->ObjectTypeID() == FOURCC('MEMO'))
                     {
                         TString Name = pInst->InstanceName();
@@ -359,7 +356,6 @@ void GenerateAssetNames(CGameProject *pProj)
                             }
                         }
                     }
-
                     // Look for lightmapped models - these are going to be unique to this area
                     else if (pInst->ObjectTypeID() == 0x0 || pInst->ObjectTypeID() == FOURCC('ACTR') ||
                              pInst->ObjectTypeID() == 0x8 || pInst->ObjectTypeID() == FOURCC('PLAT'))

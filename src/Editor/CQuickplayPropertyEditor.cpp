@@ -157,19 +157,18 @@ void CQuickplayPropertyEditor::OnWorldEditorAreaChanged(CWorld* pWorld, CGameAre
 
     if (pArea)
     {
-        for (size_t LayerIdx = 0; LayerIdx < pArea->NumScriptLayers(); LayerIdx++)
+        for (const auto [idx, layer] : Utils::enumerate(pArea->ScriptLayers()))
         {
-            CScriptLayer* pLayer = pArea->ScriptLayer(LayerIdx);
-            bool bActive = pLayer->IsActive();
+            const bool bActive = layer->IsActive();
 
-            QListWidgetItem* pItem = new QListWidgetItem();
-            pItem->setText(TO_QSTRING(pLayer->Name()));
+            auto* pItem = new QListWidgetItem();
+            pItem->setText(TO_QSTRING(layer->Name()));
             pItem->setCheckState(bActive ? Qt::Checked : Qt::Unchecked);
             mpUI->LayerList->addItem(pItem);
 
             if (bActive)
             {
-                mParameters.BootAreaLayerFlags |= (1ULL << LayerIdx);
+                mParameters.BootAreaLayerFlags |= (1ULL << idx);
             }
         }
     }

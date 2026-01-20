@@ -623,15 +623,13 @@ void CAreaLoader::ReadEGMC()
 void CAreaLoader::SetUpObjects(CScriptLayer *pGenLayer)
 {
     // Create instance map
-    for (size_t LayerIdx = 0; LayerIdx < mpArea->NumScriptLayers(); LayerIdx++)
+    for (const auto& layer : mpArea->mScriptLayers)
     {
-        auto& pLayer = mpArea->mScriptLayers[LayerIdx];
-
-        for (size_t InstIdx = 0; InstIdx < pLayer->NumInstances(); InstIdx++)
+        for (size_t InstIdx = 0; InstIdx < layer->NumInstances(); InstIdx++)
         {
-            CScriptObject *pInst = pLayer->InstanceByIndex(InstIdx);
+            CScriptObject* pInst = layer->InstanceByIndex(InstIdx);
             const auto InstanceID = pInst->InstanceID();
-            [[maybe_unused]] CScriptObject *pExisting = mpArea->InstanceByID(InstanceID);
+            [[maybe_unused]] CScriptObject* pExisting = mpArea->InstanceByID(InstanceID);
             ASSERT(pExisting == nullptr);
             mpArea->mObjectMap[InstanceID] = pInst;
         }

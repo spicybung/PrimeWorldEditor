@@ -13,6 +13,7 @@
 #include <Common/Math/CTransform4f.h>
 
 #include <memory>
+#include <ranges>
 #include <unordered_map>
 #include <vector>
 
@@ -92,16 +93,20 @@ public:
     uint32_t WorldIndex() const                                  { return mWorldIndex; }
     const CTransform4f& Transform() const                        { return mTransform; }
     CMaterialSet* Materials() const                              { return mpMaterialSet; }
-    size_t NumWorldModels() const                                { return mWorldModels.size(); }
-    size_t NumStaticModels() const                               { return mStaticWorldModels.size(); }
-    CModel* TerrainModel(size_t iMdl) const                      { return mWorldModels[iMdl].get(); }
-    CStaticModel* StaticModel(size_t iMdl) const                 { return mStaticWorldModels[iMdl].get(); }
-    CCollisionMeshGroup* Collision() const                       { return mpCollision.get(); }
-    size_t NumScriptLayers() const                               { return mScriptLayers.size(); }
+
+    auto TerrainModels() const                                   { return std::views::transform(mWorldModels, [](const auto& entry) { return entry.get(); }); }
+    auto StaticModels() const                                    { return std::views::transform(mStaticWorldModels, [](const auto& entry)  { return entry.get(); }); }
+    auto ScriptLayers() const                                    { return std::views::transform(mScriptLayers, [](const auto& entry) { return entry.get(); }); }
     CScriptLayer* ScriptLayer(size_t Index) const                { return mScriptLayers[Index].get(); }
+    size_t NumScriptLayers() const                               { return mScriptLayers.size(); }
+
+    auto LightLayers()                                           { return std::views::all(mLightLayers); }
+    auto Lights(size_t LayerIndex)                               { return std::views::all(mLightLayers[LayerIndex]); }
+
     size_t NumLightLayers() const                                { return mLightLayers.size(); }
     size_t NumLights(size_t LayerIndex) const                    { return (LayerIndex < mLightLayers.size() ? mLightLayers[LayerIndex].size() : 0); }
-    CLight* Light(size_t LayerIndex, size_t LightIndex)          { return &mLightLayers[LayerIndex][LightIndex]; }
+
+    CCollisionMeshGroup* Collision() const                       { return mpCollision.get(); }
     const CAssetID& PathID() const                               { return mPathID; }
     CPoiToWorld* PoiToWorldMap() const                           { return mpPoiToWorldMap; }
     const CAssetID& PortalAreaID() const                         { return mPortalAreaID; }

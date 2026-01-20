@@ -145,26 +145,26 @@ QModelIndex CInstancesModel::parent(const QModelIndex& rkChild) const
     // Object type parent
     if (Type == EIndexType::Instance)
     {
-        CScriptObject *pObj = static_cast<CScriptObject*>   (rkChild.internalPointer());
+        auto* pObj = static_cast<CScriptObject*>(rkChild.internalPointer());
 
         if (mModelType == EInstanceModelType::Layers)
         {
-            CScriptLayer *pLayer = pObj->Layer();
+            CScriptLayer* pLayer = pObj->Layer();
 
-            for (size_t iLyr = 0; iLyr < mpArea->NumScriptLayers(); iLyr++)
+            for (const auto [idx, scriptLayer] : Utils::enumerate(mpArea->ScriptLayers()))
             {
-                if (mpArea->ScriptLayer(iLyr) == pLayer)
-                    return createIndex(iLyr, 0, (iLyr << TYPES_ROW_INDEX_SHIFT) | 1);
+                if (scriptLayer == pLayer)
+                    return createIndex(int(idx), 0, (idx << TYPES_ROW_INDEX_SHIFT) | 1);
             }
         }
         else if (mModelType == EInstanceModelType::Types)
         {
-            CScriptTemplate *pTemp = pObj->Template();
+            CScriptTemplate* pTemp = pObj->Template();
 
-            for (qsizetype iTemp = 0; iTemp < mTemplateList.size(); iTemp++)
+            for (const auto [idx, scriptTemplate] : Utils::enumerate(mTemplateList))
             {
-                if (mTemplateList[iTemp] == pTemp)
-                    return createIndex(static_cast<int>(iTemp), 0, static_cast<quintptr>((iTemp << TYPES_ROW_INDEX_SHIFT) | 1));
+                if (scriptTemplate == pTemp)
+                    return createIndex(int(idx), 0, static_cast<quintptr>((idx << TYPES_ROW_INDEX_SHIFT) | 1));
             }
         }
     }

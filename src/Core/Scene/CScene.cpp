@@ -2,6 +2,7 @@
 
 #include "Core/CAreaAttributes.h"
 #include "Core/CRayCollisionTester.h"
+#include "Core/NRangeUtils.h"
 #include "Core/SRayIntersection.h"
 #include "Core/Render/CGraphics.h"
 #include "Core/Resource/CPoiToWorld.h"
@@ -186,38 +187,30 @@ void CScene::SetActiveArea(CWorld *pWorld, CGameArea *pArea)
     mpAreaRootNode = std::make_unique<CRootNode>(this, UINT32_MAX, mpSceneRootNode.get());
 
     // Create static nodes
-    size_t Count = mpArea->NumStaticModels();
-
-    for (size_t iMdl = 0; iMdl < Count; iMdl++)
+    for (const auto [idx, model] : Utils::enumerate(mpArea->StaticModels()))
     {
-        CStaticNode *pNode = CreateStaticNode(mpArea->StaticModel(iMdl));
-        pNode->SetName("Static World Model " + std::to_string(iMdl));
+        CStaticNode* node = CreateStaticNode(model);
+        node->SetName("Static World Model " + std::to_string(idx));
     }
 
     // Create model nodes
-    Count = mpArea->NumWorldModels();
-
-    for (size_t iMdl = 0; iMdl < Count; iMdl++)
+    for (const auto [idx, model] : Utils::enumerate(mpArea->TerrainModels()))
     {
-        CModel *pModel = mpArea->TerrainModel(iMdl);
-        CModelNode *pNode = CreateModelNode(pModel);
-        pNode->SetName("World Model " + std::to_string(iMdl));
-        pNode->SetWorldModel(true);
+        CModelNode* node = CreateModelNode(model);
+        node->SetName("World Model " + std::to_string(idx));
+        node->SetWorldModel(true);
     }
 
     CreateCollisionNode(mpArea->Collision());
 
-    const size_t NumLayers = mpArea->NumScriptLayers();
-
-    for (size_t iLyr = 0; iLyr < NumLayers; iLyr++)
+    for (const auto* layer : mpArea->ScriptLayers())
     {
-        CScriptLayer *pLayer = mpArea->ScriptLayer(iLyr);
-        const size_t NumObjects = pLayer->NumInstances();
+        const size_t NumObjects = layer->NumInstances();
         mNodes[ENodeType::Script].reserve(mNodes[ENodeType::Script].size() + NumObjects);
 
         for (size_t iObj = 0; iObj < NumObjects; iObj++)
         {
-            CScriptObject *pObj = pLayer->InstanceByIndex(iObj);
+            CScriptObject* pObj = layer->InstanceByIndex(iObj);
             CreateScriptNode(pObj);
         }
     }
@@ -230,21 +223,16 @@ void CScene::SetActiveArea(CWorld *pWorld, CGameArea *pArea)
         pScript->BuildLightList(mpArea);
     }
 
-    const size_t NumLightLayers = mpArea->NumLightLayers();
     CGraphics::sAreaAmbientColor = CColor::TransparentBlack();
 
-    for (size_t iLyr = 0; iLyr < NumLightLayers; iLyr++)
+    for (auto& layer : pArea->LightLayers())
     {
-        const size_t NumLights = mpArea->NumLights(iLyr);
-
-        for (size_t iLit = 0; iLit < NumLights; iLit++)
+        for (auto& light : layer)
         {
-            CLight *pLight = mpArea->Light(iLyr, iLit);
+            if (light.Type() == ELightType::LocalAmbient)
+                CGraphics::sAreaAmbientColor += light.Color();
 
-            if (pLight->Type() == ELightType::LocalAmbient)
-                CGraphics::sAreaAmbientColor += pLight->Color();
-
-            CreateLightNode(pLight);
+            CreateLightNode(&light);
         }
     }
 

@@ -1,6 +1,7 @@
 #ifndef CSCRIPTLAYER_H
 #define CSCRIPTLAYER_H
 
+#include "Core/NRangeUtils.h"
 #include "Core/Resource/Area/CGameArea.h"
 #include "Core/Resource/Script/CScriptObject.h"
 
@@ -45,8 +46,8 @@ public:
 
     void RemoveInstance(const CScriptObject *pInstance)
     {
-        const auto it = std::find_if(mInstances.cbegin(), mInstances.cend(),
-                                     [pInstance](const auto* instance) { return instance == pInstance; });
+        const auto it = std::ranges::find_if(mInstances,
+                                             [pInstance](const auto* instance) { return instance == pInstance; });
 
         if (it == mInstances.cend())
             return;
@@ -61,8 +62,8 @@ public:
 
     void RemoveInstanceByID(CInstanceID ID)
     {
-        const auto it = std::find_if(mInstances.cbegin(), mInstances.cend(),
-                                     [ID](const auto* instance) { return instance->InstanceID() == ID; });
+        const auto it = std::ranges::find_if(mInstances,
+                                             [ID](const auto* instance) { return instance->InstanceID() == ID; });
 
         if (it == mInstances.cend())
             return;
@@ -85,8 +86,8 @@ public:
 
     CScriptObject* InstanceByID(CInstanceID ID) const
     {
-        const auto it = std::find_if(mInstances.begin(), mInstances.end(),
-                                     [ID](const auto* instance) { return instance->InstanceID() == ID; });
+        const auto it = std::ranges::find_if(mInstances,
+                                             [ID](const auto* instance) { return instance->InstanceID() == ID; });
 
         if (it == mInstances.cbegin())
             return nullptr;
@@ -100,10 +101,10 @@ public:
 
     uint32_t AreaIndex() const
     {
-        for (uint32_t iLyr = 0; iLyr < mpArea->NumScriptLayers(); iLyr++)
+        for (const auto [idx, layer] : Utils::enumerate(mpArea->ScriptLayers()))
         {
-            if (mpArea->ScriptLayer(iLyr) == this)
-                return iLyr;
+            if (layer == this)
+                return uint32_t(idx);
         }
 
         return UINT32_MAX;

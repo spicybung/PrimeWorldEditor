@@ -280,15 +280,12 @@ void WInstancesTab::OnHideAllExceptTypeAction()
 
     if (IsLayers)
     {
-        CGameArea *pArea = mpEditor->ActiveArea();
+        CGameArea* pArea = mpEditor->ActiveArea();
 
-        for (size_t iLyr = 0; iLyr < pArea->NumScriptLayers(); iLyr++)
-        {
-            CScriptLayer *pLayer = pArea->ScriptLayer(iLyr);
-            pLayer->SetVisible(pLayer == mpMenuLayer);
-        }
+        for (auto* layer : pArea->ScriptLayers())
+            layer->SetVisible(layer == mpMenuLayer);
 
-        mpLayersModel->dataChanged( mpLayersModel->index(0, 2, TypeParent), mpLayersModel->index(mpLayersModel->rowCount(TypeParent) - 1, 2, TypeParent) );
+        mpLayersModel->dataChanged(mpLayersModel->index(0, 2, TypeParent), mpLayersModel->index(mpLayersModel->rowCount(TypeParent) - 1, 2, TypeParent));
     }
     else
     {
@@ -301,7 +298,7 @@ void WInstancesTab::OnHideAllExceptTypeAction()
             pTemplate->SetVisible(pTemplate == mpMenuTemplate);
         }
 
-        mpTypesModel->dataChanged( mpTypesModel->index(0, 2, TypeParent), mpTypesModel->index(mpTypesModel->rowCount(TypeParent) - 1, 2, TypeParent) );
+        mpTypesModel->dataChanged(mpTypesModel->index(0, 2, TypeParent), mpTypesModel->index(mpTypesModel->rowCount(TypeParent) - 1, 2, TypeParent));
     }
 }
 
@@ -313,22 +310,22 @@ void WInstancesTab::OnUnhideAllTypes()
 
     if (IsLayers)
     {
-        CGameArea *pArea = mpEditor->ActiveArea();
+        CGameArea* pArea = mpEditor->ActiveArea();
 
-        for (size_t iLyr = 0; iLyr < pArea->NumScriptLayers(); iLyr++)
-            pArea->ScriptLayer(iLyr)->SetVisible(true);
+        for (auto* layer : pArea->ScriptLayers())
+            layer->SetVisible(true);
 
-        mpLayersModel->dataChanged( mpLayersModel->index(0, 2, TypeParent), mpLayersModel->index(mpLayersModel->rowCount(TypeParent) - 1, 2, TypeParent) );
+        mpLayersModel->dataChanged(mpLayersModel->index(0, 2, TypeParent), mpLayersModel->index(mpLayersModel->rowCount(TypeParent) - 1, 2, TypeParent));
     }
     else
     {
         const EGame Game = mpEditor->CurrentGame();
-        CGameTemplate *pGame = NGameList::GetGameTemplate(Game);
+        CGameTemplate* pGame = NGameList::GetGameTemplate(Game);
 
         for (uint32 iTemp = 0; iTemp < pGame->NumScriptTemplates(); iTemp++)
             pGame->TemplateByIndex(iTemp)->SetVisible(true);
 
-        mpTypesModel->dataChanged( mpTypesModel->index(0, 2, TypeParent), mpTypesModel->index(mpTypesModel->rowCount(TypeParent) - 1, 2, TypeParent) );
+        mpTypesModel->dataChanged(mpTypesModel->index(0, 2, TypeParent), mpTypesModel->index(mpTypesModel->rowCount(TypeParent) - 1, 2, TypeParent));
     }
 }
 
@@ -343,12 +340,12 @@ void WInstancesTab::OnUnhideAll()
 
     if (LayersRoot.isValid())
     {
-        CGameArea *pArea = mpEditor->ActiveArea();
+        CGameArea* pArea = mpEditor->ActiveArea();
 
-        for (size_t iLyr = 0; iLyr < pArea->NumScriptLayers(); iLyr++)
-            pArea->ScriptLayer(iLyr)->SetVisible(true);
+        for (auto* layer : pArea->ScriptLayers())
+            layer->SetVisible(true);
 
-        mpLayersModel->dataChanged( mpLayersModel->index(0, 2, LayersRoot), mpLayersModel->index(mpLayersModel->rowCount(LayersRoot) - 1, 2, LayersRoot) );
+        mpLayersModel->dataChanged(mpLayersModel->index(0, 2, LayersRoot), mpLayersModel->index(mpLayersModel->rowCount(LayersRoot) - 1, 2, LayersRoot));
     }
 
     // Unhide types
