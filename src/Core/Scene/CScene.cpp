@@ -205,14 +205,11 @@ void CScene::SetActiveArea(CWorld *pWorld, CGameArea *pArea)
 
     for (const auto* layer : mpArea->ScriptLayers())
     {
-        const size_t NumObjects = layer->NumInstances();
-        mNodes[ENodeType::Script].reserve(mNodes[ENodeType::Script].size() + NumObjects);
+        const auto instances = layer->Instances();
+        mNodes[ENodeType::Script].reserve(mNodes[ENodeType::Script].size() + std::ranges::size(instances));
 
-        for (size_t iObj = 0; iObj < NumObjects; iObj++)
-        {
-            CScriptObject* pObj = layer->InstanceByIndex(iObj);
-            CreateScriptNode(pObj);
-        }
+        for (auto* instance : instances)
+            CreateScriptNode(instance);
     }
 
     // Ensure script nodes have valid positions + build light lists

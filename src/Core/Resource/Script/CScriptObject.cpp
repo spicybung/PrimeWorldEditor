@@ -3,6 +3,7 @@
 #include <Common/FileIO/CVectorOutStream.h>
 #include <Common/Serialization/CBasicBinaryReader.h>
 #include <Common/Serialization/CBasicBinaryWriter.h>
+#include "Core/NRangeUtils.h"
 #include "Core/Resource/Animation/CAnimSet.h"
 #include "Core/Resource/Area/CGameArea.h"
 #include "Core/Resource/Collision/CCollisionMeshGroup.h"
@@ -119,10 +120,10 @@ uint32_t CScriptObject::LayerIndex() const
     if (!mpLayer)
         return UINT32_MAX;
 
-    for (uint32_t iInst = 0; iInst < mpLayer->NumInstances(); iInst++)
+    for (const auto [idx, instance] : Utils::enumerate(mpLayer->Instances()))
     {
-        if (mpLayer->InstanceByIndex(iInst) == this)
-            return iInst;
+        if (instance == this)
+            return uint32_t(idx);
     }
 
     return UINT32_MAX;

@@ -625,13 +625,12 @@ void CAreaLoader::SetUpObjects(CScriptLayer *pGenLayer)
     // Create instance map
     for (const auto& layer : mpArea->mScriptLayers)
     {
-        for (size_t InstIdx = 0; InstIdx < layer->NumInstances(); InstIdx++)
+        for (auto* instance : layer->Instances())
         {
-            CScriptObject* pInst = layer->InstanceByIndex(InstIdx);
-            const auto InstanceID = pInst->InstanceID();
+            const auto InstanceID = instance->InstanceID();
             [[maybe_unused]] CScriptObject* pExisting = mpArea->InstanceByID(InstanceID);
             ASSERT(pExisting == nullptr);
-            mpArea->mObjectMap[InstanceID] = pInst;
+            mpArea->mObjectMap[InstanceID] = instance;
         }
     }
 

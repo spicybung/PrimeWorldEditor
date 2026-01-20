@@ -335,9 +335,9 @@ void CAreaDependencyTree::AddScriptLayer(CScriptLayer *pLayer, const std::vector
     mLayerOffsets.push_back(mChildren.size());
     std::set<CAssetID> UsedIDs;
 
-    for (size_t iInst = 0; iInst < pLayer->NumInstances(); iInst++)
+    for (auto* instance : pLayer->Instances())
     {
-        auto pTree = CScriptInstanceDependency::BuildTree(pLayer->InstanceByIndex(iInst));
+        auto pTree = CScriptInstanceDependency::BuildTree(instance);
         ASSERT(pTree != nullptr);
 
         // Note: MP2+ need to track all instances (not just instances with dependencies) to be able to build the layer module list

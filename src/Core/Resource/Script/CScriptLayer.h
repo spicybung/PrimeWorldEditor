@@ -81,8 +81,10 @@ public:
     const TString& Name() const  { return mLayerName; }
     bool IsActive() const        { return mActive; }
     bool IsVisible() const       { return mVisible; }
+
     size_t NumInstances() const  { return mInstances.size(); }
     CScriptObject* InstanceByIndex(size_t Index) const { return mInstances[Index]; }
+    auto Instances() const { return std::views::all(mInstances); }
 
     CScriptObject* InstanceByID(CInstanceID ID) const
     {

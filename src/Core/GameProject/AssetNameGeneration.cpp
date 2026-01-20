@@ -285,14 +285,13 @@ void GenerateAssetNames(CGameProject *pProj)
             // Generate names from script instance names
             for (auto* layer : pArea->ScriptLayers())
             {
-                for (size_t iInst = 0; iInst < layer->NumInstances(); iInst++)
+                for (auto* inst : layer->Instances())
                 {
-                    CScriptObject* pInst = layer->InstanceByIndex(iInst);
-                    CStructProperty* pProperties = pInst->Template()->Properties();
+                    CStructProperty* pProperties = inst->Template()->Properties();
 
-                    if (pInst->ObjectTypeID() == 0x42 || pInst->ObjectTypeID() == FOURCC('POIN'))
+                    if (inst->ObjectTypeID() == 0x42 || inst->ObjectTypeID() == FOURCC('POIN'))
                     {
-                        TString Name = pInst->InstanceName();
+                        TString Name = inst->InstanceName();
 
                         if (Name.StartsWith("POI_", false))
                         {
@@ -302,7 +301,7 @@ void GenerateAssetNames(CGameProject *pProj)
 
                             if (pScanProperty)
                             {
-                                CAssetID ScanID = pScanProperty->Value(pInst->PropertyData());
+                                CAssetID ScanID = pScanProperty->Value(inst->PropertyData());
                                 CResourceEntry *pEntry = pStore->FindEntry(ScanID);
 
                                 if (pEntry && !pEntry->IsNamed())
@@ -329,9 +328,9 @@ void GenerateAssetNames(CGameProject *pProj)
                             }
                         }
                     }
-                    else if (pInst->ObjectTypeID() == 0x17 || pInst->ObjectTypeID() == FOURCC('MEMO'))
+                    else if (inst->ObjectTypeID() == 0x17 || inst->ObjectTypeID() == FOURCC('MEMO'))
                     {
-                        TString Name = pInst->InstanceName();
+                        TString Name = inst->InstanceName();
 
                         if (Name.EndsWith(".STRG", false))
                         {
@@ -341,7 +340,7 @@ void GenerateAssetNames(CGameProject *pProj)
 
                             if (pStringProperty)
                             {
-                                CAssetID StringID = pStringProperty->Value(pInst->PropertyData());
+                                CAssetID StringID = pStringProperty->Value(inst->PropertyData());
                                 CResourceEntry *pEntry = pStore->FindEntry(StringID);
 
                                 if (pEntry && !pEntry->IsNamed())
@@ -357,16 +356,16 @@ void GenerateAssetNames(CGameProject *pProj)
                         }
                     }
                     // Look for lightmapped models - these are going to be unique to this area
-                    else if (pInst->ObjectTypeID() == 0x0 || pInst->ObjectTypeID() == FOURCC('ACTR') ||
-                             pInst->ObjectTypeID() == 0x8 || pInst->ObjectTypeID() == FOURCC('PLAT'))
+                    else if (inst->ObjectTypeID() == 0x0 || inst->ObjectTypeID() == FOURCC('ACTR') ||
+                             inst->ObjectTypeID() == 0x8 || inst->ObjectTypeID() == FOURCC('PLAT'))
                     {
-                        uint32 ModelPropID = (pProj->Game() <= EGame::Prime ? (pInst->ObjectTypeID() == 0x0 ? 0xA : 0x6) : 0xC27FFA8F);
+                        uint32 ModelPropID = (pProj->Game() <= EGame::Prime ? (inst->ObjectTypeID() == 0x0 ? 0xA : 0x6) : 0xC27FFA8F);
                         CAssetProperty *pModelProperty = TPropCast<CAssetProperty>(pProperties->ChildByID(ModelPropID));
                         ASSERT(pModelProperty); // Temporary assert to remind myself later to update this code when uncooked properties are added to the template
 
                         if (pModelProperty)
                         {
-                            CAssetID ModelID = pModelProperty->Value(pInst->PropertyData());
+                            CAssetID ModelID = pModelProperty->Value(inst->PropertyData());
                             CResourceEntry *pEntry = pStore->FindEntry(ModelID);
 
                             if (pEntry && !pEntry->IsCategorized())

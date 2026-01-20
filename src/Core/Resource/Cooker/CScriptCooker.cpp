@@ -289,25 +289,23 @@ void CScriptCooker::WriteLayer(IOutputStream& rOut, CScriptLayer *pLayer)
     uint32_t NumWrittenInstances = 0;
     rOut.WriteU32(0);
 
-    for (size_t iInst = 0; iInst < pLayer->NumInstances(); iInst++)
+    for (auto* instance : pLayer->Instances())
     {
-        CScriptObject *pInstance = pLayer->InstanceByIndex(iInst);
-
         // Is this a generated instance?
         bool ShouldWrite = true;
 
         if (mWriteGeneratedSeparately)
         {
             // GenericCreature instances in DKCR always write to both SCLY and SCGN
-            if (mGame == EGame::DKCReturns && pInstance->ObjectTypeID() == FOURCC('GCTR'))
+            if (mGame == EGame::DKCReturns && instance->ObjectTypeID() == FOURCC('GCTR'))
             {
-                mGeneratedObjects.push_back(pInstance);
+                mGeneratedObjects.push_back(instance);
             }
             // Instances receiving a Generate/Activate message (MP2) or a
             // Generate/Attach message (MP3+) should be written to SCGN, not SCLY
             else
             {
-                for (const auto* link : pInstance->Links(ELinkType::Incoming))
+                for (const auto* link : instance->Links(ELinkType::Incoming))
                 {
                     if (mGame <= EGame::Echoes)
                     {
@@ -331,13 +329,13 @@ void CScriptCooker::WriteLayer(IOutputStream& rOut, CScriptLayer *pLayer)
                 }
 
                 if (!ShouldWrite)
-                    mGeneratedObjects.push_back(pInstance);
+                    mGeneratedObjects.push_back(instance);
             }
         }
 
         if (ShouldWrite)
         {
-            WriteInstance(rOut, pInstance);
+            WriteInstance(rOut, instance);
             NumWrittenInstances++;
         }
     }
