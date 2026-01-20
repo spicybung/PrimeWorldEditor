@@ -25,10 +25,7 @@ CAreaLoader::CAreaLoader() = default;
 CAreaLoader::~CAreaLoader()
 {
     if (mHasDecompressedBuffer)
-    {
         delete mpMREA;
-        delete[] mpDecmpBuffer;
-    }
 }
 
 // ************ PRIME ************
@@ -47,7 +44,7 @@ void CAreaLoader::ReadHeaderPrime()
     mPathBlockNum = mpMREA->ReadU32();
     mOctreeBlockNum = mpMREA->ReadU32();
 
-    mpSectionMgr = new CSectionMgrIn(mNumBlocks, mpMREA);
+    mpSectionMgr = std::make_unique<CSectionMgrIn>(mNumBlocks, mpMREA);
     mpMREA->SeekToBoundary(32);
     mpSectionMgr->Init();
     LoadSectionDataBuffers();
@@ -258,7 +255,7 @@ void CAreaLoader::ReadHeaderEchoes()
         mClusters.resize(mpMREA->ReadU32());
     mpMREA->SeekToBoundary(32);
 
-    mpSectionMgr = new CSectionMgrIn(numBlocks, mpMREA);
+    mpSectionMgr = std::make_unique<CSectionMgrIn>(numBlocks, mpMREA);
     mpMREA->SeekToBoundary(32);
 
     if (mVersion == EGame::Echoes)
@@ -320,7 +317,7 @@ void CAreaLoader::ReadHeaderCorruption()
     const auto SectionNumberCount = mpMREA->ReadU32();
     mpMREA->SeekToBoundary(32);
 
-    mpSectionMgr = new CSectionMgrIn(NumSections, mpMREA);
+    mpSectionMgr = std::make_unique<CSectionMgrIn>(NumSections, mpMREA);
     mpMREA->SeekToBoundary(32);
 
     ReadCompressedBlocks();
@@ -345,8 +342,7 @@ void CAreaLoader::ReadHeaderCorruption()
         else if (Type == CFourCC("SGEN")) mScriptGeneratorBlockNum = Num;
         else if (Type == CFourCC("WOBJ")) mGeometryBlockNum = Num; // note WOBJ can show up multiple times, but is always 0
 
-        const CGameArea::SSectionNumber SecNum{Type, Num};
-        mpArea->mSectionNumbers.push_back(SecNum);
+        mpArea->mSectionNumbers.emplace_back(Type, Num);
     }
 
     mpMREA->SeekToBoundary(32);
@@ -545,41 +541,41 @@ void CAreaLoader::Decompress()
 {
     // This function decompresses compressed clusters into a buffer.
     // It should be called at the beginning of the first compressed cluster.
-    if (mVersion < EGame::Echoes) return;
+    if (mVersion < EGame::Echoes)
+        return;
 
     // Decompress clusters
-    mpDecmpBuffer = new uint8_t[mTotalDecmpSize];
+    mpDecmpBuffer = std::make_unique_for_overwrite<uint8_t[]>(mTotalDecmpSize);
     uint32_t Offset = 0;
 
     for (auto& cluster : mClusters)
     {
-        SCompressedCluster *pClust = &cluster;
-
         // Is it decompressed already?
         if (cluster.CompressedSize == 0)
         {
-            mpMREA->ReadBytes(mpDecmpBuffer + Offset, pClust->DecompressedSize);
-            Offset += pClust->DecompressedSize;
+            mpMREA->ReadBytes(mpDecmpBuffer.get() + Offset, cluster.DecompressedSize);
+            Offset += cluster.DecompressedSize;
         }
         else
         {
-            uint32_t StartOffset = 32 - (cluster.CompressedSize % 32); // For some reason they pad the beginning instead of the end
+            const uint32_t StartOffset = 32 - (cluster.CompressedSize % 32); // For some reason they pad the beginning instead of the end
             if (StartOffset != 32)
                 mpMREA->Seek(StartOffset, SEEK_CUR);
 
             std::vector<uint8_t> CompressedBuf(cluster.CompressedSize);
             mpMREA->ReadBytes(CompressedBuf.data(), CompressedBuf.size());
 
-            const bool Success = CompressionUtil::DecompressSegmentedData(CompressedBuf.data(), CompressedBuf.size(), mpDecmpBuffer + Offset, pClust->DecompressedSize);
+            const bool Success = CompressionUtil::DecompressSegmentedData(CompressedBuf.data(), CompressedBuf.size(),
+                                                                          mpDecmpBuffer.get() + Offset, cluster.DecompressedSize);
             if (!Success)
                 throw "Failed to decompress MREA!";
 
-            Offset += pClust->DecompressedSize;
+            Offset += cluster.DecompressedSize;
         }
     }
 
     const TString Source = mpMREA->GetSourceString();
-    mpMREA = new CMemoryInStream(mpDecmpBuffer, mTotalDecmpSize, std::endian::big);
+    mpMREA = new CMemoryInStream(mpDecmpBuffer.get(), mTotalDecmpSize, std::endian::big);
     mpMREA->SetSourceString(Source);
     mpSectionMgr->SetInputStream(mpMREA);
     mHasDecompressedBuffer = true;
@@ -714,7 +710,8 @@ std::unique_ptr<CGameArea> CAreaLoader::LoadMREA(IInputStream& MREA, CResourceEn
     CAreaLoader Loader;
 
     // Validation
-    if (!MREA.IsValid()) return nullptr;
+    if (!MREA.IsValid())
+        return nullptr;
 
     const uint32 DeadBeef = MREA.ReadU32();
     if (DeadBeef != 0xdeadbeef)
@@ -794,8 +791,6 @@ std::unique_ptr<CGameArea> CAreaLoader::LoadMREA(IInputStream& MREA, CResourceEn
             return nullptr;
     }
 
-    // Cleanup
-    delete Loader.mpSectionMgr;
     return ptr;
 }
 

@@ -22,7 +22,7 @@ class CAreaLoader
     // Area data
     TResPtr<CGameArea> mpArea;
     IInputStream *mpMREA = nullptr;
-    CSectionMgrIn *mpSectionMgr = nullptr;
+    std::unique_ptr<CSectionMgrIn> mpSectionMgr;
     EGame mVersion{};
     uint32_t mNumMeshes = 0;
     uint32_t mNumLayers = 0;
@@ -31,7 +31,7 @@ class CAreaLoader
     std::unordered_map<CInstanceID, std::vector<CLink*>> mConnectionMap;
 
     // Compression
-    uint8_t *mpDecmpBuffer = nullptr;
+    std::unique_ptr<uint8_t[]> mpDecmpBuffer;
     bool mHasDecompressedBuffer = false;
     std::vector<SCompressedCluster> mClusters;
     uint32_t mTotalDecmpSize = 0;
