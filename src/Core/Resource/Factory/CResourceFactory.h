@@ -35,9 +35,9 @@
 // Static helper class to allow spawning resources based on an EResType
 class CResourceFactory
 {
+public:
     CResourceFactory() = delete;
 
-public:
     static std::unique_ptr<CResource> CreateResource(CResourceEntry *pEntry)
     {
         switch (pEntry->ResourceType())

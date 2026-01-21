@@ -14,9 +14,8 @@
 
 class CResourceCooker
 {
-    CResourceCooker() = default;
-
 public:
+    CResourceCooker() = delete;
     static bool CookResource(CResourceEntry *pEntry, IOutputStream& rOutput)
     {
         CResource *pRes = pEntry->Load();
