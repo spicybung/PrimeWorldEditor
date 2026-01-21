@@ -9,9 +9,8 @@ class IInputStream;
 
 class CSkinLoader
 {
-    CSkinLoader() = delete;
-
 public:
+    CSkinLoader() = delete;
     static std::unique_ptr<CSkin> LoadCSKR(IInputStream& rCSKR, CResourceEntry *pEntry);
 };
 
