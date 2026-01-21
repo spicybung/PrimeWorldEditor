@@ -9,9 +9,8 @@ class IInputStream;
 
 class CPoiToWorldLoader
 {
-    CPoiToWorldLoader() = delete;
-
 public:
+    CPoiToWorldLoader() = delete;
     static std::unique_ptr<CPoiToWorld> LoadEGMC(IInputStream& rEGMC, CResourceEntry *pEntry);
 };
 
