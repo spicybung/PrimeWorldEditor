@@ -185,7 +185,7 @@ public:
     void SortObjects();
 
 private:
-    int32_t CheckVolumeConditions(CScriptObject *pObj, bool LogErrors);
+    int CheckVolumeConditions(CScriptObject *pObj, bool LogErrors);
 };
 
 #endif // CSCRIPTTEMPLATE_H

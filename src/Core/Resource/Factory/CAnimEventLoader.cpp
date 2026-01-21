@@ -42,7 +42,7 @@ void CAnimEventLoader::LoadEvents(IInputStream& rEVNT)
     }
 }
 
-int32 CAnimEventLoader::LoadEventBase(IInputStream& rEVNT)
+int CAnimEventLoader::LoadEventBase(IInputStream& rEVNT)
 {
     rEVNT.Skip(0x2);
     rEVNT.ReadString();
@@ -67,7 +67,7 @@ void CAnimEventLoader::LoadUserEvent(IInputStream& rEVNT)
 
 void CAnimEventLoader::LoadEffectEvent(IInputStream& rEVNT)
 {
-    const int32 CharIndex = LoadEventBase(rEVNT);
+    const int CharIndex = LoadEventBase(rEVNT);
     rEVNT.Skip(mGame < EGame::CorruptionProto ? 0x8 : 0x4);
     const CAssetID ParticleID(rEVNT, mGame);
     mpEventData->AddEvent(CharIndex, ParticleID);

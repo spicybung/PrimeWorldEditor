@@ -2,8 +2,8 @@
 #define CBONETRANSFORMDATA
 
 #include "Core/Resource/Animation/CSkeleton.h"
-#include <Common/BasicTypes.h>
 #include <Common/Math/CTransform4f.h>
+#include <cstdint>
 #include <vector>
 
 class CBoneTransformData

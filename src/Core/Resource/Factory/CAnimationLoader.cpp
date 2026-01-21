@@ -457,7 +457,7 @@ void CAnimationLoader::ReadCompressedAnimationData()
     }
 }
 
-CQuaternion CAnimationLoader::DequantizeRotation(bool Sign, int16 X, int16 Y, int16 Z) const
+CQuaternion CAnimationLoader::DequantizeRotation(bool Sign, int16_t X, int16_t Y, int16_t Z) const
 {
     const float Multiplier = Math::skHalfPi / static_cast<float>(mRotationDivisor);
 

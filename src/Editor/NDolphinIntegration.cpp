@@ -66,7 +66,7 @@ static CQuickplayRelay gQuickplayRelay;
 
 static uint32_t AssembleBranchInstruction(uint32_t instructionAddress, uint32_t branchTarget)
 {
-    int32 jumpOffset = ((int32)branchTarget - (int32)instructionAddress) / 4;
+    int jumpOffset = ((int)branchTarget - (int)instructionAddress) / 4;
     if (jumpOffset < 0)
     {
         jumpOffset += 1 << 24;

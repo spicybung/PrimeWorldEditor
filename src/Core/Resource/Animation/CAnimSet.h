@@ -11,8 +11,8 @@
 #include "Core/Resource/Animation/IMetaAnimation.h"
 #include "Core/Resource/Animation/IMetaTransition.h"
 #include "Core/Resource/Model/CModel.h"
-#include <Common/BasicTypes.h>
 
+#include <cstdint>
 #include <memory>
 #include <ranges>
 #include <set>

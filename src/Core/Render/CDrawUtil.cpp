@@ -383,7 +383,7 @@ void CDrawUtil::InitGrid()
     mGridVertices->SetVertexDesc(EVertexAttribute::Position);
     mGridVertices->Reserve(static_cast<size_t>(kGridSize * 4));
 
-     for (int32 i = MinIdx; i <= MaxIdx; i++)
+     for (int i = MinIdx; i <= MaxIdx; i++)
      {
          if (i == 0)
              continue;

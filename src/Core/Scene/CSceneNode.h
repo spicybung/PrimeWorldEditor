@@ -8,14 +8,15 @@
 #include "Core/Resource/Area/CGameArea.h"
 #include "Core/Resource/CLight.h"
 #include "Core/CRayCollisionTester.h"
-#include <Common/BasicTypes.h>
 #include <Common/Math/CAABox.h>
 #include <Common/Math/CQuaternion.h>
 #include <Common/Math/CRay.h>
 #include <Common/Math/CTransform4f.h>
 #include <Common/Math/CVector3f.h>
 #include <Common/Math/ETransformSpace.h>
+
 #include <array>
+#include <cstdint>
 
 class CRenderer;
 class CScene;

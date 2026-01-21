@@ -1,12 +1,12 @@
 #include "Core/OpenGL/CShader.h"
 
-#include <Common/BasicTypes.h>
 #include <Common/FileUtil.h>
 #include <Common/Log.h>
 #include <Common/TString.h>
 #include "Core/GameProject/CResourceStore.h"
 #include "Core/Render/CGraphics.h"
 
+#include <cstdint>
 #include <fstream>
 #include <fmt/format.h>
 

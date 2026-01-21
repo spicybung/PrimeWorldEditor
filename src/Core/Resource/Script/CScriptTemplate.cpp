@@ -101,7 +101,7 @@ EVolumeShape CScriptTemplate::VolumeShape(CScriptObject *pObj)
 
     if (mVolumeShape == EVolumeShape::ConditionalShape)
     {
-        const int32 Index = CheckVolumeConditions(pObj, true);
+        const auto Index = CheckVolumeConditions(pObj, true);
         if (Index == -1)
             return EVolumeShape::InvalidShape;
 
@@ -121,7 +121,7 @@ float CScriptTemplate::VolumeScale(CScriptObject *pObj)
 
     if (mVolumeShape == EVolumeShape::ConditionalShape)
     {
-        const int32 Index = CheckVolumeConditions(pObj, false);
+        const auto Index = CheckVolumeConditions(pObj, false);
         if (Index == -1)
             return mVolumeScale;
 
@@ -131,7 +131,7 @@ float CScriptTemplate::VolumeScale(CScriptObject *pObj)
     return mVolumeScale;
 }
 
-int32 CScriptTemplate::CheckVolumeConditions(CScriptObject *pObj, bool LogErrors)
+int CScriptTemplate::CheckVolumeConditions(CScriptObject *pObj, bool LogErrors)
 {
     // Private function
     if (mVolumeShape == EVolumeShape::ConditionalShape)
@@ -217,7 +217,7 @@ CResource* CScriptTemplate::FindDisplayAsset(void* pPropertyData, uint32_t& rOut
                 if (pRes != nullptr)
                 {
                     const size_t MaxNumChars = static_cast<const CAnimSet*>(pRes)->NumCharacters();
-                    rOutCharIndex = (asset.ForceNodeIndex >= 0 && asset.ForceNodeIndex < static_cast<int32>(MaxNumChars) ? asset.ForceNodeIndex : Params.CharacterIndex());
+                    rOutCharIndex = (asset.ForceNodeIndex >= 0 && asset.ForceNodeIndex < static_cast<int>(MaxNumChars) ? asset.ForceNodeIndex : Params.CharacterIndex());
                     rOutAnimIndex = Params.AnimIndex();
                 }
             }
