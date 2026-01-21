@@ -217,10 +217,7 @@ void CBasicViewport::contextMenuEvent(QContextMenuEvent *pEvent)
 
 void CBasicViewport::SetShowFlag(EShowFlag Flag, bool Visible)
 {
-    if (Visible)
-        mViewInfo.ShowFlags |= Flag;
-    else
-        mViewInfo.ShowFlags &= ~Flag;
+    mViewInfo.ShowFlags.AssignFlag(Flag, Visible);
 }
 
 void CBasicViewport::SetGameMode(bool Enabled)
