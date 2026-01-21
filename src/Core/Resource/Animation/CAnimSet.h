@@ -14,6 +14,7 @@
 #include <Common/BasicTypes.h>
 
 #include <memory>
+#include <ranges>
 #include <set>
 #include <vector>
 
@@ -190,8 +191,11 @@ public:
     }
 
     // Accessors
-    size_t NumCharacters() const        { return mCharacters.size(); }
-    size_t NumAnimations() const        { return mAnimations.size(); }
+    size_t NumCharacters() const { return mCharacters.size(); }
+    size_t NumAnimations() const { return mAnimations.size(); }
+
+    auto Characters() const { return std::views::all(mCharacters); }
+    auto Animations() const { return std::views::all(mAnimations); }
 
     const SSetCharacter* Character(size_t Index) const
     {

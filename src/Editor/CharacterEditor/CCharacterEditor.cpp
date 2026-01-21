@@ -176,8 +176,8 @@ void CCharacterEditor::SetActiveAnimSet(CAnimSet *pSet)
     mpCharComboBox->blockSignals(true);
     mpCharComboBox->clear();
 
-    for (size_t iChar = 0; iChar < mpSet->NumCharacters(); iChar++)
-        mpCharComboBox->addItem(TO_QSTRING(mpSet->Character(iChar)->Name));
+    for (const auto& character : mpSet->Characters())
+        mpCharComboBox->addItem(TO_QSTRING(character.Name));
 
     SetActiveCharacterIndex(0);
     mpCharComboBox->blockSignals(false);
@@ -186,8 +186,8 @@ void CCharacterEditor::SetActiveAnimSet(CAnimSet *pSet)
     mpAnimComboBox->blockSignals(true);
     mpAnimComboBox->clear();
 
-    for (size_t iAnim = 0; iAnim < mpSet->NumAnimations(); iAnim++)
-        mpAnimComboBox->addItem( TO_QSTRING(mpSet->Animation(iAnim)->Name) );
+    for (const auto& animation : mpSet->Animations())
+        mpAnimComboBox->addItem(TO_QSTRING(animation.Name));
 
     SetActiveAnimation(0);
     mpAnimComboBox->blockSignals(false);

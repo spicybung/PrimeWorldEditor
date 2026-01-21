@@ -11,6 +11,7 @@
 
 #include <algorithm>
 #include <array>
+#include <ranges>
 
 // ************ IDependencyNode ************
 IDependencyNode::~IDependencyNode() = default;
@@ -276,12 +277,10 @@ std::unique_ptr<CSetAnimationDependency> CSetAnimationDependency::BuildTree(cons
     const SAnimation *pkAnim = pkOwnerSet->Animation(AnimIndex);
 
     // Find relevant character indices
-    for (uint32 iChar = 0; iChar < pkOwnerSet->NumCharacters(); iChar++)
+    for (auto&& [idx, character] : Utils::enumerate(pkOwnerSet->Characters()))
     {
-        const SSetCharacter *pkChar = pkOwnerSet->Character(iChar);
-
-        if (pkChar->UsedAnimationIndices.contains(AnimIndex))
-            pTree->mCharacterIndices.insert(iChar);
+        if (character.UsedAnimationIndices.contains(AnimIndex))
+            pTree->mCharacterIndices.insert(uint32_t(idx));
     }
 
     // Add primitive dependencies. In MP2 animation event data is not a standalone resource.

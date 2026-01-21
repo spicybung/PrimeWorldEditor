@@ -17,6 +17,7 @@
 #include <Common/Log.h>
 
 #include <algorithm>
+#include <fmt/format.h>
 #include <ranges>
 
 #define REVERT_AUTO_NAMES 1
@@ -476,7 +477,7 @@ void GenerateAssetNames(CGameProject *pProj)
             if (pMacro->NumSamples() == 1)
                 SampleName = MacroName;
             else
-                SampleName = TString::Format("%s_%zu", *MacroName, idx);
+                SampleName = fmt::format("{}_{}", MacroName.ToStdString(), idx);
 
             ApplyGeneratedName(pSample, kSfxDir, SampleName);
         }
@@ -493,31 +494,30 @@ void GenerateAssetNames(CGameProject *pProj)
     {
         TString SetDir = It->DirectoryPath();
         TString NewSetName;
-        auto* pSet = static_cast<CAnimSet*>(It->Load());
+        const auto* pSet = static_cast<CAnimSet*>(It->Load());
 
-        for (size_t iChar = 0; iChar < pSet->NumCharacters(); iChar++)
+        for (auto&& [idx, character] : Utils::enumerate(pSet->Characters()))
         {
-            const SSetCharacter *pkChar = pSet->Character(iChar);
-            const TString& CharName = pkChar->Name;
+            const TString& CharName = character.Name;
 
-            if (iChar == 0) NewSetName = CharName;
+            if (idx == 0) NewSetName = CharName;
 
-            if (pkChar->pModel)     ApplyGeneratedName(pkChar->pModel->Entry(), SetDir, CharName);
-            if (pkChar->pSkeleton)  ApplyGeneratedName(pkChar->pSkeleton->Entry(), SetDir, CharName);
-            if (pkChar->pSkin)      ApplyGeneratedName(pkChar->pSkin->Entry(), SetDir, CharName);
+            if (character.pModel)     ApplyGeneratedName(character.pModel->Entry(), SetDir, CharName);
+            if (character.pSkeleton)  ApplyGeneratedName(character.pSkeleton->Entry(), SetDir, CharName);
+            if (character.pSkin)      ApplyGeneratedName(character.pSkin->Entry(), SetDir, CharName);
 
-            if (pProj->Game() >= EGame::CorruptionProto && pProj->Game() <= EGame::Corruption && pkChar->ID == 0)
+            if (pProj->Game() >= EGame::CorruptionProto && pProj->Game() <= EGame::Corruption && character.ID == 0)
             {
-                CResourceEntry *pAnimDataEntry = gpResourceStore->FindEntry( pkChar->AnimDataID );
+                CResourceEntry* pAnimDataEntry = gpResourceStore->FindEntry(character.AnimDataID);
 
                 if (pAnimDataEntry)
                 {
-                    TString AnimDataName = TString::Format("%s_animdata", *CharName);
+                    TString AnimDataName = fmt::format("{}_animdata", CharName.ToStdString());
                     ApplyGeneratedName(pAnimDataEntry, SetDir, AnimDataName);
                 }
             }
 
-            for (const auto& rkOverlay : pkChar->OverlayModels)
+            for (const auto& rkOverlay : character.OverlayModels)
             {
                 if (rkOverlay.ModelID.IsValid() || rkOverlay.SkinID.IsValid())
                 {
@@ -530,7 +530,7 @@ void GenerateAssetNames(CGameProject *pProj)
                     );
                     ASSERT(TypeName != "");
 
-                    TString OverlayName = TString::Format("%s_%s", *CharName, *TypeName);
+                    TString OverlayName = fmt::format("{}_{}", CharName.ToStdString(), TypeName.ToStdString());
 
                     if (rkOverlay.ModelID.IsValid())
                     {

@@ -24,8 +24,8 @@ void CCharacterNode::PostLoad()
     if (mpCharacter == nullptr)
         return;
 
-    for (size_t iChar = 0; iChar < mpCharacter->NumCharacters(); iChar++)
-        mpCharacter->Character(iChar)->pModel->BufferGL();
+    for (const auto& character : mpCharacter->Characters())
+        character.pModel->BufferGL();
 }
 
 void CCharacterNode::AddToRenderer(CRenderer *pRenderer, const SViewInfo& rkViewInfo)

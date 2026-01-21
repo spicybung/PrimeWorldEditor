@@ -1,5 +1,6 @@
 #include "Core/GameProject/DependencyListBuilders.h"
 
+#include "Core/NRangeUtils.h"
 #include "Core/Resource/CDependencyGroup.h"
 #include <Common/Log.h>
 
@@ -111,11 +112,10 @@ void CCharacterUsageMap::DebugPrintContents()
     {
         const auto* pSet = mpStore->LoadResource<CAnimSet>(ID);
 
-        for (size_t iChar = 0; iChar < pSet->NumCharacters(); iChar++)
+        for (auto&& [idx, character] : Utils::enumerate(pSet->Characters()))
         {
-            const bool Used = usedList.size() > iChar && usedList[iChar];
-            const TString CharName = pSet->Character(iChar)->Name;
-            NLog::Debug("{} : Char {} : {} : {}", *ID.ToString(), iChar, *CharName, (Used ? "USED" : "UNUSED"));
+            const bool Used = usedList.size() > idx && usedList[idx];
+            NLog::Debug("{} : Char {} : {} : {}", ID.ToString().ToStdString(), idx, character.Name.ToStdString(), (Used ? "USED" : "UNUSED"));
         }
     }
 }
