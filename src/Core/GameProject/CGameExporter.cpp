@@ -104,9 +104,8 @@ bool CGameExporter::Export(nod::DiscBase *pDisc, const TString& rkOutputDir, CAs
 
 void CGameExporter::LoadResource(const CAssetID& rkID, std::vector<uint8>& rBuffer)
 {
-    SResourceInstance *pInst = FindResourceInstance(rkID);
-    if (pInst != nullptr)
-        LoadResource(*pInst, rBuffer);
+    if (const auto* inst = FindResourceInstance(rkID))
+        LoadResource(*inst, rBuffer);
 }
 
 bool CGameExporter::ShouldExportDiscNode(const nod::Node *pkNode, bool IsInRoot) const
