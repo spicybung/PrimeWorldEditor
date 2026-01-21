@@ -71,7 +71,7 @@
         </AreaName>
         <AreaName>
             <Key>04D6C285</Key>
-            <Value>12_monkeyshaft</Value>
+            <Value>12_monkeyShaft</Value>
         </AreaName>
         <AreaName>
             <Key>0581699D</Key>
@@ -99,7 +99,7 @@
         </AreaName>
         <AreaName>
             <Key>09B3E01C</Key>
-            <Value>lava_savestation_a</Value>
+            <Value>a_lava_savestation</Value>
         </AreaName>
         <AreaName>
             <Key>0C57A641</Key>
@@ -119,7 +119,7 @@
         </AreaName>
         <AreaName>
             <Key>0F403B07</Key>
-            <Value>monkey_shaft</Value>
+            <Value>11_12_connect</Value>
         </AreaName>
         <AreaName>
             <Key>0F5277D1</Key>
@@ -135,7 +135,7 @@
         </AreaName>
         <AreaName>
             <Key>11BD63B7</Key>
-            <Value>14_tl_01_02</Value>
+            <Value>14_tl_room01_02</Value>
         </AreaName>
         <AreaName>
             <Key>13D96D3D</Key>
@@ -155,7 +155,7 @@
         </AreaName>
         <AreaName>
             <Key>165A4DE9</Key>
-            <Value>05_bathhall</Value>
+            <Value>5_bathhall</Value>
         </AreaName>
         <AreaName>
             <Key>188A23AF</Key>
@@ -163,7 +163,7 @@
         </AreaName>
         <AreaName>
             <Key>18AB6106</Key>
-            <Value>08_courtyard</Value>
+            <Value>8_courtyard</Value>
         </AreaName>
         <AreaName>
             <Key>18D186BB</Key>
@@ -175,7 +175,7 @@
         </AreaName>
         <AreaName>
             <Key>198FF5DC</Key>
-            <Value>mapstation_mines</Value>
+            <Value>00_Mines_Mapstation</Value>
         </AreaName>
         <AreaName>
             <Key>1A5B2E16</Key>
@@ -223,7 +223,7 @@
         </AreaName>
         <AreaName>
             <Key>234762BE</Key>
-            <Value>07_stonehenge_hall</Value>
+            <Value>07_Over_stonehenge_hall</Value>
         </AreaName>
         <AreaName>
             <Key>236E1B0F</Key>
@@ -231,7 +231,7 @@
         </AreaName>
         <AreaName>
             <Key>2398E906</Key>
-            <Value>07_stonehenge</Value>
+            <Value>07_Over_stonehenge</Value>
         </AreaName>
         <AreaName>
             <Key>24F8AFF3</Key>
@@ -259,7 +259,7 @@
         </AreaName>
         <AreaName>
             <Key>2B3F1CEE</Key>
-            <Value>1a_morphballtunnel</Value>
+            <Value>1a_morphballtunnel2</Value>
         </AreaName>
         <AreaName>
             <Key>2CA2A263</Key>
@@ -287,7 +287,7 @@
         </AreaName>
         <AreaName>
             <Key>361D41B0</Key>
-            <Value>savestation_mines_a</Value>
+            <Value>00_Mines_Savestation_A</Value>
         </AreaName>
         <AreaName>
             <Key>361ECAAC</Key>
@@ -295,7 +295,7 @@
         </AreaName>
         <AreaName>
             <Key>37B3AFE6</Key>
-            <Value>06_under_intro_freight</Value>
+            <Value>06_IntroUnderwater_Freight_Lifts</Value>
         </AreaName>
         <AreaName>
             <Key>37BBB33C</Key>
@@ -351,7 +351,7 @@
         </AreaName>
         <AreaName>
             <Key>3F04F304</Key>
-            <Value>07_ruinedroof</Value>
+            <Value>7_ruinedroof</Value>
         </AreaName>
         <AreaName>
             <Key>3F375ECC</Key>
@@ -371,11 +371,11 @@
         </AreaName>
         <AreaName>
             <Key>40C548E9</Key>
-            <Value>07_ice_chapel</Value>
+            <Value>06_ice_chapel</Value>
         </AreaName>
         <AreaName>
             <Key>4148F7B0</Key>
-            <Value>03_monkey_lower</Value>
+            <Value>3_monkey_lower</Value>
         </AreaName>
         <AreaName>
             <Key>41CC90EC</Key>
@@ -383,11 +383,11 @@
         </AreaName>
         <AreaName>
             <Key>42C4AAF1</Key>
-            <Value>00q_mines_connect</Value>
+            <Value>00s_mines_connect</Value>
         </AreaName>
         <AreaName>
             <Key>430E999C</Key>
-            <Value>00_mines_over_elev_g</Value>
+            <Value>00_mine_lava_elev_g</Value>
         </AreaName>
         <AreaName>
             <Key>4346A747</Key>
@@ -403,7 +403,7 @@
         </AreaName>
         <AreaName>
             <Key>46295CA0</Key>
-            <Value>0a_connect_tunnel</Value>
+            <Value>99_some_hallway</Value>
         </AreaName>
         <AreaName>
             <Key>463D0D2E</Key>
@@ -423,7 +423,7 @@
         </AreaName>
         <AreaName>
             <Key>491BFABA</Key>
-            <Value>06_grapplegallery</Value>
+            <Value>06_grapgallery</Value>
         </AreaName>
         <AreaName>
             <Key>492CBF4A</Key>
@@ -439,7 +439,7 @@
         </AreaName>
         <AreaName>
             <Key>4A96005E</Key>
-            <Value>00e_under_intro_connect</Value>
+            <Value>00e_IntroUnderwater_connect</Value>
         </AreaName>
         <AreaName>
             <Key>4C3D244C</Key>
@@ -491,7 +491,7 @@
         </AreaName>
         <AreaName>
             <Key>560DBE38</Key>
-            <Value>generic_z3</Value>
+            <Value>generic_z03</Value>
         </AreaName>
         <AreaName>
             <Key>5694A06B</Key>
@@ -507,7 +507,7 @@
         </AreaName>
         <AreaName>
             <Key>5B4E38F5</Key>
-            <Value>00i_over_hall</Value>
+            <Value>00j_over_plaza_hall</Value>
         </AreaName>
         <AreaName>
             <Key>5BDC869C</Key>
@@ -515,11 +515,11 @@
         </AreaName>
         <AreaName>
             <Key>5E0EE592</Key>
-            <Value>08c_under_intro_ventshaft</Value>
+            <Value>08c_IntroUnderwater_ventshaft</Value>
         </AreaName>
         <AreaName>
             <Key>5F2EB7B6</Key>
-            <Value>05_under_intro_specimen_chamber</Value>
+            <Value>04_IntroUnderwater_specimen_chamber</Value>
         </AreaName>
         <AreaName>
             <Key>624F493A</Key>
@@ -535,7 +535,7 @@
         </AreaName>
         <AreaName>
             <Key>66CBE887</Key>
-            <Value>08a_under_intro_ventshaft</Value>
+            <Value>08a_IntroUnderwater_ventshaft</Value>
         </AreaName>
         <AreaName>
             <Key>66D0D003</Key>
@@ -555,7 +555,7 @@
         </AreaName>
         <AreaName>
             <Key>6D434F4E</Key>
-            <Value>15_over_burningtrail</Value>
+            <Value>23_lava_burningtrail</Value>
         </AreaName>
         <AreaName>
             <Key>6ED3231B</Key>
@@ -591,11 +591,11 @@
         </AreaName>
         <AreaName>
             <Key>760E731A</Key>
-            <Value>00l_ice_connect</Value>
+            <Value>00l_connect</Value>
         </AreaName>
         <AreaName>
             <Key>76F6E356</Key>
-            <Value>00d_under_intro_hall</Value>
+            <Value>00d_IntroUnderwater_connect</Value>
         </AreaName>
         <AreaName>
             <Key>77714498</Key>
@@ -623,7 +623,7 @@
         </AreaName>
         <AreaName>
             <Key>7F56D921</Key>
-            <Value>lava_savestation_b</Value>
+            <Value>b_lava_savestation</Value>
         </AreaName>
         <AreaName>
             <Key>83151B33</Key>
@@ -639,7 +639,7 @@
         </AreaName>
         <AreaName>
             <Key>85CA08AB</Key>
-            <Value>00c_over_hall</Value>
+            <Value>06_over_hall_crashedship</Value>
         </AreaName>
         <AreaName>
             <Key>85D9F399</Key>
@@ -647,7 +647,7 @@
         </AreaName>
         <AreaName>
             <Key>86EB2E02</Key>
-            <Value>05_over_xray</Value>
+            <Value>05_Over_xrayroom</Value>
         </AreaName>
         <AreaName>
             <Key>870B0525</Key>
@@ -695,7 +695,7 @@
         </AreaName>
         <AreaName>
             <Key>956F1552</Key>
-            <Value>02_mines_shotemup</Value>
+            <Value>02_mines_shootemup</Value>
         </AreaName>
         <AreaName>
             <Key>95F2019E</Key>
@@ -711,7 +711,7 @@
         </AreaName>
         <AreaName>
             <Key>9A0A03EB</Key>
-            <Value>22_Flaahgra</Value>
+            <Value>22_FlaahgraChamber</Value>
         </AreaName>
         <AreaName>
             <Key>9D330A07</Key>
@@ -763,7 +763,7 @@
         </AreaName>
         <AreaName>
             <Key>AC2C58FE</Key>
-            <Value>05_under_intro_zoo</Value>
+            <Value>05_IntroUnderwaterZoo</Value>
         </AreaName>
         <AreaName>
             <Key>AD2E7EB9</Key>
@@ -779,11 +779,11 @@
         </AreaName>
         <AreaName>
             <Key>AFD4E038</Key>
-            <Value>08b_under_intro_ventshaft</Value>
+            <Value>08b_IntroUnderwater_ventshaft</Value>
         </AreaName>
         <AreaName>
             <Key>AFEFE677</Key>
-            <Value>20_pickup_room</Value>
+            <Value>20_pickuproom</Value>
         </AreaName>
         <AreaName>
             <Key>B089331E</Key>
@@ -803,7 +803,7 @@
         </AreaName>
         <AreaName>
             <Key>B4B41C48</Key>
-            <Value>01_endcinema</Value>
+            <Value>end_cinema</Value>
         </AreaName>
         <AreaName>
             <Key>B4FBBEF5</Key>
@@ -827,7 +827,7 @@
         </AreaName>
         <AreaName>
             <Key>BB158C7E</Key>
-            <Value>00a_under_intro_hall</Value>
+            <Value>00a_IntroUnderwater_Connect</Value>
         </AreaName>
         <AreaName>
             <Key>BB3AFC4E</Key>
@@ -867,7 +867,7 @@
         </AreaName>
         <AreaName>
             <Key>C2576E4D</Key>
-            <Value>02_main</Value>
+            <Value>2_mainhall</Value>
         </AreaName>
         <AreaName>
             <Key>C2715A58</Key>
@@ -875,7 +875,7 @@
         </AreaName>
         <AreaName>
             <Key>C3D44A6E</Key>
-            <Value>00c_under_intro_hall</Value>
+            <Value>00c_IntroUnderwater_Connect</Value>
         </AreaName>
         <AreaName>
             <Key>C4107CD7</Key>
@@ -883,7 +883,7 @@
         </AreaName>
         <AreaName>
             <Key>C44E7A07</Key>
-            <Value>01_over_pickup</Value>
+            <Value>01_over_pickup_spacejump</Value>
         </AreaName>
         <AreaName>
             <Key>C50AF17A</Key>
@@ -911,7 +911,7 @@
         </AreaName>
         <AreaName>
             <Key>C8309DF6</Key>
-            <Value>19_hive_totem</Value>
+            <Value>19_hivetotem</Value>
         </AreaName>
         <AreaName>
             <Key>C8971E99</Key>
@@ -919,7 +919,7 @@
         </AreaName>
         <AreaName>
             <Key>C9D52BBC</Key>
-            <Value>15_energycores</Value>
+            <Value>15_energycore</Value>
         </AreaName>
         <AreaName>
             <Key>CA6CC052</Key>
@@ -927,7 +927,7 @@
         </AreaName>
         <AreaName>
             <Key>CB1E8A0B</Key>
-            <Value>0r_connect_tunnel</Value>
+            <Value>0m_connect_tunnel</Value>
         </AreaName>
         <AreaName>
             <Key>CDE604F0</Key>
@@ -963,7 +963,7 @@
         </AreaName>
         <AreaName>
             <Key>D5CDB809</Key>
-            <Value>01_mainplaza</Value>
+            <Value>1_mainplaza</Value>
         </AreaName>
         <AreaName>
             <Key>D695B958</Key>
@@ -999,7 +999,7 @@
         </AreaName>
         <AreaName>
             <Key>DCA9A28B</Key>
-            <Value>00_lava_ice_elev_c</Value>
+            <Value>00_lava_elev_ice_c</Value>
         </AreaName>
         <AreaName>
             <Key>DD0B0739</Key>
@@ -1027,11 +1027,11 @@
         </AreaName>
         <AreaName>
             <Key>E2C2CF38</Key>
-            <Value>00_mines_elev_h</Value>
+            <Value>00_mines_lava_elev_h</Value>
         </AreaName>
         <AreaName>
             <Key>E34FD92B</Key>
-            <Value>03_monkey_upper</Value>
+            <Value>3_monkey_upper</Value>
         </AreaName>
         <AreaName>
             <Key>E39C342B</Key>
@@ -1039,7 +1039,7 @@
         </AreaName>
         <AreaName>
             <Key>E47228EF</Key>
-            <Value>03_under_intro_elevator</Value>
+            <Value>03_IntroUnderwater_elevator</Value>
         </AreaName>
         <AreaName>
             <Key>E4A4462E</Key>
@@ -1059,7 +1059,7 @@
         </AreaName>
         <AreaName>
             <Key>EA8A4073</Key>
-            <Value>04_monkey_hallway</Value>
+            <Value>4_monkey_hallway</Value>
         </AreaName>
         <AreaName>
             <Key>EAB320CF</Key>
@@ -1079,7 +1079,7 @@
         </AreaName>
         <AreaName>
             <Key>EE09629A</Key>
-            <Value>07_under_intro_reactor</Value>
+            <Value>07_IntroUnderwater_reactor</Value>
         </AreaName>
         <AreaName>
             <Key>EE209548</Key>
@@ -1095,7 +1095,7 @@
         </AreaName>
         <AreaName>
             <Key>EF069019</Key>
-            <Value>04_maproom_d</Value>
+            <Value>4_maproom_d</Value>
         </AreaName>
         <AreaName>
             <Key>EF2F1440</Key>
@@ -1103,19 +1103,19 @@
         </AreaName>
         <AreaName>
             <Key>EF674B4C</Key>
-            <Value>00c_ice_connect</Value>
+            <Value>00p_ice_connect</Value>
         </AreaName>
         <AreaName>
             <Key>EF7EB590</Key>
-            <Value>01_special</Value>
+            <Value>1_special</Value>
         </AreaName>
         <AreaName>
             <Key>F0594C6D</Key>
-            <Value>06_under_intro_save</Value>
+            <Value>06_IntroUnderwater_savestation</Value>
         </AreaName>
         <AreaName>
             <Key>F47DBE5B</Key>
-            <Value>04_over_tree</Value>
+            <Value>04_over_treeroom</Value>
         </AreaName>
         <AreaName>
             <Key>F517A1EA</Key>
@@ -1143,11 +1143,11 @@
         </AreaName>
         <AreaName>
             <Key>FB427580</Key>
-            <Value>06_under_intro_to_reactor</Value>
+            <Value>06_IntroUnderwater_to_reactor</Value>
         </AreaName>
         <AreaName>
             <Key>FB54A0CB</Key>
-            <Value>17_chozo_bowling</Value>
+            <Value>17_chozobowling</Value>
         </AreaName>
         <AreaName>
             <Key>FEA372E2</Key>
@@ -1155,7 +1155,7 @@
         </AreaName>
         <AreaName>
             <Key>FFB4A966</Key>
-            <Value>00b_under_intro_hall</Value>
+            <Value>00b_IntroUnderwater_connect</Value>
         </AreaName>
     </AreaNameMap>
 </GameInfo>
