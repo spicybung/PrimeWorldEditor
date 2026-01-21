@@ -22,7 +22,7 @@ CScriptTemplate::CScriptTemplate(CGameTemplate *pGame)
 }
 
 // New constructor
-CScriptTemplate::CScriptTemplate(CGameTemplate* pInGame, uint32 InObjectID, const TString& kInFilePath)
+CScriptTemplate::CScriptTemplate(CGameTemplate* pInGame, uint32_t InObjectID, const TString& kInFilePath)
     : mSourceFile(kInFilePath)
     , mObjectID(InObjectID)
     , mpGame(pInGame)
@@ -170,7 +170,7 @@ int32 CScriptTemplate::CheckVolumeConditions(CScriptObject *pObj, bool LogErrors
         }
 
         // Test and check whether any of the conditions are true
-        for (uint32 LinkIdx = 0; LinkIdx < mVolumeConditions.size(); LinkIdx++)
+        for (uint32_t LinkIdx = 0; LinkIdx < mVolumeConditions.size(); LinkIdx++)
         {
             if (mVolumeConditions[LinkIdx].Value == Val)
                 return LinkIdx;
@@ -186,7 +186,7 @@ int32 CScriptTemplate::CheckVolumeConditions(CScriptObject *pObj, bool LogErrors
     return -1;
 }
 
-CResource* CScriptTemplate::FindDisplayAsset(void* pPropertyData, uint32& rOutCharIndex, uint32& rOutAnimIndex, bool& rOutIsInGame)
+CResource* CScriptTemplate::FindDisplayAsset(void* pPropertyData, uint32_t& rOutCharIndex, uint32_t& rOutAnimIndex, bool& rOutIsInGame)
 {
     rOutCharIndex = UINT32_MAX;
     rOutAnimIndex = UINT32_MAX;
@@ -288,7 +288,7 @@ bool CScriptTemplate::IsDirty() const
 }
 
 // ************ OBJECT TRACKING ************
-uint32 CScriptTemplate::NumObjects() const
+uint32_t CScriptTemplate::NumObjects() const
 {
     return mObjectList.size();
 }

@@ -39,8 +39,8 @@ public:
     void SetGame(CGameTemplate *pGame);
     void SetSender(CScriptObject *pSender);
     void SetReceiver(CScriptObject *pReceiver);
-    uint32 State() const;
-    uint32 Message() const;
+    uint32_t State() const;
+    uint32_t Message() const;
 
     void UpdateOkEnabled();
     void UpdateSenderNameLabel();

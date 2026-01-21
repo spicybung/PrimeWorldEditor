@@ -11,9 +11,9 @@
 
 #include <GL/glew.h>
 
-uint64 CMaterial::sCurrentMaterial = 0;
+uint64_t CMaterial::sCurrentMaterial = 0;
 CColor CMaterial::sCurrentTint = CColor::White();
-std::map<uint64, CMaterial::SMaterialShader> CMaterial::smShaderMap;
+std::map<uint64_t, CMaterial::SMaterialShader> CMaterial::smShaderMap;
 
 CMaterial::CMaterial() = default;
 
@@ -45,7 +45,7 @@ std::unique_ptr<CMaterial> CMaterial::Clone() const
     pOut->mpIndirectTexture = mpIndirectTexture;
 
     pOut->mPasses.resize(mPasses.size());
-    for (uint32 iPass = 0; iPass < mPasses.size(); iPass++)
+    for (size_t iPass = 0; iPass < mPasses.size(); iPass++)
         pOut->mPasses[iPass] = mPasses[iPass]->Clone(pOut.get());
 
     if (mpNextDrawPassMaterial)
@@ -200,7 +200,7 @@ bool CMaterial::SetCurrent(FRenderOptions Options)
     for (auto [idx, pass] : Utils::enumerate(mPasses))
         pass->LoadTexture(idx);
 
-    CShader *pShader = CShader::CurrentShader();
+    CShader* pShader = CShader::CurrentShader();
     pShader->SetTextureUniforms(mPasses.size());
     pShader->SetNumLights(CGraphics::sNumLights);
 
@@ -211,7 +211,7 @@ bool CMaterial::SetCurrent(FRenderOptions Options)
     return true;
 }
 
-uint64 CMaterial::HashParameters()
+uint64_t CMaterial::HashParameters()
 {
     if (mRecalcHash)
     {
@@ -231,7 +231,7 @@ uint64 CMaterial::HashParameters()
         for (auto& pass : mPasses)
             pass->HashParameters(Hash);
 
-        const uint64 NewHash = Hash.GetHash64();
+        const auto NewHash = Hash.GetHash64();
 
         if (mParametersHash != NewHash)
             ClearShader();

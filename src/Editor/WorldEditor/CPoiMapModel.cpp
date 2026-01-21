@@ -179,7 +179,7 @@ void CPoiMapModel::OnMapChange(CWorld*, CGameArea *pArea)
     if (mpPoiToWorld)
     {
         // Create an ID -> Model Node lookup map
-        QMap<uint32, CModelNode*> NodeMap;
+        QMap<uint32_t, CModelNode*> NodeMap;
 
         for (auto* node : mpEditor->Scene()->MakeNodeView(ENodeType::Model, true))
         {

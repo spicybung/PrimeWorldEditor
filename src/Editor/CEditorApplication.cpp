@@ -152,7 +152,7 @@ void CEditorApplication::EditResource(CResourceEntry *pEntry)
                 if (It->Dependencies()->HasDependency(pEntry->ID()))
                 {
                     auto* pWorld = static_cast<CWorld*>(It->Load());
-                    uint32 AreaIdx = pWorld->AreaIndex(pEntry->ID());
+                    const auto AreaIdx = pWorld->AreaIndex(pEntry->ID());
 
                     if (AreaIdx != UINT32_MAX)
                     {

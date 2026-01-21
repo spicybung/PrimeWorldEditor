@@ -114,7 +114,7 @@ public:
     std::span<CSceneNode*> Nodes()                     { return mSelectedNodes; }
     std::span<CSceneNode* const> Nodes() const         { return mSelectedNodes; }
 
-    uint32 Size() const                                { return mSelectedNodes.size(); }
+    uint32_t Size() const                              { return mSelectedNodes.size(); }
     bool IsEmpty() const                               { return Size() == 0; }
     CSceneNode* Front() const                          { return mSelectedNodes.front(); }
     CSceneNode* Back() const                           { return mSelectedNodes.back(); }

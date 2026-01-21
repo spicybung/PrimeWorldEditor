@@ -21,7 +21,7 @@
 #include <Common/Macros.h>
 #include <Common/Math/MathUtil.h>
 
-CScriptNode::CScriptNode(CScene *pScene, uint32 NodeID, CSceneNode *pParent, CScriptObject *pInstance)
+CScriptNode::CScriptNode(CScene *pScene, uint32_t NodeID, CSceneNode *pParent, CScriptObject *pInstance)
     : CSceneNode(pScene, NodeID, pParent)
     , mpInstance(pInstance)
 {
@@ -736,7 +736,7 @@ CVector2f CScriptNode::BillboardScale() const
     return Out * 0.5f * Template()->PreviewScale();
 }
 
-CTransform4f CScriptNode::BoneTransform(uint32 BoneID, EAttachType AttachType, bool Absolute) const
+CTransform4f CScriptNode::BoneTransform(uint32_t BoneID, EAttachType AttachType, bool Absolute) const
 {
     CTransform4f Out;
 

@@ -314,10 +314,10 @@ void CModelEditorWindow::SetActivePass(int PassIndex)
     mIgnoreSignals = true;
     mpCurrentPass = mpCurrentMat->Pass(PassIndex);
 
-    uint32 KColor = mpCurrentPass->KColorSel();
-    uint32 KAlpha = mpCurrentPass->KAlphaSel();
-    uint32 Ras = mpCurrentPass->RasSel();
-    uint32 TexCoordSrc = mpCurrentPass->TexCoordSource();
+    uint32_t KColor = mpCurrentPass->KColorSel();
+    uint32_t KAlpha = mpCurrentPass->KAlphaSel();
+    uint32_t Ras = mpCurrentPass->RasSel();
+    uint32_t TexCoordSrc = mpCurrentPass->TexCoordSource();
     if (KColor >= 0xC) KColor -= 4;
     if (KAlpha >= 0x10) KAlpha -= 8;
     if (Ras == 0xFF) Ras = 7;

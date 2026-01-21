@@ -164,7 +164,7 @@ void CWaypointExtra::AddToRenderer(CRenderer *pRenderer, const SViewInfo& rkView
 
     if (!rkViewInfo.GameMode && rkViewInfo.ShowFlags.HasFlag(EShowFlag::ObjectGeometry) && mpParent->IsVisible() && !mpParent->IsSelected())
     {
-        for (uint32 iLink = 0; iLink < mLinks.size(); iLink++)
+        for (uint32_t iLink = 0; iLink < mLinks.size(); iLink++)
         {
             CScriptNode *pNode = mLinks[iLink].pWaypoint;
 

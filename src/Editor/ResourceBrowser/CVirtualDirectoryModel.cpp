@@ -30,7 +30,7 @@ QModelIndex CVirtualDirectoryModel::index(int Row, int Column, const QModelIndex
 
     CVirtualDirectory *pDir = IndexDirectory(rkParent);
 
-    if (pDir != nullptr && pDir->NumSubdirectories() > static_cast<uint32>(Row))
+    if (pDir != nullptr && pDir->NumSubdirectories() > static_cast<uint32_t>(Row))
         return createIndex(Row, Column, pDir->SubdirectoryByIndex(Row));
 
     if (pDir == nullptr)

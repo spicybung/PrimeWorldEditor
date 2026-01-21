@@ -267,7 +267,7 @@ void CCharacterEditor::RefreshViewport()
     ui->Viewport->Render();
 }
 
-void CCharacterEditor::OnViewportHoverBoneChanged(uint32 BoneID)
+void CCharacterEditor::OnViewportHoverBoneChanged(uint32_t BoneID)
 {
     if (BoneID == UINT32_MAX)
         ui->StatusBar->clearMessage();
@@ -277,9 +277,9 @@ void CCharacterEditor::OnViewportHoverBoneChanged(uint32 BoneID)
 
 void CCharacterEditor::OnViewportClick()
 {
-    uint32 HoverBoneID = ui->Viewport->HoverBoneID();
-    CSkeleton *pSkel = (mpSet ? mpSet->Character(mCurrentChar)->pSkeleton : nullptr);
-    CBone *pBone = (pSkel ? pSkel->BoneByID(HoverBoneID) : nullptr);
+    const uint32_t HoverBoneID = ui->Viewport->HoverBoneID();
+    CSkeleton* pSkel = (mpSet ? mpSet->Character(mCurrentChar)->pSkeleton : nullptr);
+    CBone* pBone = (pSkel ? pSkel->BoneByID(HoverBoneID) : nullptr);
 
     if (!pBone || !pBone->IsSelected())
     {
@@ -306,13 +306,13 @@ void CCharacterEditor::OnSkeletonTreeSelectionChanged(const QModelIndex& rkIndex
 void CCharacterEditor::SetActiveCharacterIndex(int CharIndex)
 {
     mCurrentChar = CharIndex;
-    mpCharNode->SetActiveChar((uint32) CharIndex);
+    mpCharNode->SetActiveChar(uint32_t(CharIndex));
 }
 
 void CCharacterEditor::SetActiveAnimation(int AnimIndex)
 {
     mCurrentAnim = AnimIndex;
-    mpCharNode->SetActiveAnim((uint32) AnimIndex);
+    mpCharNode->SetActiveAnim(uint32_t(AnimIndex));
 
     ui->AnimSlider->blockSignals(true);
     ui->AnimSlider->setMaximum((int) (CurrentAnimation() ? CurrentAnimation()->Duration() * 1000 : 0));

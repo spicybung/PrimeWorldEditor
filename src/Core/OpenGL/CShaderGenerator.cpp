@@ -374,14 +374,14 @@ static std::string GetColorInputExpression(const CMaterialPass* pPass, ETevColor
     if (iInput == ETevColorInput::kTextureRGB)
     {
         std::string Ret("Tex.");
-        for (uint32 i = 0; i < 3; ++i)
+        for (uint32_t i = 0; i < 3; ++i)
             Ret += pPass->TexSwapComp(i);
         return Ret;
     }
     else if (iInput == ETevColorInput::kTextureAAA)
     {
         std::string Ret("Tex.");
-        for (uint32 i = 0; i < 3; ++i)
+        for (uint32_t i = 0; i < 3; ++i)
             Ret += pPass->TexSwapComp(3);
         return Ret;
     }

@@ -125,7 +125,7 @@ void CGameTemplate::SaveGameTemplates(bool ForceAll)
     }
 }
 
-CScriptTemplate* CGameTemplate::TemplateByID(uint32 ObjectID)
+CScriptTemplate* CGameTemplate::TemplateByID(uint32_t ObjectID)
 {
     const auto it = mScriptTemplates.find(ObjectID);
 
@@ -140,13 +140,13 @@ CScriptTemplate* CGameTemplate::TemplateByID(const CFourCC& ObjectID)
     return TemplateByID(ObjectID.ToU32());
 }
 
-CScriptTemplate* CGameTemplate::TemplateByIndex(uint32 Index)
+CScriptTemplate* CGameTemplate::TemplateByIndex(uint32_t Index)
 {
     const auto it = mScriptTemplates.begin();
     return (std::next(it, Index))->second.pTemplate.get();
 }
 
-SState CGameTemplate::StateByID(uint32 StateID) const
+SState CGameTemplate::StateByID(uint32_t StateID) const
 {
     const auto iter = mStates.find(StateID);
 
@@ -161,14 +161,14 @@ SState CGameTemplate::StateByID(const CFourCC& State) const
     return StateByID(State.ToU32());
 }
 
-SState CGameTemplate::StateByIndex(uint32 Index) const
+SState CGameTemplate::StateByIndex(uint32_t Index) const
 {
     auto Iter = mStates.begin();
     Iter = std::next(Iter, Index);
     return SState(Iter->first, Iter->second);
 }
 
-SMessage CGameTemplate::MessageByID(uint32 MessageID) const
+SMessage CGameTemplate::MessageByID(uint32_t MessageID) const
 {
     const auto iter = mMessages.find(MessageID);
 
@@ -183,7 +183,7 @@ SMessage CGameTemplate::MessageByID(const CFourCC& MessageID) const
     return MessageByID(MessageID.ToU32());
 }
 
-SMessage CGameTemplate::MessageByIndex(uint32 Index) const
+SMessage CGameTemplate::MessageByIndex(uint32_t Index) const
 {
     auto Iter = mMessages.begin();
     Iter = std::next(Iter, Index);

@@ -656,7 +656,7 @@ void CAreaLoader::SetUpObjects(CScriptLayer *pGenLayer)
             }
             else
             {
-                const uint32 LayerIdx = InstanceID.Layer();
+                const auto LayerIdx = InstanceID.Layer();
                 pInst->SetLayer(mpArea->ScriptLayer(LayerIdx));
                 mpArea->mObjectMap[InstanceID] = pInst;
             }
@@ -710,7 +710,7 @@ std::unique_ptr<CGameArea> CAreaLoader::LoadMREA(IInputStream& MREA, CResourceEn
     if (!MREA.IsValid())
         return nullptr;
 
-    const uint32 DeadBeef = MREA.ReadU32();
+    const auto DeadBeef = MREA.ReadU32();
     if (DeadBeef != 0xdeadbeef)
     {
         NLog::Error("{}: Invalid MREA magic: 0x{:08X}", *MREA.GetSourceString(), DeadBeef);
@@ -721,7 +721,7 @@ std::unique_ptr<CGameArea> CAreaLoader::LoadMREA(IInputStream& MREA, CResourceEn
 
     // Header
     Loader.mpArea = ptr.get();
-    const uint32 Version = MREA.ReadU32();
+    const auto Version = MREA.ReadU32();
     Loader.mVersion = GetFormatVersion(Version);
     Loader.mpMREA = &MREA;
 

@@ -147,7 +147,7 @@ const SSetCharacter* CAnimationParameters::GetCurrentSetCharacter(int32_t NodeIn
         if (NodeIndex == -1)
             NodeIndex = mCharIndex;
 
-        if (mCharIndex != UINT32_MAX && pSet->NumCharacters() > static_cast<uint32>(NodeIndex))
+        if (mCharIndex != UINT32_MAX && pSet->NumCharacters() > static_cast<uint32_t>(NodeIndex))
             return pSet->Character(NodeIndex);
     }
 
@@ -167,7 +167,7 @@ TString CAnimationParameters::GetCurrentCharacterName(int32_t NodeIndex) const
 }
 
 // ************ ACCESSORS ************
-uint32 CAnimationParameters::Unknown(uint32_t Index) const
+uint32_t CAnimationParameters::Unknown(uint32_t Index) const
 {
     // mAnimIndex isn't unknown, but I'm too lazy to move it because there's a lot
     // of UI stuff that depends on these functions atm for accessing and editing parameters.

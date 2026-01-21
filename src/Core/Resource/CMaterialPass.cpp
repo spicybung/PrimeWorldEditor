@@ -62,7 +62,7 @@ void CMaterialPass::HashParameters(CFNV1A& rHash)
     rHash.HashData(mEnabled);
 }
 
-void CMaterialPass::LoadTexture(uint32 PassIndex)
+void CMaterialPass::LoadTexture(uint32_t PassIndex)
 {
     if (mpTexture)
         mpTexture->Bind(PassIndex);
@@ -293,7 +293,7 @@ void CMaterialPass::SetTevAlphaScale(float Scale)
     mpParentMat->Update();
 }
 
-void CMaterialPass::SetTexCoordSource(uint32 Source)
+void CMaterialPass::SetTexCoordSource(uint32_t Source)
 {
     mTexCoordSource = Source;
     mpParentMat->Update();

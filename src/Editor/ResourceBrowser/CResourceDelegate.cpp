@@ -128,7 +128,7 @@ QWidget* CResourceBrowserDelegate::createEditor(QWidget *pParent, const QStyleOp
 
     // Set the max length to 150. Limit should be 255 but FileUtil::MoveFile doesn't
     // seem to want to work with filenames that long. Not sure why.
-    uint32 MaxLength = 150;
+    constexpr int MaxLength = 150;
     pLineEdit->setMaxLength(MaxLength);
 
     return pLineEdit;

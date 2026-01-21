@@ -51,7 +51,7 @@
 
 class CNodePtr
 {
-    uint32 mNodeID;
+    uint32_t mNodeID;
     CScene *mpScene;
     bool mValid;
 
@@ -67,7 +67,7 @@ public:
     }
 
     bool Valid() const       { return mValid; }
-    uint32 NodeID() const    { return mNodeID; }
+    uint32_t NodeID() const  { return mNodeID; }
     CScene* Scene() const    { return mpScene; }
     CSceneNode* operator* () const { return mValid ? mpScene->NodeByID(mNodeID) : nullptr; }
     CSceneNode* operator->() const { return mValid ? mpScene->NodeByID(mNodeID) : nullptr; }
@@ -121,7 +121,7 @@ public:
 class CLinkPtr
 {
     CInstancePtr mpInstance;
-    uint32 mLinkIndex;
+    uint32_t mLinkIndex;
     bool mValid;
 
 public:
@@ -135,7 +135,7 @@ public:
         mValid = pLink ? true : false;
     }
 
-    uint32 LinkIndex() const     { return mLinkIndex; }
+    uint32_t LinkIndex() const   { return mLinkIndex; }
     CLink* operator* () const    { return mValid ? mpInstance->Link(ELinkType::Outgoing, mLinkIndex) : nullptr; }
     CLink* operator->() const    { return mValid ? mpInstance->Link(ELinkType::Outgoing, mLinkIndex) : nullptr; }
     CLinkPtr& operator=(CLink *pLink) { SetLink(pLink); return *this; }

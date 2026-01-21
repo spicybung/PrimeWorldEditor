@@ -284,7 +284,7 @@ void CAnimSetLoader::LoadPASDatabase(IInputStream& rPAS4)
     }
 }
 
-void CAnimSetLoader::LoadParticleResourceData(IInputStream& rFile, SSetCharacter *pChar, uint16 CharVersion)
+void CAnimSetLoader::LoadParticleResourceData(IInputStream& rFile, SSetCharacter *pChar, uint16_t CharVersion)
 {
     const auto ParticleCount = rFile.ReadU32();
     pChar->GenericParticles.reserve(ParticleCount);

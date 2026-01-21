@@ -11,8 +11,8 @@
 #include <fmt/format.h>
 
 static bool gDebugDumpShaders = false;
-static uint64 gFailedCompileCount = 0;
-static uint64 gSuccessfulCompileCount = 0;
+static uint64_t gFailedCompileCount = 0;
+static uint64_t gSuccessfulCompileCount = 0;
 
 static void DumpShaderSource(GLuint shader, const std::string& out)
 {
@@ -216,13 +216,13 @@ void CShader::UniformBlockBinding(GLuint BlockIndex, GLuint BlockBinding)
         glUniformBlockBinding(mProgram, BlockIndex, BlockBinding);
 }
 
-void CShader::SetTextureUniforms(uint32 NumTextures)
+void CShader::SetTextureUniforms(uint32_t NumTextures)
 {
-    for (uint32 iTex = 0; iTex < NumTextures; iTex++)
+    for (uint32_t iTex = 0; iTex < NumTextures; iTex++)
         glUniform1i(mTextureUniforms[iTex], iTex);
 }
 
-void CShader::SetNumLights(uint32 NumLights)
+void CShader::SetNumLights(uint32_t NumLights)
 {
     glUniform1i(mNumLightsUniform, NumLights);
 }

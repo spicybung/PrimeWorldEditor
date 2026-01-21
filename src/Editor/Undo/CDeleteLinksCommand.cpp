@@ -7,12 +7,12 @@
 
 struct CDeleteLinksCommand::SDeletedLink
 {
-    uint32 State;
-    uint32 Message;
+    uint32_t State;
+    uint32_t Message;
     CInstancePtr pSender;
     CInstancePtr pReceiver;
-    uint32 SenderIndex;
-    uint32 ReceiverIndex;
+    uint32_t SenderIndex;
+    uint32_t ReceiverIndex;
 };
 
 CDeleteLinksCommand::CDeleteLinksCommand() = default;

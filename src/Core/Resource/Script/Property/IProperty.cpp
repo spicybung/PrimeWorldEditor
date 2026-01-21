@@ -151,7 +151,7 @@ bool IProperty::ShouldSerialize() const
            mMaxVersion != mpArchetype->mMaxVersion;
 }
 
-void IProperty::Initialize(IProperty* pInParent, CScriptTemplate* pInTemplate, uint32 InOffset)
+void IProperty::Initialize(IProperty* pInParent, CScriptTemplate* pInTemplate, uint32_t InOffset)
 {
     // Make sure we only get initialized once.
     ASSERT( (mFlags & EPropertyFlag::IsInitialized) == 0 );
@@ -201,7 +201,7 @@ void IProperty::Initialize(IProperty* pInParent, CScriptTemplate* pInTemplate, u
     PostInitialize();
 
     // Now, route initialization to any child properties...
-    uint32 ChildOffset = mOffset;
+    uint32_t ChildOffset = mOffset;
 
     for (size_t ChildIdx = 0; ChildIdx < mChildren.size(); ChildIdx++)
     {
@@ -242,7 +242,7 @@ const void* IProperty::RawValuePtr(const void* pData) const
     return pValuePtr;
 }
 
-IProperty* IProperty::ChildByID(uint32 ID) const
+IProperty* IProperty::ChildByID(uint32_t ID) const
 {
     const auto iter = std::find_if(mChildren.begin(), mChildren.end(),
                                    [ID](const auto* element) { return element->mID == ID; });
@@ -577,7 +577,7 @@ bool IProperty::HasAccurateName()
         CCRC32 Hash;
         Hash.Hash(*mName);
         Hash.Hash(HashableTypeName());
-        uint32 GeneratedID = Hash.Digest();
+        uint32_t GeneratedID = Hash.Digest();
 
         // Some choice properties are incorrectly declared as ints, so account for
         // this and allow matching ints against choice typenames as well.
@@ -654,7 +654,7 @@ IProperty* IProperty::CreateCopy(IProperty* pArchetype)
 
 IProperty* IProperty::CreateIntrinsic(EPropertyType Type,
                                       EGame Game,
-                                      uint32 Offset,
+                                      uint32_t Offset,
                                       const TString& rkName)
 {
     IProperty* pOut = Create(Type, Game);
@@ -666,7 +666,7 @@ IProperty* IProperty::CreateIntrinsic(EPropertyType Type,
 
 IProperty* IProperty::CreateIntrinsic(EPropertyType Type,
                                       IProperty* pParent,
-                                      uint32 Offset,
+                                      uint32_t Offset,
                                       const TString& rkName)
 {
     // pParent should always be valid.

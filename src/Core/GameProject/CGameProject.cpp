@@ -273,7 +273,7 @@ std::unique_ptr<CGameProject> CGameProject::LoadProject(const TString& rkProjPat
     pProj->mpGameInfo->LoadGameInfo(pProj->mGame);
 
     // Perform update
-    if (Reader.FileVersion() < static_cast<uint16>(EProjectVersion::Current))
+    if (Reader.FileVersion() < static_cast<uint16_t>(EProjectVersion::Current))
     {
         pProgress->Report("Updating project");
 

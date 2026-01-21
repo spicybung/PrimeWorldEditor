@@ -18,7 +18,7 @@ namespace NCoreTests
 /** Checks for a parameter in the commandline stream */
 static const char* ParseParameter(const char* pkParmName, int argc, char* argv[])
 {
-    const uint kParmLen = strlen(pkParmName);
+    const auto kParmLen = strlen(pkParmName);
 
     for (int i = 0; i < argc; i++)
     {
@@ -95,7 +95,7 @@ bool ValidateCooker(EResourceType ResourceType, bool DumpInvalidFileContents)
     }
 
     TString ResourcesDir = pProject->ResourcesDir(false);
-    uint NumValid = 0, NumInvalid = 0;
+    uint32_t NumValid = 0, NumInvalid = 0;
 
     // Iterate through all resources
     for (const auto& It : MakeResourceView(pStore))
@@ -110,7 +110,7 @@ bool ValidateCooker(EResourceType ResourceType, bool DumpInvalidFileContents)
         if (!FileStream.IsValid())
             continue;
 
-        std::vector<uint8> OriginalData(FileStream.Size());
+        std::vector<uint8_t> OriginalData(FileStream.Size());
         FileStream.ReadBytes(OriginalData.data(), OriginalData.size());
         FileStream.Close();
 

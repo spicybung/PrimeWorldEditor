@@ -59,11 +59,11 @@ bool IsGameTemplateLoaded(EGame Game)
 void SerializeGameList(IArchive& Arc)
 {
     // Serialize the number of games with valid GameInfos.
-    uint32 NumGames = 0;
+    uint32_t NumGames = 0;
 
     if (Arc.IsWriter())
     {
-        for (uint32 GameIdx = 0; GameIdx < GamesMinusMP1R; GameIdx++)
+        for (uint32_t GameIdx = 0; GameIdx < GamesMinusMP1R; GameIdx++)
         {
             if (gGameList[GameIdx].IsValid)
                 NumGames++;
@@ -73,7 +73,7 @@ void SerializeGameList(IArchive& Arc)
     Arc.SerializeArraySize(NumGames);
 
     // Serialize the actual game info
-    for (uint32 GameIdx = 0; GameIdx < GamesMinusMP1R; GameIdx++)
+    for (uint32_t GameIdx = 0; GameIdx < GamesMinusMP1R; GameIdx++)
     {
         // Skip games that don't have game templates when writing.
         if (Arc.IsWriter() && !gGameList[GameIdx].IsValid)
@@ -86,7 +86,7 @@ void SerializeGameList(IArchive& Arc)
         Arc << SerialParameter("ID", Game, SH_Attribute);
         ASSERT(Game != EGame::Invalid);
 
-        gGameList[static_cast<uint32>(Game)].Serialize(Arc);
+        gGameList[static_cast<uint32_t>(Game)].Serialize(Arc);
         Arc.ParamEnd();
     }
 }

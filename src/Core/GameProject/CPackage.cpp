@@ -219,7 +219,7 @@ void CPackage::Cook(IProgressNotifier *pProgress)
         ASSERT(CookedAsset.IsValid());
         const uint32_t ResourceSize = CookedAsset.Size();
 
-        std::vector<uint8> ResourceData(ResourceSize);
+        std::vector<uint8_t> ResourceData(ResourceSize);
         CookedAsset.ReadBytes(ResourceData.data(), ResourceData.size());
 
         // Check if this asset should be compressed; there are a few resource types that are
@@ -258,7 +258,7 @@ void CPackage::Cook(IProgressNotifier *pProgress)
         else
         {
             uint32_t CompressedSize;
-            std::vector<uint8> CompressedData(ResourceData.size() * 2);
+            std::vector<uint8_t> CompressedData(ResourceData.size() * 2);
             bool Success = false;
 
             if (Game <= EGame::EchoesDemo || Game == EGame::DKCReturns)

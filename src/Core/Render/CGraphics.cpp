@@ -16,8 +16,8 @@ std::unique_ptr<CUniformBuffer> CGraphics::mpVertexBlockBuffer;
 std::unique_ptr<CUniformBuffer> CGraphics::mpPixelBlockBuffer;
 std::unique_ptr<CUniformBuffer> CGraphics::mpLightBlockBuffer;
 std::unique_ptr<CUniformBuffer> CGraphics::mpBoneTransformBuffer;
-uint32 CGraphics::mContextIndices = 0;
-uint32 CGraphics::mActiveContext = -1;
+uint32_t CGraphics::mContextIndices = 0;
+uint32_t CGraphics::mActiveContext = -1;
 bool CGraphics::mInitialized = false;
 std::vector<std::unique_ptr<CVertexArrayManager>> CGraphics::mVAMs;
 bool CGraphics::mIdentityBoneTransforms = false;
@@ -28,7 +28,7 @@ CGraphics::SPixelBlock  CGraphics::sPixelBlock;
 CGraphics::SLightBlock  CGraphics::sLightBlock;
 
 CGraphics::ELightingMode CGraphics::sLightMode = CGraphics::ELightingMode::World;
-uint32 CGraphics::sNumLights = 0;
+uint32_t CGraphics::sNumLights = 0;
 CColor CGraphics::sAreaAmbientColor = CColor::TransparentBlack();
 float CGraphics::sWorldLightMultiplier = 1.0f;
 std::array<CLight, 3> CGraphics::sDefaultDirectionalLights{{
@@ -123,7 +123,7 @@ GLuint CGraphics::BoneTransformBlockBindingPoint()
     return 4;
 }
 
-uint32 CGraphics::GetContextIndex()
+uint32_t CGraphics::GetContextIndex()
 {
     for (uint32_t iCon = 0; iCon < 32; iCon++)
     {
@@ -143,12 +143,12 @@ uint32 CGraphics::GetContextIndex()
     return -1;
 }
 
-uint32 CGraphics::GetActiveContext()
+uint32_t CGraphics::GetActiveContext()
 {
     return mActiveContext;
 }
 
-void CGraphics::ReleaseContext(uint32 Index)
+void CGraphics::ReleaseContext(uint32_t Index)
 {
     if (Index < 32)
         mContextIndices &= ~(1U << Index);
@@ -159,7 +159,7 @@ void CGraphics::ReleaseContext(uint32 Index)
     mVAMs[Index].reset();
 }
 
-void CGraphics::SetActiveContext(uint32 Index)
+void CGraphics::SetActiveContext(uint32_t Index)
 {
     mActiveContext = Index;
     mVAMs[Index]->SetCurrent();

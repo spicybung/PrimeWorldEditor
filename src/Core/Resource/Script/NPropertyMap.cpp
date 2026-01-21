@@ -34,10 +34,10 @@ bool gMapIsDirty = false;
 bool gMapIsLoaded = false;
 
 /** Mapping of typename hashes back to the original string */
-std::unordered_map<uint32, TString> gHashToTypeName;
+std::unordered_map<uint32_t, TString> gHashToTypeName;
 
 /** Register a hash -> name mapping */
-void RegisterTypeName(uint32 TypeHash, TString TypeName)
+void RegisterTypeName(uint32_t TypeHash, TString TypeName)
 {
     ASSERT(!TypeName.IsEmpty());
     ASSERT(TypeName != "Unknown");
@@ -50,11 +50,11 @@ struct SNameKey
     union
     {
         struct {
-            uint32 TypeHash;
-            uint32 ID;
+            uint32_t TypeHash;
+            uint32_t ID;
         };
         struct {
-            uint64 Key;
+            uint64_t Key;
         };
     };
 
@@ -62,7 +62,7 @@ struct SNameKey
         : TypeHash(UINT32_MAX), ID(UINT32_MAX)
     {}
 
-    SNameKey(uint32 InTypeHash, uint32 InID)
+    SNameKey(uint32_t InTypeHash, uint32_t InID)
         : TypeHash(InTypeHash), ID(InID)
     {}
 
@@ -102,7 +102,7 @@ struct KeyHash
 {
     size_t operator()(const SNameKey& kKey) const noexcept
     {
-        return std::hash<uint64>()(kKey.Key);
+        return std::hash<uint64_t>()(kKey.Key);
     }
 };
 
@@ -369,8 +369,8 @@ void SetPropertyName(uint32_t ID, std::string_view typeName, std::string_view ne
 /** Change a type name of a property. */
 void ChangeTypeName(IProperty* pProperty, std::string_view oldTypeName, std::string_view newTypeName)
 {
-    const uint32 OldTypeHash = CCRC32::StaticHashString(oldTypeName);
-    const uint32 NewTypeHash = CCRC32::StaticHashString(newTypeName);
+    const auto OldTypeHash = CCRC32::StaticHashString(oldTypeName);
+    const auto NewTypeHash = CCRC32::StaticHashString(newTypeName);
 
     if (OldTypeHash == NewTypeHash)
     {
@@ -428,8 +428,8 @@ void ChangeTypeName(IProperty* pProperty, std::string_view oldTypeName, std::str
 /** Change a type name. */
 void ChangeTypeNameGlobally(std::string_view oldTypeName, std::string_view newTypeName)
 {
-    const uint32 OldTypeHash = CCRC32::StaticHashString(oldTypeName);
-    const uint32 NewTypeHash = CCRC32::StaticHashString(newTypeName);
+    const auto OldTypeHash = CCRC32::StaticHashString(oldTypeName);
+    const auto NewTypeHash = CCRC32::StaticHashString(newTypeName);
 
     if (OldTypeHash == NewTypeHash)
     {
@@ -504,13 +504,13 @@ void RegisterProperty(IProperty* pProperty)
         {
             if (pProperty->Type() == EPropertyType::Int)
             {
-                const uint32 ChoiceHash = CCRC32::StaticHashString("choice");
+                const auto ChoiceHash = CCRC32::StaticHashString("choice");
                 const SNameKey ChoiceKey(ChoiceHash, pProperty->ID());
                 MapFind = gNameMap.find(ChoiceKey);
             }
             else if (pProperty->Type() == EPropertyType::Choice)
             {
-                const uint32 IntHash = CCRC32::StaticHashString("int");
+                const auto IntHash = CCRC32::StaticHashString("int");
                 const SNameKey IntKey(IntHash, pProperty->ID());
                 MapFind = gNameMap.find(IntKey);
             }

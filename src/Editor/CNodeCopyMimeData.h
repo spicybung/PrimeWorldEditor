@@ -56,7 +56,7 @@ public:
         CNodeSelection *pSelection = pEditor->Selection();
         mCopiedNodes.resize(pSelection->Size());
 
-        uint32 NodeIndex = 0;
+        uint32_t NodeIndex = 0;
         CVector3f FirstNodePos;
         bool SetFirstNodePos = false;
 

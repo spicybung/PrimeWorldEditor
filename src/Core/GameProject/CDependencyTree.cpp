@@ -44,7 +44,7 @@ void IDependencyNode::ParseProperties(CResourceEntry* pParentEntry, CStructPrope
         }
         else if (Type == EPropertyType::Sound)
         {
-            uint32 SoundID = TPropCast<CSoundProperty>(pProp)->Value(pData);
+            const uint32_t SoundID = TPropCast<CSoundProperty>(pProp)->Value(pData);
 
             if (SoundID != UINT32_MAX)
             {
@@ -271,7 +271,7 @@ void CSetAnimationDependency::Serialize(IArchive& rArc)
          << SerialParameter("Children", mChildren);
 }
 
-std::unique_ptr<CSetAnimationDependency> CSetAnimationDependency::BuildTree(const CAnimSet *pkOwnerSet, uint32 AnimIndex)
+std::unique_ptr<CSetAnimationDependency> CSetAnimationDependency::BuildTree(const CAnimSet *pkOwnerSet, uint32_t AnimIndex)
 {
     auto pTree = std::make_unique<CSetAnimationDependency>();
     const SAnimation *pkAnim = pkOwnerSet->Animation(AnimIndex);
@@ -351,7 +351,7 @@ void CAreaDependencyTree::AddScriptLayer(CScriptLayer *pLayer, const std::vector
         AddDependency(dep);
 }
 
-void CAreaDependencyTree::GetModuleDependencies(EGame Game, std::vector<TString>& rModuleDepsOut, std::vector<uint32>& rModuleLayerOffsetsOut) const
+void CAreaDependencyTree::GetModuleDependencies(EGame Game, std::vector<TString>& rModuleDepsOut, std::vector<uint32_t>& rModuleLayerOffsetsOut) const
 {
     CGameTemplate* pGame = NGameList::GetGameTemplate(Game);
 
@@ -362,11 +362,11 @@ void CAreaDependencyTree::GetModuleDependencies(EGame Game, std::vector<TString>
         const size_t StartIdx = mLayerOffsets[iLayer];
         const size_t EndIdx = (iLayer == mLayerOffsets.size() - 1 ? mChildren.size() : mLayerOffsets[iLayer + 1]);
 
-        const auto ModuleStartIdx = static_cast<uint32>(rModuleDepsOut.size());
+        const auto ModuleStartIdx = static_cast<uint32_t>(rModuleDepsOut.size());
         rModuleLayerOffsetsOut.push_back(ModuleStartIdx);
 
         // Keep track of which types we've already checked on this layer to speed things up a little...
-        std::set<uint32> UsedObjectTypes;
+        std::set<uint32_t> UsedObjectTypes;
 
         for (size_t iInst = StartIdx; iInst < EndIdx; iInst++)
         {
@@ -375,7 +375,7 @@ void CAreaDependencyTree::GetModuleDependencies(EGame Game, std::vector<TString>
                 continue;
 
             const auto* pInst = static_cast<CScriptInstanceDependency*>(pNode.get());
-            const uint32 ObjType = pInst->ObjectType();
+            const uint32_t ObjType = pInst->ObjectType();
             if (UsedObjectTypes.contains(ObjType))
                 continue;
 
@@ -395,7 +395,7 @@ void CAreaDependencyTree::GetModuleDependencies(EGame Game, std::vector<TString>
             UsedObjectTypes.insert(ObjType);
         }
 
-        rModuleLayerOffsetsOut.push_back(static_cast<uint32>(rModuleDepsOut.size()));
+        rModuleLayerOffsetsOut.push_back(static_cast<uint32_t>(rModuleDepsOut.size()));
     }
 }
 

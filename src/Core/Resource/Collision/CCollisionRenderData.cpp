@@ -36,11 +36,11 @@ void CCollisionRenderData::BuildRenderData(const SCollisionIndexData& kIndexData
     mIndexBuffer.Reserve(SortedTris.size() * 3);
     mWireframeIndexBuffer.Reserve(SortedTris.size() * 6);
     mMaterialIndexOffsets.reserve(kIndexData.Materials.size());
-    uint8 CurrentMatIdx = 0xFF;
+    uint8_t CurrentMatIdx = 0xFF;
 
     for (const size_t TriIdx : SortedTris)
     {
-        const uint8 MaterialIdx = kIndexData.TriangleMaterialIndices[TriIdx];
+        const uint8_t MaterialIdx = kIndexData.TriangleMaterialIndices[TriIdx];
         const CCollisionMaterial& kMaterial = kIndexData.Materials[MaterialIdx];
 
         if (MaterialIdx != CurrentMatIdx)
@@ -58,13 +58,13 @@ void CCollisionRenderData::BuildRenderData(const SCollisionIndexData& kIndexData
 
         const size_t LineA = kIndexData.TriangleIndices[(TriIdx * 3) + 0];
         const size_t LineB = kIndexData.TriangleIndices[(TriIdx * 3) + 1];
-        const uint16 LineAVertA = kIndexData.EdgeIndices[(LineA * 2) + 0];
-        const uint16 LineAVertB = kIndexData.EdgeIndices[(LineA * 2) + 1];
-        const uint16 LineBVertA = kIndexData.EdgeIndices[(LineB * 2) + 0];
-        const uint16 LineBVertB = kIndexData.EdgeIndices[(LineB * 2) + 1];
-        uint16 VertIdx0 = LineAVertA;
-        uint16 VertIdx1 = LineAVertB;
-        uint16 VertIdx2 = (LineBVertA != LineAVertA && LineBVertA != LineAVertB ? LineBVertA : LineBVertB);
+        const uint16_t LineAVertA = kIndexData.EdgeIndices[(LineA * 2) + 0];
+        const uint16_t LineAVertB = kIndexData.EdgeIndices[(LineA * 2) + 1];
+        const uint16_t LineBVertA = kIndexData.EdgeIndices[(LineB * 2) + 0];
+        const uint16_t LineBVertB = kIndexData.EdgeIndices[(LineB * 2) + 1];
+        uint16_t VertIdx0 = LineAVertA;
+        uint16_t VertIdx1 = LineAVertB;
+        uint16_t VertIdx2 = (LineBVertA != LineAVertA && LineBVertA != LineAVertB ? LineBVertA : LineBVertB);
 
         // Reverse vertex order if material indicates tri is flipped
         if (kMaterial.HasFlag(eCF_FlippedTri))
@@ -79,9 +79,9 @@ void CCollisionRenderData::BuildRenderData(const SCollisionIndexData& kIndexData
         const CVector3f V0toV1 = (kVert1 - kVert0);
         const CVector3f V0toV2 = (kVert2 - kVert0);
         const CVector3f TriNormal = V0toV1.Cross(V0toV2).Normalized();
-        const uint16 Index0 = static_cast<uint16>(mVertexBuffer.Size());
-        const uint16 Index1 = Index0 + 1;
-        const uint16 Index2 = Index1 + 1;
+        const uint16_t Index0 = static_cast<uint16_t>(mVertexBuffer.Size());
+        const uint16_t Index1 = Index0 + 1;
+        const uint16_t Index2 = Index1 + 1;
 
         CVertex Vtx;
         Vtx.Normal = TriNormal;
@@ -222,8 +222,8 @@ void CCollisionRenderData::Render(bool Wireframe, int MaterialIndex /*= -1*/)
     if (MaterialIndex >= 0)
     {
         ASSERT( MaterialIndex < mMaterialIndexOffsets.size()-1 );
-        uint FirstIndex = mMaterialIndexOffsets[MaterialIndex];
-        uint NumIndices = mMaterialIndexOffsets[MaterialIndex+1] - FirstIndex;
+        const uint32_t FirstIndex = mMaterialIndexOffsets[MaterialIndex];
+        const uint32_t NumIndices = mMaterialIndexOffsets[MaterialIndex+1] - FirstIndex;
         mIndexBuffer.DrawElements(FirstIndex, NumIndices);
     }
     else
@@ -244,11 +244,11 @@ void CCollisionRenderData::RenderBoundingHierarchy(int MaxDepthLevel /*= -1*/)
     mBoundingVertexBuffer.Bind();
     CDrawUtil::UseColorShader(CColor::Blue());
     glLineWidth(1.f);
-    uint FirstIndex = mBoundingDepthOffsets[0];
-    uint LastIndex = (MaxDepthLevel > 0 ?
+    const uint32_t FirstIndex = mBoundingDepthOffsets[0];
+    const uint32_t LastIndex = (MaxDepthLevel > 0 ?
           mBoundingDepthOffsets[MaxDepthLevel] :
           mBoundingIndexBuffer.GetSize());
-    uint NumIndices = LastIndex - FirstIndex;
+    const uint32_t NumIndices = LastIndex - FirstIndex;
     mBoundingIndexBuffer.DrawElements(FirstIndex, NumIndices);
     mBoundingVertexBuffer.Unbind();
 }

@@ -15,7 +15,7 @@ void CStructProperty::PostInitialize()
     ASSERT( IsRootParent() || mpArchetype != nullptr );
 }
 
-uint32 CStructProperty::DataSize() const
+uint32_t CStructProperty::DataSize() const
 {
     if (!mChildren.empty())
     {
@@ -28,7 +28,7 @@ uint32 CStructProperty::DataSize() const
     }
 }
 
-uint32 CStructProperty::DataAlignment() const
+uint32_t CStructProperty::DataAlignment() const
 {
     // Structs are aligned to the first child property.
     return (mChildren.empty() ? 1 : mChildren[0]->DataAlignment());
@@ -105,10 +105,10 @@ void CStructProperty::Serialize(IArchive& rArc)
             // We've initialized from the archetypes, now serialize parameter overrides
             if (rArc.ParamBegin("SubProperties", 0))
             {
-                uint32 NumChildOverrides;
+                uint32_t NumChildOverrides;
                 rArc.SerializeArraySize(NumChildOverrides);
 
-                for (uint32 ChildIdx = 0; ChildIdx < NumChildOverrides; ChildIdx++)
+                for (uint32_t ChildIdx = 0; ChildIdx < NumChildOverrides; ChildIdx++)
                 {
                     if (rArc.ParamBegin("Element", SH_IgnoreName))
                     {
@@ -116,7 +116,7 @@ void CStructProperty::Serialize(IArchive& rArc)
                         // We don't really need the type, but it's a good sanity check, and it's also good practice
                         // to guarantee that parameters are read in order, as some serializers are order-dependent.
                         EPropertyType ChildType;
-                        uint32 ChildID;
+                        uint32_t ChildID;
 
                         rArc << SerialParameter("Type", ChildType, SH_Attribute)
                              << SerialParameter("ID", ChildID, SH_Attribute | SH_HexDisplay );
@@ -145,7 +145,7 @@ void CStructProperty::Serialize(IArchive& rArc)
                 }
             }
 
-            uint32 NumChildOverrides = PropertiesToSerialize.size();
+            uint32_t NumChildOverrides = PropertiesToSerialize.size();
 
             if (NumChildOverrides > 0)
             {

@@ -258,7 +258,7 @@ std::unique_ptr<CCollisionMeshGroup> CCollisionLoader::LoadDCLN(IInputStream& rD
     return ptr;
 }
 
-EGame CCollisionLoader::GetFormatVersion(uint32 Version)
+EGame CCollisionLoader::GetFormatVersion(uint32_t Version)
 {
     switch (Version)
     {

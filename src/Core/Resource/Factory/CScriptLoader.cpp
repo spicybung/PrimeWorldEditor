@@ -18,7 +18,7 @@
 
 CScriptLoader::CScriptLoader() = default;
 
-void CScriptLoader::ReadProperty(IProperty *pProp, uint32 Size, IInputStream& rSCLY)
+void CScriptLoader::ReadProperty(IProperty *pProp, uint32_t Size, IInputStream& rSCLY)
 {
     void* pData = (mpCurrentData ? mpCurrentData : mpObj->mPropertyData.data());
 
@@ -163,7 +163,7 @@ void CScriptLoader::ReadProperty(IProperty *pProp, uint32 Size, IInputStream& rS
                 {
                     NLog::Warn("{} [0x{:X}]: Asset property \"{}\" ({}) has a reference to an illegal asset type: {}",
                                *rSCLY.GetSourceString(),
-                               rSCLY.Tell() - static_cast<uint32>(ID.Length()),
+                               rSCLY.Tell() - static_cast<uint32_t>(ID.Length()),
                                *pAsset->Name(),
                                *pAsset->IDString(true),
                                *pEntry->CookedExtension().ToString());
@@ -269,7 +269,7 @@ void CScriptLoader::ReadProperty(IProperty *pProp, uint32 Size, IInputStream& rS
 
 void CScriptLoader::LoadStructMP1(IInputStream& rSCLY, CStructProperty* pStruct)
 {
-    [[maybe_unused]] const uint32 StructStart = rSCLY.Tell();
+    [[maybe_unused]] const auto StructStart = rSCLY.Tell();
 
     // Verify property count
     const size_t PropertyCount = pStruct->NumChildren();

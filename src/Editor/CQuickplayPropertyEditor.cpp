@@ -139,8 +139,8 @@ void CQuickplayPropertyEditor::OnGiveAllItemsToggled(bool Enabled)
 
 void CQuickplayPropertyEditor::OnLayerListItemChanged(QListWidgetItem* pItem)
 {
-    int LayerIdx = mpUI->LayerList->row(pItem);
-    uint64 LayerBit = 1ULL << LayerIdx;
+    const auto LayerIdx = mpUI->LayerList->row(pItem);
+    const auto LayerBit = 1ULL << LayerIdx;
     mParameters.BootAreaLayerFlags &= ~LayerBit;
 
     if (pItem->checkState() == Qt::Checked)

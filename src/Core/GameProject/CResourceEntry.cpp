@@ -246,7 +246,7 @@ bool CResourceEntry::IsInDirectory(CVirtualDirectory *pDir) const
     return false;
 }
 
-uint64 CResourceEntry::Size() const
+uint64_t CResourceEntry::Size() const
 {
     if (mCachedSize == UINT64_MAX)
     {

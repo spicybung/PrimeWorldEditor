@@ -64,7 +64,7 @@ void CQuickplayRelay::QuickplayFinished(int ReturnCode, QProcess::ExitStatus exi
 
 static CQuickplayRelay gQuickplayRelay;
 
-static uint32 AssembleBranchInstruction(uint32 instructionAddress, uint32 branchTarget)
+static uint32_t AssembleBranchInstruction(uint32_t instructionAddress, uint32_t branchTarget)
 {
     int32 jumpOffset = ((int32)branchTarget - (int32)instructionAddress) / 4;
     if (jumpOffset < 0)
@@ -74,8 +74,8 @@ static uint32 AssembleBranchInstruction(uint32 instructionAddress, uint32 branch
     return (18 << 26) + (jumpOffset << 2);
 }
 
-static std::map<TString, uint32> LoadSymbols(const TString& mapContents) {
-    std::map<TString, uint32> result;
+static std::map<TString, uint32_t> LoadSymbols(const TString& mapContents) {
+    std::map<TString, uint32_t> result;
 
     for (auto& line : mapContents.Split("\n"))
     {
@@ -85,7 +85,7 @@ static std::map<TString, uint32> LoadSymbols(const TString& mapContents) {
             auto address = line.SubString(0, separator);
             auto name = line.SubString(separator + 1, line.Length() - separator - 1).Trimmed();
 
-            result.emplace(name, static_cast<uint32>(address.ToInt32(16)));
+            result.emplace(name, static_cast<uint32_t>(address.ToInt32(16)));
         }
     }
 
@@ -166,8 +166,8 @@ EQuickplayLaunchResult LaunchQuickplay(QWidget* pParentWidget,
 
     // All good. Perform initialization tasks. Start by creating the patched dol.
     TString DiscSys = pProject->DiscDir(false) / "sys";
-    std::vector<uint8> DolData;
-    std::vector<uint8> PatchData;
+    std::vector<uint8_t> DolData;
+    std::vector<uint8_t> PatchData;
     TString MapData;
 
     bool bLoadedDol = FileUtil::LoadFileToBuffer(DiscSys / "main.dol", DolData);
@@ -213,8 +213,8 @@ EQuickplayLaunchResult LaunchQuickplay(QWidget* pParentWidget,
         return EQuickplayLaunchResult::Failure;
     }
 
-    uint32 callToHook = symbols["PPCSetFpIEEEMode"] + 4;
-    uint32 branchTarget = symbols["rel_loader_hook"];
+    const uint32_t callToHook = symbols["PPCSetFpIEEEMode"] + 4;
+    const uint32_t branchTarget = symbols["rel_loader_hook"];
 
     CMemoryOutStream Mem(DolData.data(), DolData.size(), std::endian::big);
     header.Write(Mem);
@@ -406,7 +406,7 @@ void SaveQuickplayParameters(const SQuickplayParameters& kParms)
 void LoadQuickplayParameters(SQuickplayParameters& Parms)
 {
     QSettings Settings;
-    Parms.Features = FQuickplayFeatures(Settings.value(gkFeaturesSetting, (uint32) EQuickplayFeature::DefaultFeatures).toUInt());
+    Parms.Features = FQuickplayFeatures(Settings.value(gkFeaturesSetting, (uint32_t) EQuickplayFeature::DefaultFeatures).toUInt());
 }
 
 }

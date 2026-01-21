@@ -28,8 +28,8 @@ void TestDialog::OnSpinBoxChanged(int NewValue)
 
 void TestDialog::OnFind()
 {
-    uint32 SoundID = ui->spinBox->value();
-    CGameProject *pProj = gpEdApp->ActiveProject();
+    const uint32_t SoundID = ui->spinBox->value();
+    CGameProject* pProj = gpEdApp->ActiveProject();
 
     if (pProj)
     {

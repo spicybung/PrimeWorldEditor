@@ -21,8 +21,8 @@ CScriptCooker::~CScriptCooker() = default;
 
 void CScriptCooker::WriteProperty(IOutputStream& rOut, IProperty* pProperty, void* pData, bool InAtomicStruct)
 {
-    uint32 SizeOffset = 0;
-    uint32 PropStart = 0;
+    uint32_t SizeOffset = 0;
+    uint32_t PropStart = 0;
 
     if (mGame >= EGame::EchoesDemo && !InAtomicStruct)
     {

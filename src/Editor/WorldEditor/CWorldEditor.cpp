@@ -1160,8 +1160,8 @@ void CWorldEditor::OnUnlinkClicked()
 
                 if (UnlinkIncoming)
                 {
-                    QList<uint32> LinkIndices;
-                    for (uint32 iLink = 0; iLink < pInst->NumLinks(ELinkType::Incoming); iLink++)
+                    QList<uint32_t> LinkIndices;
+                    for (uint32_t iLink = 0; iLink < pInst->NumLinks(ELinkType::Incoming); iLink++)
                         LinkIndices.push_back(iLink);
 
                     CDeleteLinksCommand *pCmd = new CDeleteLinksCommand(this, pInst, ELinkType::Incoming, LinkIndices);
@@ -1170,8 +1170,8 @@ void CWorldEditor::OnUnlinkClicked()
 
                 if (UnlinkOutgoing)
                 {
-                    QList<uint32> LinkIndices;
-                    for (uint32 iLink = 0; iLink < pInst->NumLinks(ELinkType::Outgoing); iLink++)
+                    QList<uint32_t> LinkIndices;
+                    for (uint32_t iLink = 0; iLink < pInst->NumLinks(ELinkType::Outgoing); iLink++)
                         LinkIndices.push_back(iLink);
 
                     CDeleteLinksCommand *pCmd = new CDeleteLinksCommand(this, pInst, ELinkType::Outgoing, LinkIndices);

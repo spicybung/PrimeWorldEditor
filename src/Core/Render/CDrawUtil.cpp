@@ -51,9 +51,9 @@ void CDrawUtil::DrawSquare(const float *pTexCoords)
     Init();
 
     // Set tex coords
-    for (uint32 iTex = 0; iTex < 8; iTex++)
+    for (size_t iTex = 0; iTex < 8; iTex++)
     {
-        EVertexAttribute TexAttrib = (EVertexAttribute) ((uint) (EVertexAttribute::Tex0) << iTex);
+        const auto TexAttrib = EVertexAttribute::Tex0 << iTex;
         mSquareVertices->BufferAttrib(TexAttrib, pTexCoords);
     }
 
@@ -323,7 +323,7 @@ CShader* CDrawUtil::GetTextShader()
     return mpTextShader.get();
 }
 
-void CDrawUtil::LoadCheckerboardTexture(uint32 GLTextureUnit)
+void CDrawUtil::LoadCheckerboardTexture(uint32_t GLTextureUnit)
 {
     Init();
     mpCheckerTexture->Bind(GLTextureUnit);
@@ -401,7 +401,7 @@ void CDrawUtil::InitGrid()
 
      const auto NumIndices = static_cast<size_t>(kGridSize * 4);
      mGridIndices.Reserve(NumIndices);
-     for (uint16 i = 0; i < NumIndices; i++)
+     for (uint16_t i = 0; i < NumIndices; i++)
          mGridIndices.AddIndex(i);
      mGridIndices.SetPrimitiveType(GL_LINES);
 }
@@ -446,9 +446,9 @@ void CDrawUtil::InitSquare()
     mSquareVertices->BufferAttrib(EVertexAttribute::Position, SquareVertices.data());
     mSquareVertices->BufferAttrib(EVertexAttribute::Normal, SquareNormals.data());
 
-    for (uint32 iTex = 0; iTex < 8; iTex++)
+    for (size_t iTex = 0; iTex < 8; iTex++)
     {
-        const auto Attrib = static_cast<EVertexAttribute>(EVertexAttribute::Tex0 << iTex);
+        const auto Attrib = EVertexAttribute::Tex0 << iTex;
         mSquareVertices->BufferAttrib(Attrib, SquareTexCoords.data());
     }
 
@@ -490,7 +490,7 @@ void CDrawUtil::InitWireCube()
                                     CVector3f( 0.5f,  0.5f,  0.5f),
                                     CVector3f(-0.5f,  0.5f,  0.5f)});
 
-    static constexpr std::array<uint16, 24> Indices{
+    static constexpr std::array<uint16_t, 24> Indices{
         0, 1,
         1, 2,
         2, 3,

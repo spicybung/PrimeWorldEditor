@@ -60,8 +60,8 @@ void CPropertyNameGenerator::Generate(const SPropertyNameGenerationParameters& r
 
         for (const SPropertyIdTypePair& kPair : rkParams.ValidIdPairs)
         {
-            mValidTypePairMap[ kPair.ID ] = kPair.pkType;
-            NBasics::VectorAddUnique( mTypeNames, TString(kPair.pkType) );
+            mValidTypePairMap[kPair.ID] = kPair.pkType;
+            NBasics::VectorAddUnique(mTypeNames, TString(kPair.pkType));
         }
     }
     else
@@ -89,7 +89,7 @@ void CPropertyNameGenerator::Generate(const SPropertyNameGenerationParameters& r
     pProgress->SetOneShotTask("Generating property names");
     pProgress->Report(0, TotalTests);
 
-    const uint WordsPerThread = kNumWords / rkParams.ConcurrentTasks;
+    const uint32_t WordsPerThread = kNumWords / rkParams.ConcurrentTasks;
     std::vector<std::thread> Threads;
     for (int i = 0; i < rkParams.ConcurrentTasks; ++i)
     {
@@ -125,7 +125,7 @@ void CPropertyNameGenerator::GenerateTask(const SPropertyNameGenerationParameter
     // Configure params needed to run the name generation!
     bool WriteToLog = rkParams.PrintToLog;
     bool SaveResults = true;
-    uint64 TestsDone = 0;
+    uint64_t TestsDone = 0;
 
     // The prefix only needs to be hashed this one time
     CCRC32 PrefixHash;
@@ -136,12 +136,12 @@ void CPropertyNameGenerator::GenerateTask(const SPropertyNameGenerationParameter
     // the same hashes over and over. Init the stack with the first word.
     struct SWordCache
     {
-        uint WordIndex;
+        uint32_t WordIndex;
         CCRC32 Hash;
     };
     std::vector<SWordCache> WordCache;
 
-    SWordCache FirstWord { taskParams.StartWord - 1, CCRC32() };
+    SWordCache FirstWord{taskParams.StartWord - 1, CCRC32()};
     WordCache.push_back(FirstWord);
 
     while ( true )
@@ -157,8 +157,8 @@ void CPropertyNameGenerator::GenerateTask(const SPropertyNameGenerationParameter
             {
                 WordCache[0].WordIndex = taskParams.StartWord;
 
-                SWordCache NewWord { 0, CCRC32() };
-                WordCache.push_back(NewWord);
+                SWordCache NewWord{0, CCRC32()};
+                WordCache.emplace_back(NewWord);
             }
             else
             {
@@ -184,8 +184,8 @@ void CPropertyNameGenerator::GenerateTask(const SPropertyNameGenerationParameter
             if (RecalcIndex == 0 && rkParams.Casing == ENameCasing::camelCase)
             {
                 const char* pkWord = *mWords[Index];
-                LastValidHash.Hash( TString::CharToLower( pkWord[0] ) );
-                LastValidHash.Hash( &pkWord[1] );
+                LastValidHash.Hash(TString::CharToLower(pkWord[0]));
+                LastValidHash.Hash(&pkWord[1]);
             }
             else
             {
@@ -208,7 +208,7 @@ void CPropertyNameGenerator::GenerateTask(const SPropertyNameGenerationParameter
             CCRC32 FullHash = BaseHash;
             const char* pkTypeName = *typeName;
             FullHash.Hash(pkTypeName);
-            const uint32 PropertyID = FullHash.Digest();
+            const auto PropertyID = FullHash.Digest();
 
             // Check if this hash is a property ID
             if (IsValidPropertyID(PropertyID, pkTypeName, rkParams))
@@ -257,7 +257,7 @@ void CPropertyNameGenerator::GenerateTask(const SPropertyNameGenerationParameter
                 }
 
                 // Log this out
-                if ( WriteToLog )
+                if (WriteToLog)
                 {
                     TString DelimitedXmlList;
 
@@ -275,7 +275,7 @@ void CPropertyNameGenerator::GenerateTask(const SPropertyNameGenerationParameter
         // bar and check whether the user has requested to cancel the operation.
         TestsDone++;
 
-        if ( (TestsDone % 5000) == 0 )
+        if ((TestsDone % 5000) == 0)
         {
             if (pProgress->ShouldCancel())
                 break;
@@ -288,7 +288,7 @@ void CPropertyNameGenerator::GenerateTask(const SPropertyNameGenerationParameter
 }
 
 /** Returns whether a given property ID is valid */
-bool CPropertyNameGenerator::IsValidPropertyID(uint32 ID, const char*& pkType, const SPropertyNameGenerationParameters& rkParams)
+bool CPropertyNameGenerator::IsValidPropertyID(uint32_t ID, const char*& pkType, const SPropertyNameGenerationParameters& rkParams)
 {
     if (!mValidTypePairMap.empty())
     {
@@ -311,8 +311,8 @@ bool CPropertyNameGenerator::IsValidPropertyID(uint32 ID, const char*& pkType, c
 
             return false;
         }
-        else
-            return false;
+
+        return false;
     }
     else
     {

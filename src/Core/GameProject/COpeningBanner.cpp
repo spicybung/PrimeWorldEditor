@@ -30,7 +30,7 @@ TString COpeningBanner::EnglishGameName() const
     uint32_t CharSize = mWii ? 2 : 1;
     uint32_t MaxLen = MaxGameNameLength();
 
-    std::vector<uint8> NameBuffer((MaxLen + 1) * CharSize, 0);
+    std::vector<uint8_t> NameBuffer((MaxLen + 1) * CharSize, 0);
     Banner.GoTo( mWii ? 0xB0 : 0x1860 );
     Banner.ReadBytes(NameBuffer.data(), MaxLen * CharSize);
 

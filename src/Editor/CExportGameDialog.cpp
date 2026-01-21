@@ -141,8 +141,8 @@ bool CExportGameDialog::ValidateGame()
         {
             // Calculate the CRC of the apploader to figure out which game this is.
             std::unique_ptr<uint8_t[]> pApploaderData = mpDisc->getDataPartition()->getApploaderBuf();
-            uint ApploaderSize = (uint) mpDisc->getDataPartition()->getApploaderSize();
-            uint ApploaderHash = CCRC32::StaticHashData(pApploaderData.get(), ApploaderSize);
+            const auto ApploaderSize = mpDisc->getDataPartition()->getApploaderSize();
+            const auto ApploaderHash = CCRC32::StaticHashData(pApploaderData.get(), ApploaderSize);
 
             if (ApploaderHash == 0x21B7AFF5)
             {
@@ -293,15 +293,15 @@ float CExportGameDialog::FindBuildVersion() const
 
     // Get DOL buffer
     std::unique_ptr<uint8_t[]> pDolData = mpDisc->getDataPartition()->getDOLBuf();
-    uint32 DolSize = (uint32) mpDisc->getDataPartition()->getDOLSize();
+    const auto DolSize = mpDisc->getDataPartition()->getDOLSize();
 
     // Find build info string
     constexpr char pkSearchText[] = "!#$MetroidBuildInfo!#$";
-    const int SearchTextSize = strlen(pkSearchText);
+    const auto SearchTextSize = strlen(pkSearchText);
 
-    for (uint32 SearchIdx = 0; SearchIdx < DolSize - SearchTextSize + 1; SearchIdx++)
+    for (size_t SearchIdx = 0; SearchIdx < DolSize - SearchTextSize + 1; SearchIdx++)
     {
-        int Match = 0;
+        size_t Match = 0;
 
         while (pDolData[SearchIdx + Match] == pkSearchText[Match] && Match < SearchTextSize)
             Match++;

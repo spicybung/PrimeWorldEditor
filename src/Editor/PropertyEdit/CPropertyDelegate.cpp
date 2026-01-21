@@ -211,27 +211,27 @@ void CPropertyDelegate::setEditorData(QWidget *pEditor, const QModelIndex &rkInd
         {
             if (!mEditInProgress)
             {
-                EPropertyType Type = mpModel->GetEffectiveFieldType(pProp);
+                const auto Type = mpModel->GetEffectiveFieldType(pProp);
 
                 switch (Type)
                 {
 
                 case EPropertyType::Bool:
                 {
-                    QCheckBox *pCheckBox = static_cast<QCheckBox*>(pEditor);
-                    CBoolProperty *pBool = TPropCast<CBoolProperty>(pProp);
-                    pCheckBox->setChecked( pBool->Value(pData) );
+                    auto* pCheckBox = static_cast<QCheckBox*>(pEditor);
+                    const auto* pBool = TPropCast<CBoolProperty>(pProp);
+                    pCheckBox->setChecked(pBool->Value(pData));
                     break;
                 }
 
                 case EPropertyType::Short:
                 {
-                    WIntegralSpinBox *pSpinBox = static_cast<WIntegralSpinBox*>(pEditor);
+                    auto* pSpinBox = static_cast<WIntegralSpinBox*>(pEditor);
 
                     if (!pSpinBox->hasFocus())
                     {
-                        CShortProperty *pShort = TPropCast<CShortProperty>(pProp);
-                        pSpinBox->setValue( pShort->Value(pData) );
+                        const auto* pShort = TPropCast<CShortProperty>(pProp);
+                        pSpinBox->setValue(pShort->Value(pData));
                     }
 
                     break;
@@ -239,13 +239,13 @@ void CPropertyDelegate::setEditorData(QWidget *pEditor, const QModelIndex &rkInd
 
                 case EPropertyType::Int:
                 {
-                    WIntegralSpinBox *pSpinBox = static_cast<WIntegralSpinBox*>(pEditor);
+                    auto* pSpinBox = static_cast<WIntegralSpinBox*>(pEditor);
 
                     if (!pSpinBox->hasFocus())
                     {
                         // Ints use static_cast since sometimes we treat other property types as ints
-                        CIntProperty *pInt = static_cast<CIntProperty*>(pProp);
-                        pSpinBox->setValue( pInt->Value(pData) );
+                        const auto* pInt = static_cast<CIntProperty*>(pProp);
+                        pSpinBox->setValue(pInt->Value(pData));
                     }
 
                     break;
@@ -253,12 +253,12 @@ void CPropertyDelegate::setEditorData(QWidget *pEditor, const QModelIndex &rkInd
 
                 case EPropertyType::Sound:
                 {
-                    WIntegralSpinBox *pSpinBox = static_cast<WIntegralSpinBox*>(pEditor);
+                    auto* pSpinBox = static_cast<WIntegralSpinBox*>(pEditor);
 
                     if (!pSpinBox->hasFocus())
                     {
-                        CSoundProperty *pSound = TPropCast<CSoundProperty>(pProp);
-                        pSpinBox->setValue( pSound->Value(pData) );
+                        const auto* pSound = TPropCast<CSoundProperty>(pProp);
+                        pSpinBox->setValue(pSound->Value(pData));
                     }
 
                     break;
@@ -266,12 +266,12 @@ void CPropertyDelegate::setEditorData(QWidget *pEditor, const QModelIndex &rkInd
 
                 case EPropertyType::Float:
                 {
-                    WDraggableSpinBox *pSpinBox = static_cast<WDraggableSpinBox*>(pEditor);
+                    auto* pSpinBox = static_cast<WDraggableSpinBox*>(pEditor);
 
                     if (!pSpinBox->hasFocus())
                     {
-                        CFloatProperty *pFloat = TPropCast<CFloatProperty>(pProp);
-                        pSpinBox->setValue( pFloat->Value(pData) );
+                        const auto* pFloat = TPropCast<CFloatProperty>(pProp);
+                        pSpinBox->setValue(pFloat->Value(pData));
                     }
 
                     break;
@@ -279,22 +279,22 @@ void CPropertyDelegate::setEditorData(QWidget *pEditor, const QModelIndex &rkInd
 
                 case EPropertyType::Color:
                 {
-                    WColorPicker *pColorPicker = static_cast<WColorPicker*>(pEditor);
-                    CColorProperty *pColor = TPropCast<CColorProperty>(pProp);
+                    auto* pColorPicker = static_cast<WColorPicker*>(pEditor);
+                    const auto* pColor = TPropCast<CColorProperty>(pProp);
 
-                    CColor Color = pColor->Value(pData);
+                    const CColor Color = pColor->Value(pData);
                     pColorPicker->SetColor(TO_QCOLOR(Color));
                     break;
                 }
 
                 case EPropertyType::String:
                 {
-                    QLineEdit *pLineEdit = static_cast<QLineEdit*>(pEditor);
+                    auto* pLineEdit = static_cast<QLineEdit*>(pEditor);
 
                     if (!pLineEdit->hasFocus())
                     {
-                        CStringProperty *pString = TPropCast<CStringProperty>(pProp);
-                        pLineEdit->setText( TO_QSTRING(pString->Value(pData)) );
+                        const auto* pString = TPropCast<CStringProperty>(pProp);
+                        pLineEdit->setText(TO_QSTRING(pString->Value(pData)));
                     }
 
                     break;
@@ -303,33 +303,34 @@ void CPropertyDelegate::setEditorData(QWidget *pEditor, const QModelIndex &rkInd
                 case EPropertyType::Enum:
                 case EPropertyType::Choice:
                 {
-                    QComboBox *pComboBox = static_cast<QComboBox*>(pEditor);
-                    CEnumProperty* pEnum = TPropCast<CEnumProperty>(pProp);
-                    pComboBox->setCurrentIndex( pEnum->ValueIndex( pEnum->Value(pData) ) );
+                    auto* pComboBox = static_cast<QComboBox*>(pEditor);
+                    const auto* pEnum = TPropCast<CEnumProperty>(pProp);
+                    pComboBox->setCurrentIndex(pEnum->ValueIndex(pEnum->Value(pData)));
                     break;
                 }
 
                 case EPropertyType::Asset:
                 {
-                    CResourceSelector *pSelector = static_cast<CResourceSelector*>(pEditor);
-                    CAssetProperty *pAsset = TPropCast<CAssetProperty>(pProp);
+                    auto* pSelector = static_cast<CResourceSelector*>(pEditor);
+                    const auto* pAsset = TPropCast<CAssetProperty>(pProp);
                     pSelector->SetResource(pAsset->Value(pData));
                     break;
                 }
 
                 case EPropertyType::Array:
                 {
-                    WIntegralSpinBox *pSpinBox = static_cast<WIntegralSpinBox*>(pEditor);
+                    auto* pSpinBox = static_cast<WIntegralSpinBox*>(pEditor);
 
                     if (!pSpinBox->hasFocus())
                     {
-                        CArrayProperty *pArray = static_cast<CArrayProperty*>(pProp);
-                        pSpinBox->setValue( pArray->ArrayCount(pData) );
+                        const auto* pArray = static_cast<CArrayProperty*>(pProp);
+                        pSpinBox->setValue(pArray->ArrayCount(pData));
                     }
 
                     break;
                 }
-                default: break;
+                default:
+                    break;
                 }
             }
         }
@@ -345,10 +346,10 @@ void CPropertyDelegate::setEditorData(QWidget *pEditor, const QModelIndex &rkInd
 
             else if (Type == EPropertyType::Flags)
             {
-                QCheckBox *pCheckBox = static_cast<QCheckBox*>(pEditor);
-                CFlagsProperty* pFlags = TPropCast<CFlagsProperty>(pProp);
-                uint32 Mask = pFlags->FlagMask(rkIndex.row());
-                bool Set = (pFlags->Value(pData) & Mask) != 0;
+                auto* pCheckBox = static_cast<QCheckBox*>(pEditor);
+                const auto* pFlags = TPropCast<CFlagsProperty>(pProp);
+                const auto Mask = pFlags->FlagMask(rkIndex.row());
+                const bool Set = (pFlags->Value(pData) & Mask) != 0;
                 pCheckBox->setChecked(Set);
             }
         }
@@ -363,7 +364,7 @@ void CPropertyDelegate::setModelData(QWidget *pEditor, QAbstractItemModel* /*pMo
     if (!pEditor) return;
 
     IEditPropertyCommand* pCommand = nullptr;
-    IProperty *pProp = mpModel->PropertyForIndex(rkIndex, true);
+    IProperty* pProp = mpModel->PropertyForIndex(rkIndex, true);
     void* pData = mpModel->DataPointerForIndex(rkIndex);
 
     if (pProp)
@@ -392,38 +393,39 @@ void CPropertyDelegate::setModelData(QWidget *pEditor, QAbstractItemModel* /*pMo
             if (rkIndex.internalId() & 0x80000000)
             {
                 if (Type == EPropertyType::AnimationSet)
+                {
                     SetCharacterModelData(pEditor, rkIndex);
-
+                }
                 else if (Type == EPropertyType::Flags)
                 {
-                    QCheckBox* pCheckBox = static_cast<QCheckBox*>(pEditor);
-                    CFlagsProperty* pFlags = static_cast<CFlagsProperty*>(pProp);
-                    uint32 Mask = pFlags->FlagMask(rkIndex.row());
+                    auto* pCheckBox = static_cast<const QCheckBox*>(pEditor);
+                    auto* pFlags = static_cast<CFlagsProperty*>(pProp);
+                    const auto Mask = pFlags->FlagMask(rkIndex.row());
 
-                    int Flags = pFlags->Value(pData);
-                    if (pCheckBox->isChecked()) Flags |= Mask;
-                    else Flags &= ~Mask;
+                    auto Flags = pFlags->Value(pData);
+                    if (pCheckBox->isChecked())
+                        Flags |= Mask;
+                    else
+                        Flags &= ~Mask;
                     pFlags->ValueRef(pData) = Flags;
                 }
             }
-
             else
             {
                 switch (Type)
                 {
-
                 case EPropertyType::Bool:
                 {
-                    QCheckBox *pCheckBox = static_cast<QCheckBox*>(pEditor);
-                    CBoolProperty* pBool = static_cast<CBoolProperty*>(pProp);
+                    auto* pCheckBox = static_cast<const QCheckBox*>(pEditor);
+                    auto* pBool = static_cast<CBoolProperty*>(pProp);
                     pBool->ValueRef(pData) = pCheckBox->isChecked();
                     break;
                 }
 
                 case EPropertyType::Short:
                 {
-                    WIntegralSpinBox* pSpinBox = static_cast<WIntegralSpinBox*>(pEditor);
-                    CShortProperty* pShort = static_cast<CShortProperty*>(pProp);
+                    auto* pSpinBox = static_cast<const WIntegralSpinBox*>(pEditor);
+                    auto* pShort = static_cast<CShortProperty*>(pProp);
                     pShort->ValueRef(pData) = pSpinBox->value();
                     break;
                 }
@@ -431,32 +433,32 @@ void CPropertyDelegate::setModelData(QWidget *pEditor, QAbstractItemModel* /*pMo
                 case EPropertyType::Int:
                 {
                     // Ints use static_cast since sometimes we treat other property types as ints
-                    WIntegralSpinBox* pSpinBox = static_cast<WIntegralSpinBox*>(pEditor);
-                    CIntProperty* pInt = static_cast<CIntProperty*>(pProp);
+                    auto* pSpinBox = static_cast<const WIntegralSpinBox*>(pEditor);
+                    auto* pInt = static_cast<CIntProperty*>(pProp);
                     pInt->ValueRef(pData) = pSpinBox->value();
                     break;
                 }
 
                 case EPropertyType::Sound:
                 {
-                    WIntegralSpinBox* pSpinBox = static_cast<WIntegralSpinBox*>(pEditor);
-                    CSoundProperty* pSound = static_cast<CSoundProperty*>(pProp);
+                    auto* pSpinBox = static_cast<const WIntegralSpinBox*>(pEditor);
+                    auto* pSound = static_cast<CSoundProperty*>(pProp);
                     pSound->ValueRef(pData) = pSpinBox->value();
                     break;
                 }
 
                 case EPropertyType::Float:
                 {
-                    WDraggableSpinBox* pSpinBox = static_cast<WDraggableSpinBox*>(pEditor);
-                    CFloatProperty* pFloat = static_cast<CFloatProperty*>(pProp);
+                    auto* pSpinBox = static_cast<const WDraggableSpinBox*>(pEditor);
+                    auto* pFloat = static_cast<CFloatProperty*>(pProp);
                     pFloat->ValueRef(pData) = (float) pSpinBox->value();
                     break;
                 }
 
                 case EPropertyType::Color:
                 {
-                    WColorPicker* pColorPicker = static_cast<WColorPicker*>(pEditor);
-                    CColorProperty* pColor = static_cast<CColorProperty*>(pProp);
+                    auto* pColorPicker = static_cast<const WColorPicker*>(pEditor);
+                    auto* pColor = static_cast<CColorProperty*>(pProp);
 
                     const QColor& Color = pColorPicker->Color();
                     pColor->ValueRef(pData) = TO_CCOLOR(Color);
@@ -465,8 +467,8 @@ void CPropertyDelegate::setModelData(QWidget *pEditor, QAbstractItemModel* /*pMo
 
                 case EPropertyType::String:
                 {
-                    QLineEdit* pLineEdit = static_cast<QLineEdit*>(pEditor);
-                    CStringProperty* pString = static_cast<CStringProperty*>(pProp);
+                    auto* pLineEdit = static_cast<const QLineEdit*>(pEditor);
+                    auto* pString = static_cast<CStringProperty*>(pProp);
                     pString->ValueRef(pData) = TO_TSTRING(pLineEdit->text());
                     break;
                 }
@@ -474,35 +476,35 @@ void CPropertyDelegate::setModelData(QWidget *pEditor, QAbstractItemModel* /*pMo
                 case EPropertyType::Enum:
                 case EPropertyType::Choice:
                 {
-                    QComboBox* pComboBox = static_cast<QComboBox*>(pEditor);
-                    CEnumProperty* pEnum = static_cast<CEnumProperty*>(pProp);
+                    auto* pComboBox = static_cast<const QComboBox*>(pEditor);
+                    auto* pEnum = static_cast<CEnumProperty*>(pProp);
                     pEnum->ValueRef(pData) = pEnum->ValueID(pComboBox->currentIndex());
                     break;
                 }
 
                 case EPropertyType::Asset:
                 {
-                    CResourceSelector* pSelector = static_cast<CResourceSelector*>(pEditor);
-                    CResourceEntry* pEntry = pSelector->Entry();
+                    const auto* pSelector = static_cast<CResourceSelector*>(pEditor);
+                    const auto* pEntry = pSelector->Entry();
 
-                    CAssetProperty* pAsset = static_cast<CAssetProperty*>(pProp);
+                    auto* pAsset = static_cast<CAssetProperty*>(pProp);
                     pAsset->ValueRef(pData) = (pEntry ? pEntry->ID() : CAssetID::InvalidID(pAsset->Game()));
                     break;
                 }
-                default: break;
+
+                default:
+                    break;
                 }
             }
 
             pCommand->SaveNewData();
         }
-
-        // Array
-        else
+        else // Array
         {
-            WIntegralSpinBox* pSpinBox = static_cast<WIntegralSpinBox*>(pEditor);
-            CArrayProperty* pArray = static_cast<CArrayProperty*>(pProp);
-            int OldCount = pArray->ArrayCount(pData);
-            int NewCount = pSpinBox->value();
+            auto* pSpinBox = static_cast<WIntegralSpinBox*>(pEditor);
+            auto* pArray = static_cast<CArrayProperty*>(pProp);
+            const int OldCount = pArray->ArrayCount(pData);
+            const int NewCount = pSpinBox->value();
 
             if (OldCount != NewCount)
             {
@@ -518,12 +520,12 @@ void CPropertyDelegate::setModelData(QWidget *pEditor, QAbstractItemModel* /*pMo
     if (pCommand)
     {
         // Check for edit in progress
-        bool DataChanged = pCommand->IsNewDataDifferent();
+        const bool DataChanged = pCommand->IsNewDataDifferent();
 
         if (DataChanged && mInRelayWidgetEdit && (pEditor->hasFocus() || pProp->Type() == EPropertyType::Color))
             mEditInProgress = true;
 
-        bool EditWasInProgress = mEditInProgress;
+        const bool EditWasInProgress = mEditInProgress;
 
         // Check for edit finished
         if (!mInRelayWidgetEdit || (!pEditor->hasFocus() && pProp->Type() != EPropertyType::Color))
@@ -536,9 +538,10 @@ void CPropertyDelegate::setModelData(QWidget *pEditor, QAbstractItemModel* /*pMo
             pCommand->SetEditComplete(!mEditInProgress || pProp->Type() == EPropertyType::Bool);
             mpEditor->UndoStack().push(pCommand);
         }
-
         else
+        {
             delete pCommand;
+        }
     }
 }
 
@@ -623,8 +626,8 @@ void CPropertyDelegate::SetCharacterEditorData(QWidget *pEditor, const QModelInd
     }
     else if (Type == EPropertyType::Int && !pEditor->hasFocus())
     {
-        int UnkIndex = (Params.Version() <= EGame::Echoes ? rkIndex.row() - 2 : rkIndex.row() - 1);
-        uint32 Value = Params.Unknown(UnkIndex);
+        const int UnkIndex = (Params.Version() <= EGame::Echoes ? rkIndex.row() - 2 : rkIndex.row() - 1);
+        const uint32_t Value = Params.Unknown(UnkIndex);
         static_cast<WIntegralSpinBox*>(pEditor)->setValue(Value);
     }
 }
@@ -638,16 +641,16 @@ void CPropertyDelegate::SetCharacterModelData(QWidget *pEditor, const QModelInde
     if (Type == EPropertyType::Asset)
     {
         CResourceEntry *pEntry = static_cast<CResourceSelector*>(pEditor)->Entry();
-        Params.SetResource( pEntry ? pEntry->ID() : CAssetID::InvalidID(gpEdApp->CurrentGame()) );
+        Params.SetResource(pEntry ? pEntry->ID() : CAssetID::InvalidID(gpEdApp->CurrentGame()));
     }
     else if (Type == EPropertyType::Enum || Type == EPropertyType::Choice)
     {
-        Params.SetCharIndex( static_cast<QComboBox*>(pEditor)->currentIndex() );
+        Params.SetCharIndex(static_cast<QComboBox*>(pEditor)->currentIndex());
     }
     else if (Type == EPropertyType::Int)
     {
         int UnkIndex = (Params.Version() <= EGame::Echoes ? rkIndex.row() - 2 : rkIndex.row() - 1);
-        Params.SetUnknown(UnkIndex, static_cast<WIntegralSpinBox*>(pEditor)->value() );
+        Params.SetUnknown(UnkIndex, static_cast<WIntegralSpinBox*>(pEditor)->value());
     }
 
     pAnimSetProp->ValueRef(mpModel->DataPointerForIndex(rkIndex)) = Params;

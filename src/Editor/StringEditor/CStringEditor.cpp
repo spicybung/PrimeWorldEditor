@@ -281,7 +281,7 @@ void CStringEditor::UpdateUI()
 
 void CStringEditor::OnStringSelected(const QModelIndex& kIndex)
 {
-    if (mCurrentStringIndex == static_cast<uint32>(kIndex.row()))
+    if (mCurrentStringIndex == static_cast<uint32_t>(kIndex.row()))
         return;
 
     IUndoCommand* pCommand = new CSetStringIndexCommand(this, mCurrentStringIndex, kIndex.row());
@@ -332,7 +332,7 @@ void CStringEditor::OnAddString()
 
     // Add string
     IUndoCommand* pCommand = new TSerializeUndoCommand<CStringTable>(tr("Add String"), mpStringTable, true);
-    const uint32 Index = mCurrentStringIndex + 1;
+    const auto Index = mCurrentStringIndex + 1;
     mpStringTable->AddString(Index);
     UndoStack().push(pCommand);
 
@@ -390,7 +390,7 @@ void CStringEditor::OnMoveString(int StringIndex, int NewIndex)
 
 void CStringEditor::IncrementStringIndex()
 {
-    const uint32 NewIndex = mCurrentStringIndex + 1;
+    const auto NewIndex = mCurrentStringIndex + 1;
 
     if (NewIndex >= mpStringTable->NumStrings())
         return;
@@ -401,7 +401,7 @@ void CStringEditor::IncrementStringIndex()
 
 void CStringEditor::DecrementStringIndex()
 {
-    const uint32 NewIndex = mCurrentStringIndex - 1;
+    const auto NewIndex = mCurrentStringIndex - 1;
 
     if (NewIndex == UINT32_MAX)
         return;

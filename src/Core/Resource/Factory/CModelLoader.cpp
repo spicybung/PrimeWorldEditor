@@ -246,7 +246,7 @@ void CModelLoader::LoadSurfaceHeaderPrime(IInputStream& rModel, SSurface *pSurf)
     pSurf->MaterialID = rModel.ReadU32();
 
     rModel.Seek(0xC, SEEK_CUR);
-    uint32 ExtraSize = rModel.ReadU32();
+    uint32_t ExtraSize = rModel.ReadU32();
     pSurf->ReflectionDirection = CVector3f(rModel);
 
     if (mVersion >= EGame::EchoesDemo)
@@ -329,7 +329,7 @@ SSurface* CModelLoader::LoadAssimpMesh(const aiMesh *pkMesh, CMaterialSet *pSet)
         SSurface::SPrimitive& rPrim = pSurf->Primitives[0];
 
         // Check primitive type on first face
-        const uint32 NumIndices = pkMesh->mFaces[0].mNumIndices;
+        const uint32_t NumIndices = pkMesh->mFaces[0].mNumIndices;
         if (NumIndices == 1)
             rPrim.Type = EPrimitiveType::Points;
         else if (NumIndices == 2)
@@ -367,7 +367,7 @@ SSurface* CModelLoader::LoadAssimpMesh(const aiMesh *pkMesh, CMaterialSet *pSet)
         {
             for (size_t iIndex = 0; iIndex < NumIndices; iIndex++)
             {
-                const uint32 Index = pkMesh->mFaces[iFace].mIndices[iIndex];
+                const uint32_t Index = pkMesh->mFaces[iFace].mIndices[iIndex];
 
                 // Create vertex and add it to the primitive
                 CVertex Vert;
@@ -409,7 +409,7 @@ std::unique_ptr<CModel> CModelLoader::LoadCMDL(IInputStream& rCMDL, CResourceEnt
     // CMDL header - same across the three Primes, but different structure in DKCR
     const auto Magic = rCMDL.ReadU32();
 
-    uint32 Version, BlockCount, MatSetCount;
+    uint32_t Version, BlockCount, MatSetCount;
     CAABox AABox;
 
     // 0xDEADBABE - Metroid Prime seres
@@ -550,7 +550,7 @@ std::unique_ptr<CModel> CModelLoader::LoadWorldModel(IInputStream& rMREA, CSecti
     return pModel;
 }
 
-std::unique_ptr<CModel> CModelLoader::LoadCorruptionWorldModel(IInputStream& rMREA, CSectionMgrIn& rBlockMgr, CMaterialSet& rMatSet, uint32 HeaderSecNum, uint32 GPUSecNum, EGame Version)
+std::unique_ptr<CModel> CModelLoader::LoadCorruptionWorldModel(IInputStream& rMREA, CSectionMgrIn& rBlockMgr, CMaterialSet& rMatSet, uint32_t HeaderSecNum, uint32_t GPUSecNum, EGame Version)
 {
     CModelLoader Loader;
     Loader.mpSectionMgr = &rBlockMgr;
@@ -590,7 +590,7 @@ std::unique_ptr<CModel> CModelLoader::LoadCorruptionWorldModel(IInputStream& rMR
 void CModelLoader::BuildWorldMeshes(std::vector<std::unique_ptr<CModel>>& rkIn, std::vector<std::unique_ptr<CModel>>& rOut, bool DeleteInputModels)
 {
     // This function takes the gigantic models with all surfaces combined from MP2/3/DKCR and splits the surfaces to reform the original uncombined meshes.
-    std::map<uint32, CModel*> OutputMap;
+    std::map<uint32_t, CModel*> OutputMap;
 
     for (auto& pModel : rkIn)
     {
@@ -599,7 +599,7 @@ void CModelLoader::BuildWorldMeshes(std::vector<std::unique_ptr<CModel>>& rkIn, 
 
         for (SSurface* pSurf : pModel->mSurfaces)
         {
-            uint32 ID = static_cast<uint32>(pSurf->MeshID);
+            const auto ID = static_cast<uint32_t>(pSurf->MeshID);
             const auto Iter = OutputMap.find(ID);
 
             // No model for this ID; create one!
@@ -642,7 +642,7 @@ CModel* CModelLoader::ImportAssimpNode(const aiNode *pkNode, const aiScene *pkSc
 
     for (size_t iMesh = 0; iMesh < pkNode->mNumMeshes; iMesh++)
     {
-        const uint32 MeshIndex = pkNode->mMeshes[iMesh];
+        const uint32_t MeshIndex = pkNode->mMeshes[iMesh];
         const aiMesh *pkMesh = pkScene->mMeshes[MeshIndex];
         SSurface *pSurf = Loader.LoadAssimpMesh(pkMesh, &rMatSet);
 
@@ -655,7 +655,7 @@ CModel* CModelLoader::ImportAssimpNode(const aiNode *pkNode, const aiScene *pkSc
     return Loader.mpModel;
 }
 
-EGame CModelLoader::GetFormatVersion(uint32 Version)
+EGame CModelLoader::GetFormatVersion(uint32_t Version)
 {
     switch (Version)
     {

@@ -91,7 +91,7 @@ void CGizmo::AddToRenderer(CRenderer *pRenderer, const SViewInfo&)
     const auto* pPart = mpCurrentParts;
 
     // Add all parts to renderer
-    for (uint32 iPart = 0; iPart < mNumCurrentParts; iPart++)
+    for (uint32_t iPart = 0; iPart < mNumCurrentParts; iPart++)
     {
         const CModel* pModel = pPart->pModel;
 
@@ -131,7 +131,7 @@ void CGizmo::Draw(FRenderOptions /*Options*/, int ComponentIndex, ERenderCommand
     // Choose material set
     FAxes PartAxes = pPart[ComponentIndex].ModelAxes;
     bool IsHighlighted = (PartAxes != EAxis::None) && ((mSelectedAxes & PartAxes) == pPart[ComponentIndex].ModelAxes);
-    uint32 SetID = (IsHighlighted ? 1 : 0);
+    uint32_t SetID = (IsHighlighted ? 1 : 0);
 
     // Draw model
     pPart[ComponentIndex].pModel->Draw((FRenderOptions) 0, SetID);
@@ -194,7 +194,7 @@ bool CGizmo::CheckSelectedAxes(const CRay& rkRay)
     };
     std::list<SResult> Results;
 
-    for (uint32 iPart = 0; iPart < mNumCurrentParts; iPart++)
+    for (uint32_t iPart = 0; iPart < mNumCurrentParts; iPart++)
     {
         if (!pPart->EnableRayCast)
         {
@@ -259,11 +259,11 @@ bool CGizmo::CheckSelectedAxes(const CRay& rkRay)
     return mSelectedAxes != EAxis::None;
 }
 
-uint32 CGizmo::NumSelectedAxes() const
+uint32_t CGizmo::NumSelectedAxes() const
 {
-    uint32 Out = 0;
+    uint32_t Out = 0;
 
-    for (uint32 iAxis = 1; iAxis < 8; iAxis <<= 1)
+    for (uint32_t iAxis = 1; iAxis < 8; iAxis <<= 1)
     {
         if (mSelectedAxes & FAxes(iAxis))
             Out++;
@@ -348,7 +348,7 @@ bool CGizmo::TransformFromInput(const CRay& rkRay, const CCamera& rCamera)
     {
         // Create translate plane
         CVector3f AxisA, AxisB;
-        uint32 NumAxes = NumSelectedAxes();
+        uint32_t NumAxes = NumSelectedAxes();
 
         if (NumAxes == 1)
         {

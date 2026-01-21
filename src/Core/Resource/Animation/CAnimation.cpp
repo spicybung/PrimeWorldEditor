@@ -35,13 +35,13 @@ void CAnimation::EvaluateTransform(float Time, uint32_t BoneID, CVector3f *pOutT
         Time -= FLT_EPSILON;
 
     float t = fmodf(Time, mTickInterval) / mTickInterval;
-    uint32 LowKey = (uint32) (Time / mTickInterval);
+    auto LowKey = uint32_t(Time / mTickInterval);
     if (LowKey == (mNumKeys - 1))
         LowKey = mNumKeys - 2;
 
-    uint8 ScaleChannel = mBoneInfo[BoneID].ScaleChannelIdx;
-    uint8 RotChannel = mBoneInfo[BoneID].RotationChannelIdx;
-    uint8 TransChannel = mBoneInfo[BoneID].TranslationChannelIdx;
+    uint8_t ScaleChannel = mBoneInfo[BoneID].ScaleChannelIdx;
+    uint8_t RotChannel = mBoneInfo[BoneID].RotationChannelIdx;
+    uint8_t TransChannel = mBoneInfo[BoneID].TranslationChannelIdx;
 
     if (ScaleChannel != 0xFF && pOutScale)
     {

@@ -102,7 +102,7 @@ bool CGameExporter::Export(nod::DiscBase *pDisc, const TString& rkOutputDir, CAs
     return !mpProgress->ShouldCancel();
 }
 
-void CGameExporter::LoadResource(const CAssetID& rkID, std::vector<uint8>& rBuffer)
+void CGameExporter::LoadResource(const CAssetID& rkID, std::vector<uint8_t>& rBuffer)
 {
     if (const auto* inst = FindResourceInstance(rkID))
         LoadResource(*inst, rBuffer);
@@ -315,7 +315,7 @@ void CGameExporter::LoadPaks()
                 std::set<CAssetID> PakResourceSet;
                 bool AreaHasDuplicates = true; // Default to true so that first area is always considered as having duplicates
 
-                for (uint32 iRes = 0; iRes < NumResources; iRes++)
+                for (uint32_t iRes = 0; iRes < NumResources; iRes++)
                 {
                     const bool Compressed = Pak.ReadU32() == 1;
                     const auto ResType = CFourCC(Pak.ReadU32());
@@ -440,7 +440,7 @@ void CGameExporter::LoadPaks()
 #endif
 }
 
-void CGameExporter::LoadResource(const SResourceInstance& rkResource, std::vector<uint8>& rBuffer)
+void CGameExporter::LoadResource(const SResourceInstance& rkResource, std::vector<uint8_t>& rBuffer)
 {
     CFileInStream Pak(rkResource.PakFile, std::endian::big);
 
@@ -506,7 +506,7 @@ void CGameExporter::LoadResource(const SResourceInstance& rkResource, std::vecto
                     // Block is compressed
                     if (CompressedSize != UncompressedSize)
                     {
-                        std::vector<uint8> CompressedData(CompressedBlocks[iBlock].CompressedSize);
+                        std::vector<uint8_t> CompressedData(CompressedBlocks[iBlock].CompressedSize);
                         Pak.ReadBytes(CompressedData.data(), CompressedData.size());
 
                         if (ZlibCompressed)
@@ -633,7 +633,7 @@ void CGameExporter::ExportResource(SResourceInstance& rRes)
 {
     if (!rRes.Exported)
     {
-        std::vector<uint8> ResourceData;
+        std::vector<uint8_t> ResourceData;
         LoadResource(rRes, ResourceData);
 
         // Register resource and write to file

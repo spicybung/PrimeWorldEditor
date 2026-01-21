@@ -26,7 +26,7 @@ CVertexBuffer::~CVertexBuffer()
         glDeleteBuffers(static_cast<GLsizei>(mAttribBuffers.size()), mAttribBuffers.data());
 }
 
-uint16 CVertexBuffer::AddVertex(const CVertex& rkVtx)
+uint16_t CVertexBuffer::AddVertex(const CVertex& rkVtx)
 {
     if (mPositions.size() == 0xFFFF)
         throw std::overflow_error("VBO contains too many vertices");
@@ -122,7 +122,7 @@ uint16_t CVertexBuffer::AddIfUnique(const CVertex& rkVtx, uint16_t Start)
             {
                 const SVertexWeights& rkWeights = mpSkin->WeightsForVertex(rkVtx.ArrayPosition);
 
-                for (uint32 iWgt = 0; iWgt < 4; iWgt++)
+                for (size_t iWgt = 0; iWgt < 4; iWgt++)
                 {
                     if ((mVtxDesc.HasFlag(EVertexAttribute::BoneIndices) && (rkWeights.Indices[iWgt] != mBoneIndices[iVert][iWgt])) ||
                         (mVtxDesc.HasFlag(EVertexAttribute::BoneWeights) && (rkWeights.Weights[iWgt] != mBoneWeights[iVert][iWgt])))
@@ -134,7 +134,7 @@ uint16_t CVertexBuffer::AddIfUnique(const CVertex& rkVtx, uint16_t Start)
             }
 
             if (!Unique)
-                return static_cast<uint16>(iVert);
+                return static_cast<uint16_t>(iVert);
         }
     }
 
@@ -216,14 +216,14 @@ void CVertexBuffer::Buffer()
         }
         else if (iAttrib < 4)
         {
-            const auto Index = static_cast<uint8>(iAttrib - 2);
+            const auto Index = static_cast<uint8_t>(iAttrib - 2);
 
             glBindBuffer(GL_ARRAY_BUFFER, mAttribBuffers[iAttrib]);
             glBufferData(GL_ARRAY_BUFFER, mColors[Index].size() * sizeof(CColor), mColors[Index].data(), GL_STATIC_DRAW);
         }
         else if (iAttrib < 12)
         {
-            const auto Index = static_cast<uint8>(iAttrib - 4);
+            const auto Index = static_cast<uint8_t>(iAttrib - 4);
 
             glBindBuffer(GL_ARRAY_BUFFER, mAttribBuffers[iAttrib]);
             glBufferData(GL_ARRAY_BUFFER, mTexCoords[Index].size() * sizeof(CVector2f), mTexCoords[Index].data(), GL_STATIC_DRAW);

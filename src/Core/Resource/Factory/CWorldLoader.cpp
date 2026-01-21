@@ -258,7 +258,7 @@ void CWorldLoader::LoadReturnsMLVL(IInputStream& rMLVL)
     {
         const size_t NumLayers = area.Layers.size();
 
-        for (uint32 iLayer = 0; iLayer < NumLayers; iLayer++)
+        for (uint32_t iLayer = 0; iLayer < NumLayers; iLayer++)
             area.Layers[iLayer].LayerStateID = CSavedStateID(rMLVL);
     }
 
@@ -316,7 +316,7 @@ std::unique_ptr<CWorld> CWorldLoader::LoadMLVL(IInputStream& rMLVL, CResourceEnt
     return ptr;
 }
 
-EGame CWorldLoader::GetFormatVersion(uint32 Version)
+EGame CWorldLoader::GetFormatVersion(uint32_t Version)
 {
     switch (Version)
     {

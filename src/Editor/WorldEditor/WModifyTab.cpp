@@ -146,13 +146,13 @@ void WModifyTab::OnLinksSelectionModified()
 {
     if (sender() == ui->InLinksTableView->selectionModel())
     {
-        uint32 NumSelectedRows = ui->InLinksTableView->selectionModel()->selectedRows().size();
+        const auto NumSelectedRows = ui->InLinksTableView->selectionModel()->selectedRows().size();
         ui->EditIncomingConnectionButton->setEnabled(NumSelectedRows == 1);
         ui->DeleteIncomingConnectionButton->setEnabled(NumSelectedRows > 0);
     }
     else
     {
-        uint32 NumSelectedRows = ui->OutLinksTableView->selectionModel()->selectedRows().size();
+        const auto NumSelectedRows = ui->OutLinksTableView->selectionModel()->selectedRows().size();
         ui->EditOutgoingConnectionButton->setEnabled(NumSelectedRows == 1);
         ui->DeleteOutgoingConnectionButton->setEnabled(NumSelectedRows > 0);
     }
@@ -230,7 +230,7 @@ void WModifyTab::OnDeleteLinksClicked()
     if (SelectedIndices.isEmpty())
         return;
 
-    QList<uint32> Indices;
+    QList<uint32_t> Indices;
     Indices.reserve(SelectedIndices.size());
     for (const auto& index : SelectedIndices)
         Indices.push_back(index.row());

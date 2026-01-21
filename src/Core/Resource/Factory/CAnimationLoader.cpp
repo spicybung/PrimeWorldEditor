@@ -267,7 +267,7 @@ void CAnimationLoader::ReadCompressedANIM()
                 rChan.RotationBits[iComp] = mpInput->ReadU8();
             }
 
-            mpAnim->mBoneInfo[rChan.BoneID].RotationChannelIdx = static_cast<uint8>(iChan);
+            mpAnim->mBoneInfo[rChan.BoneID].RotationChannelIdx = static_cast<uint8_t>(iChan);
         }
         else
         {

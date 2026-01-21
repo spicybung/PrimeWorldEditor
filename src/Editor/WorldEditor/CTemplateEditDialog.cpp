@@ -332,7 +332,7 @@ void CTemplateEditDialog::FindEquivalentProperties(IProperty* pProperty)
 
         if (pScript)
         {
-            const uint32 ObjectID = pScript->ObjectID();
+            const uint32_t ObjectID = pScript->ObjectID();
             CScriptTemplate* pEquivalentScript = pGame->TemplateByID(ObjectID);
 
             if (pEquivalentScript)

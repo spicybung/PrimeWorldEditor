@@ -53,10 +53,10 @@ int CPropertyModel::RecursiveBuildArrays(IProperty* pProperty, int ParentID)
     if (pProperty->Type() == EPropertyType::Array)
     {
         CArrayProperty* pArray = TPropCast<CArrayProperty>(pProperty);
-        const uint32 ArrayCount = pArray->ArrayCount(mpPropertyData);
+        const uint32_t ArrayCount = pArray->ArrayCount(mpPropertyData);
         void* pOldData = mpPropertyData;
 
-        for (uint32 ElementIdx = 0; ElementIdx < ArrayCount; ElementIdx++)
+        for (uint32_t ElementIdx = 0; ElementIdx < ArrayCount; ElementIdx++)
         {
             mpPropertyData = pArray->ItemPointer(pOldData, ElementIdx);
             const int NewChildID = RecursiveBuildArrays(pArray->ItemArchetype(), MyID);
@@ -352,7 +352,7 @@ QVariant CPropertyModel::data(const QModelIndex& rkIndex, int Role) const
                 case EPropertyType::Sound:
                 {
                     const CSoundProperty* pSound = TPropCast<CSoundProperty>(pProp);
-                    const uint32 SoundID = pSound->Value(pData);
+                    const uint32_t SoundID = pSound->Value(pData);
                     if (SoundID == UINT32_MAX)
                         return tr("[None]");
 
@@ -384,8 +384,8 @@ QVariant CPropertyModel::data(const QModelIndex& rkIndex, int Role) const
                     if (Role == Qt::ToolTipRole)
                     {
                         const CEnumProperty* pEnum = TPropCast<CEnumProperty>(pProp);
-                        const uint32 ValueID = pEnum->Value(pData);
-                        const uint32 ValueIndex = pEnum->ValueIndex(ValueID);
+                        const uint32_t ValueID = pEnum->Value(pData);
+                        const uint32_t ValueIndex = pEnum->ValueIndex(ValueID);
                         return TO_QSTRING(pEnum->ValueName(ValueIndex));
                     }
                     return QString{};
@@ -393,7 +393,7 @@ QVariant CPropertyModel::data(const QModelIndex& rkIndex, int Role) const
                 // Display the element count for arrays
                 case EPropertyType::Array:
                 {
-                    const uint32 Count = TPropCast<CArrayProperty>(pProp)->Value(pData);
+                    const uint32_t Count = TPropCast<CArrayProperty>(pProp)->Value(pData);
                     return tr("%n element(s)", "", int(Count));
                 }
 
@@ -560,7 +560,7 @@ void CPropertyModel::NotifyPropertyModified(const QModelIndex& rkIndex)
     emit PropertyModified(rkIndex);
 }
 
-void CPropertyModel::ArrayAboutToBeResized(const QModelIndex& rkIndex, uint32 NewSize)
+void CPropertyModel::ArrayAboutToBeResized(const QModelIndex& rkIndex, uint32_t NewSize)
 {
     const QModelIndex Index = rkIndex.sibling(rkIndex.row(), 0);
     IProperty* pProperty = PropertyForIndex(Index, false);
@@ -568,7 +568,7 @@ void CPropertyModel::ArrayAboutToBeResized(const QModelIndex& rkIndex, uint32 Ne
     ASSERT(pArray);
 
     void* pArrayData = DataPointerForIndex(Index);
-    const uint32 OldSize = pArray->ArrayCount(pArrayData);
+    const uint32_t OldSize = pArray->ArrayCount(pArrayData);
 
     if (NewSize == OldSize)
         return;
@@ -579,7 +579,7 @@ void CPropertyModel::ArrayAboutToBeResized(const QModelIndex& rkIndex, uint32 Ne
         beginRemoveRows(Index, static_cast<int>(NewSize), static_cast<int>(OldSize - 1));
 }
 
-void CPropertyModel::ArrayResized(const QModelIndex& rkIndex, uint32 OldSize)
+void CPropertyModel::ArrayResized(const QModelIndex& rkIndex, uint32_t OldSize)
 {
     const QModelIndex Index = rkIndex.sibling(rkIndex.row(), 0);
     auto* pProperty = PropertyForIndex(Index, false);
@@ -587,7 +587,7 @@ void CPropertyModel::ArrayResized(const QModelIndex& rkIndex, uint32 OldSize)
     ASSERT(pArray);
 
     void* pArrayData = DataPointerForIndex(Index);
-    const uint32 NewSize = pArray->ArrayCount(pArrayData);
+    const uint32_t NewSize = pArray->ArrayCount(pArrayData);
 
     if (NewSize != OldSize)
     {
@@ -598,7 +598,7 @@ void CPropertyModel::ArrayResized(const QModelIndex& rkIndex, uint32 OldSize)
             // add new elements
             void* pOldData = mpPropertyData;
 
-            for (uint32 ElementIdx = OldSize; ElementIdx < NewSize; ElementIdx++)
+            for (uint32_t ElementIdx = OldSize; ElementIdx < NewSize; ElementIdx++)
             {
                 mpPropertyData = pArray->ItemPointer(pArrayData, ElementIdx);
                 const int NewChildID = RecursiveBuildArrays( pArray->ItemArchetype(), ID );
@@ -611,7 +611,7 @@ void CPropertyModel::ArrayResized(const QModelIndex& rkIndex, uint32 OldSize)
         else
         {
             // remove old elements
-            for (uint32 ElementIdx = NewSize; ElementIdx < OldSize; ElementIdx++)
+            for (uint32_t ElementIdx = NewSize; ElementIdx < OldSize; ElementIdx++)
             {
                 const int ChildID = mProperties[ID].ChildIDs[ElementIdx];
                 ClearSlot(ChildID);

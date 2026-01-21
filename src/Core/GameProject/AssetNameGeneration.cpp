@@ -241,7 +241,7 @@ void GenerateAssetNames(CGameProject *pProj)
             CGameArea *pArea = (CGameArea*) pAreaEntry->Load();
 
             // Area lightmaps
-            uint32 LightmapNum = 0;
+            uint32_t LightmapNum = 0;
             CMaterialSet *pMaterials = pArea->Materials();
 
             for (size_t iMat = 0; iMat < pMaterials->NumMaterials(); iMat++)
@@ -335,7 +335,7 @@ void GenerateAssetNames(CGameProject *pProj)
 
                         if (Name.EndsWith(".STRG", false))
                         {
-                            uint32 StringPropID = (pProj->Game() <= EGame::Prime ? 0x4 : 0x9182250C);
+                            uint32_t StringPropID = (pProj->Game() <= EGame::Prime ? 0x4 : 0x9182250C);
                             CAssetProperty *pStringProperty = TPropCast<CAssetProperty>(pProperties->ChildByID(StringPropID));
                             ASSERT(pStringProperty); // Temporary assert to remind myself later to update this code when uncooked properties are added to the template
 
@@ -360,7 +360,7 @@ void GenerateAssetNames(CGameProject *pProj)
                     else if (inst->ObjectTypeID() == 0x0 || inst->ObjectTypeID() == FOURCC('ACTR') ||
                              inst->ObjectTypeID() == 0x8 || inst->ObjectTypeID() == FOURCC('PLAT'))
                     {
-                        uint32 ModelPropID = (pProj->Game() <= EGame::Prime ? (inst->ObjectTypeID() == 0x0 ? 0xA : 0x6) : 0xC27FFA8F);
+                        uint32_t ModelPropID = (pProj->Game() <= EGame::Prime ? (inst->ObjectTypeID() == 0x0 ? 0xA : 0x6) : 0xC27FFA8F);
                         CAssetProperty *pModelProperty = TPropCast<CAssetProperty>(pProperties->ChildByID(ModelPropID));
                         ASSERT(pModelProperty); // Temporary assert to remind myself later to update this code when uncooked properties are added to the template
 

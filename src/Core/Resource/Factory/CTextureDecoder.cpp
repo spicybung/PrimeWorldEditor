@@ -101,33 +101,33 @@ constexpr std::array gskBlockHeight{
     2U,
 };
 
-constexpr uint8 Extend3to8(uint8 In)
+constexpr uint8_t Extend3to8(uint8_t In)
 {
     In &= 0x7;
     return (In << 5) | (In << 2) | (In >> 1);
 }
 
-constexpr uint8 Extend4to8(uint8 In)
+constexpr uint8_t Extend4to8(uint8_t In)
 {
     In &= 0xF;
     return (In << 4) | In;
 }
 
-constexpr uint8 Extend5to8(uint8 In)
+constexpr uint8_t Extend5to8(uint8_t In)
 {
     In &= 0x1F;
     return (In << 3) | (In >> 2);
 }
 
-constexpr uint8 Extend6to8(uint8 In)
+constexpr uint8_t Extend6to8(uint8_t In)
 {
     In &= 0x3F;
     return (In << 2) | (In >> 4);
 }
 
-constexpr uint32 CalculateShiftForMask(uint32 BitMask)
+constexpr uint32_t CalculateShiftForMask(uint32_t BitMask)
 {
-    uint32 Shift = 32;
+    uint32_t Shift = 32;
 
     while (BitMask)
     {
@@ -137,9 +137,9 @@ constexpr uint32 CalculateShiftForMask(uint32 BitMask)
     return Shift;
 }
 
-constexpr uint32 CalculateMaskBitCount(uint32 BitMask)
+constexpr uint32_t CalculateMaskBitCount(uint32_t BitMask)
 {
-    uint32 Count = 0;
+    uint32_t Count = 0;
 
     while (BitMask)
     {
@@ -164,7 +164,7 @@ std::unique_ptr<CTexture> CTextureDecoder::CreateTexture()
     pTex->mWidth = mWidth;
     pTex->mHeight = mHeight;
     pTex->mNumMipMaps = mNumMipMaps;
-    pTex->mLinearSize = static_cast<uint32>(mWidth * mHeight * gskPixelsToBytes[static_cast<size_t>(mTexelFormat)]);
+    pTex->mLinearSize = static_cast<uint32_t>(mWidth * mHeight * gskPixelsToBytes[static_cast<size_t>(mTexelFormat)]);
     pTex->mpImgDataBuffer = std::move(mpDataBuffer);
     pTex->mImgDataSize = mDataBufferSize;
     pTex->mBufferExists = true;
@@ -257,7 +257,7 @@ void CTextureDecoder::ReadTXTR(IInputStream& rTXTR)
         mPaletteFormat = EGXPaletteFormat(rTXTR.ReadU32());
         rTXTR.Seek(0x4, SEEK_CUR);
 
-        const uint32 PaletteEntryCount = (mTexelFormat == ETexelFormat::GX_C4) ? 16 : 256;
+        const uint32_t PaletteEntryCount = (mTexelFormat == ETexelFormat::GX_C4) ? 16 : 256;
         mPalettes.resize(PaletteEntryCount * 2);
         rTXTR.ReadBytes(mPalettes.data(), mPalettes.size());
 
@@ -279,7 +279,7 @@ void CTextureDecoder::ReadDDS(IInputStream& rDDS)
         return;
     }
 
-    const uint32 ImageDataStart = rDDS.Tell() + rDDS.ReadU32();
+    const uint32_t ImageDataStart = rDDS.Tell() + rDDS.ReadU32();
     rDDS.Seek(0x4, SEEK_CUR); // Skipping flags
     mHeight = static_cast<uint16_t>(rDDS.ReadU32());
     mWidth = static_cast<uint16_t>(rDDS.ReadU32());
@@ -327,9 +327,9 @@ void CTextureDecoder::PartialDecodeGXTexture(IInputStream& TXTR)
     // The decode needs to be adjusted to account for the padding and skip over it (since we don't have padding in OpenGL).
 
     // Get image data size, create output buffer
-    const uint32 ImageStart = TXTR.Tell();
+    const uint32_t ImageStart = TXTR.Tell();
     TXTR.Seek(0x0, SEEK_END);
-    const uint32 ImageSize = TXTR.Tell() - ImageStart;
+    const uint32_t ImageSize = TXTR.Tell() - ImageStart;
     TXTR.Seek(ImageStart, SEEK_SET);
 
     mDataBufferSize = ImageSize * (gskOutputBpp[static_cast<size_t>(mTexelFormat)] / gskSourceBpp[static_cast<size_t>(mTexelFormat)]);
@@ -340,14 +340,14 @@ void CTextureDecoder::PartialDecodeGXTexture(IInputStream& TXTR)
     CMemoryOutStream Out(mpDataBuffer.get(), mDataBufferSize, std::endian::native);
 
     // Initializing more stuff before we start the mipmap loop
-    uint32 MipW = mWidth;
-    uint32 MipH = mHeight;
-    uint32 MipOffset = 0;
+    uint32_t MipW = mWidth;
+    uint32_t MipH = mHeight;
+    uint32_t MipOffset = 0;
 
-    const uint32 BWidth = gskBlockWidth[static_cast<size_t>(mTexelFormat)];
-    const uint32 BHeight = gskBlockHeight[static_cast<size_t>(mTexelFormat)];
+    const uint32_t BWidth = gskBlockWidth[static_cast<size_t>(mTexelFormat)];
+    const uint32_t BHeight = gskBlockHeight[static_cast<size_t>(mTexelFormat)];
 
-    uint32 PixelStride = gskOutputPixelStride[static_cast<size_t>(mTexelFormat)];
+    uint32_t PixelStride = gskOutputPixelStride[static_cast<size_t>(mTexelFormat)];
     if (mHasPalettes && mPaletteFormat == EGXPaletteFormat::RGB5A3)
         PixelStride = 4;
 
@@ -365,7 +365,7 @@ void CTextureDecoder::PartialDecodeGXTexture(IInputStream& TXTR)
     // This affects one texture that I know of - Echoes 3bb2c034.TXTR
     bool BreakEarly = false;
 
-    for (uint32 iMip = 0; iMip < mNumMipMaps; iMip++)
+    for (uint32_t iMip = 0; iMip < mNumMipMaps; iMip++)
     {
         if (MipW < BWidth)
             MipW = BWidth;
@@ -373,15 +373,15 @@ void CTextureDecoder::PartialDecodeGXTexture(IInputStream& TXTR)
         if (MipH < BHeight)
             MipH = BHeight;
 
-        for (uint32 iBlockY = 0; iBlockY < MipH; iBlockY += BHeight)
+        for (uint32_t iBlockY = 0; iBlockY < MipH; iBlockY += BHeight)
         {
-            for (uint32 iBlockX = 0; iBlockX < MipW; iBlockX += BWidth)
+            for (uint32_t iBlockX = 0; iBlockX < MipW; iBlockX += BWidth)
             {
-                for (uint32 iImgY = iBlockY; iImgY < iBlockY + BHeight; iImgY++)
+                for (uint32_t iImgY = iBlockY; iImgY < iBlockY + BHeight; iImgY++)
                 {
-                    for (uint32 iImgX = iBlockX; iImgX < iBlockX + BWidth; iImgX++)
+                    for (uint32_t iImgX = iBlockX; iImgX < iBlockX + BWidth; iImgX++)
                     {
-                        const uint32 DstPos = ((iImgY * MipW) + iImgX) * PixelStride;
+                        const uint32_t DstPos = ((iImgY * MipW) + iImgX) * PixelStride;
                         Out.Seek(MipOffset + DstPos, SEEK_SET);
 
                         if (mTexelFormat == ETexelFormat::GX_I4)          ReadPixelsI4(TXTR, Out);
@@ -418,7 +418,7 @@ void CTextureDecoder::PartialDecodeGXTexture(IInputStream& TXTR)
                 break;
         }
 
-        uint32 MipSize = static_cast<uint32>(MipW * MipH * gskPixelsToBytes[static_cast<size_t>(mTexelFormat)]);
+        uint32_t MipSize = static_cast<uint32_t>(MipW * MipH * gskPixelsToBytes[static_cast<size_t>(mTexelFormat)]);
         if (mTexelFormat == ETexelFormat::GX_CMPR)
         {
             // Since we're pretending the image is 1/4 its actual size, we have to multiply the size by 16 to get the correct offset
@@ -437,9 +437,9 @@ void CTextureDecoder::PartialDecodeGXTexture(IInputStream& TXTR)
 void CTextureDecoder::FullDecodeGXTexture(IInputStream& rTXTR)
 {
     // Get image data size, create output buffer
-    const uint32 ImageStart = rTXTR.Tell();
+    const uint32_t ImageStart = rTXTR.Tell();
     rTXTR.Seek(0x0, SEEK_END);
-    const uint32 ImageSize = rTXTR.Tell() - ImageStart;
+    const uint32_t ImageSize = rTXTR.Tell() - ImageStart;
     rTXTR.Seek(ImageStart, SEEK_SET);
 
     mDataBufferSize = ImageSize * (32 / gskSourceBpp[static_cast<size_t>(mTexelFormat)]);
@@ -448,12 +448,12 @@ void CTextureDecoder::FullDecodeGXTexture(IInputStream& rTXTR)
     CMemoryOutStream Out(mpDataBuffer.get(), mDataBufferSize, std::endian::native);
 
     // Initializing more stuff before we start the mipmap loop
-    uint32 MipW = mWidth;
-    uint32 MipH = mHeight;
-    uint32 MipOffset = 0;
+    uint32_t MipW = mWidth;
+    uint32_t MipH = mHeight;
+    uint32_t MipOffset = 0;
 
-    const uint32 BWidth = gskBlockWidth[static_cast<size_t>(mTexelFormat)];
-    const uint32 BHeight = gskBlockHeight[static_cast<size_t>(mTexelFormat)];
+    const uint32_t BWidth = gskBlockWidth[static_cast<size_t>(mTexelFormat)];
+    const uint32_t BHeight = gskBlockHeight[static_cast<size_t>(mTexelFormat)];
 
     // With CMPR, we're using a little trick.
     // CMPR stores pixels in 8x8 blocks, with four 4x4 subblocks.
@@ -465,12 +465,12 @@ void CTextureDecoder::FullDecodeGXTexture(IInputStream& rTXTR)
         MipH /= 4;
     }
 
-    for (uint32 iMip = 0; iMip < mNumMipMaps; iMip++) {
-        for (uint32 iBlockY = 0; iBlockY < MipH; iBlockY += BHeight) {
-            for (uint32 iBlockX = 0; iBlockX < MipW; iBlockX += BWidth) {
-                for (uint32 iImgY = iBlockY; iImgY < iBlockY + BHeight; iImgY++) {
-                    for (uint32 iImgX = iBlockX; iImgX < iBlockX + BWidth; iImgX++) {
-                        const uint32 DstPos = (mTexelFormat == ETexelFormat::GX_CMPR) ? ((iImgY * (MipW * 4)) + iImgX) * 16 : ((iImgY * MipW) + iImgX) * 4;
+    for (uint32_t iMip = 0; iMip < mNumMipMaps; iMip++) {
+        for (uint32_t iBlockY = 0; iBlockY < MipH; iBlockY += BHeight) {
+            for (uint32_t iBlockX = 0; iBlockX < MipW; iBlockX += BWidth) {
+                for (uint32_t iImgY = iBlockY; iImgY < iBlockY + BHeight; iImgY++) {
+                    for (uint32_t iImgX = iBlockX; iImgX < iBlockX + BWidth; iImgX++) {
+                        const uint32_t DstPos = (mTexelFormat == ETexelFormat::GX_CMPR) ? ((iImgY * (MipW * 4)) + iImgX) * 16 : ((iImgY * MipW) + iImgX) * 4;
                         Out.Seek(MipOffset + DstPos, SEEK_SET);
 
                         // I4/C4/CMPR require reading more than one pixel at a time
@@ -488,7 +488,7 @@ void CTextureDecoder::FullDecodeGXTexture(IInputStream& rTXTR)
                         }
                         else if (mTexelFormat == ETexelFormat::GX_CMPR)
                         {
-                            DecodeSubBlockCMPR(rTXTR, Out, static_cast<uint16>(MipW * 4));
+                            DecodeSubBlockCMPR(rTXTR, Out, static_cast<uint16_t>(MipW * 4));
                         }
                         else
                         {
@@ -511,7 +511,7 @@ void CTextureDecoder::FullDecodeGXTexture(IInputStream& rTXTR)
             }
         }
 
-        uint32 MipSize = MipW * MipH * 4;
+        uint32_t MipSize = MipW * MipH * 4;
         if (mTexelFormat == ETexelFormat::GX_CMPR)
             MipSize *= 16;
 
@@ -530,9 +530,9 @@ void CTextureDecoder::FullDecodeGXTexture(IInputStream& rTXTR)
 void CTextureDecoder::DecodeDDS(IInputStream& rDDS)
 {
     // Get image data size, create output buffer
-    const uint32 ImageStart = rDDS.Tell();
+    const uint32_t ImageStart = rDDS.Tell();
     rDDS.Seek(0x0, SEEK_END);
-    const uint32 ImageSize = rDDS.Tell() - ImageStart;
+    const uint32_t ImageSize = rDDS.Tell() - ImageStart;
     rDDS.Seek(ImageStart, SEEK_SET);
 
     mDataBufferSize = ImageSize;
@@ -547,11 +547,11 @@ void CTextureDecoder::DecodeDDS(IInputStream& rDDS)
     CMemoryOutStream Out(mpDataBuffer.get(), mDataBufferSize, std::endian::native);
 
     // Initializing more stuff before we start the mipmap loop
-    uint32 MipW = mWidth;
-    uint32 MipH = mHeight;
-    uint32 MipOffset = 0;
+    uint32_t MipW = mWidth;
+    uint32_t MipH = mHeight;
+    uint32_t MipOffset = 0;
 
-    uint32 BPP;
+    uint32_t BPP;
     switch (mDDSInfo.Format)
     {
     case SDDSInfo::RGBA:
@@ -575,14 +575,14 @@ void CTextureDecoder::DecodeDDS(IInputStream& rDDS)
         MipH /= 4;
     }
 
-    for (uint32 iMip = 0; iMip < mNumMipMaps; iMip++)
+    for (uint32_t iMip = 0; iMip < mNumMipMaps; iMip++)
     {
         // For DXT1 we can copy the image data as-is to load it
         if (mDDSInfo.Format == SDDSInfo::DXT1)
         {
             Out.Seek(MipOffset, SEEK_SET);
-            const uint32 MipSize = MipW * MipH / 2;
-            std::vector<uint8> MipBuffer(MipSize);
+            const uint32_t MipSize = MipW * MipH / 2;
+            std::vector<uint8_t> MipBuffer(MipSize);
             rDDS.ReadBytes(MipBuffer.data(), MipBuffer.size());
             Out.WriteBytes(MipBuffer.data(), MipBuffer.size());
             MipOffset += MipSize;
@@ -598,11 +598,11 @@ void CTextureDecoder::DecodeDDS(IInputStream& rDDS)
         }
         else // Otherwise we do a full decode to RGBA8
         {
-            for (uint32 Y = 0; Y < MipH; Y++)
+            for (uint32_t Y = 0; Y < MipH; Y++)
             {
-                for (uint32 X = 0; X < MipW; X++)
+                for (uint32_t X = 0; X < MipW; X++)
                 {
-                    uint32 OutPos = MipOffset;
+                    uint32_t OutPos = MipOffset;
 
                     if (mDDSInfo.Format == SDDSInfo::RGBA)
                     {
@@ -627,7 +627,7 @@ void CTextureDecoder::DecodeDDS(IInputStream& rDDS)
                 }
             }
 
-            uint32 MipSize = (mWidth * mHeight) * 4;
+            uint32_t MipSize = (mWidth * mHeight) * 4;
             if (mDDSInfo.Format != SDDSInfo::RGBA)
                 MipSize *= 16;
             MipOffset += MipSize;
@@ -713,7 +713,7 @@ void CTextureDecoder::ReadPixelC8(IInputStream& rSrc, IOutputStream& rDst)
     ((Index >> 2) & 0x1) ? G = 0xFF : G = 0x0;
     ((Index >> 1) & 0x1) ? B = 0xFF : B = 0x0;
     ((Index >> 0) & 0x1) ? A = 0xFF : A = 0x0;
-    const uint32 RGBA = (R << 24) | (G << 16) | (B << 8) | (A);
+    const uint32_t RGBA = (R << 24) | (G << 16) | (B << 8) | (A);
     dst.WriteU32(RGBA);*/
 
     mPaletteInput.Seek(Index * 2, SEEK_SET);
@@ -732,7 +732,7 @@ void CTextureDecoder::ReadPixelRGB565(IInputStream& rSrc, IOutputStream& rDst)
 void CTextureDecoder::ReadPixelRGB5A3(IInputStream& rSrc, IOutputStream& rDst)
 {
     const auto Pixel = rSrc.ReadU16();
-    uint8 R, G, B, A;
+    uint8_t R, G, B, A;
 
     if (Pixel & 0x8000) // RGB5
     {
@@ -777,35 +777,35 @@ void CTextureDecoder::ReadSubBlockCMPR(IInputStream& rSrc, IOutputStream& rDst)
 }
 
 // ************ DECODE PIXELS (FULL DECODE TO RGBA8) ************
-CColor CTextureDecoder::DecodePixelI4(uint8 Byte, uint8 WhichPixel)
+CColor CTextureDecoder::DecodePixelI4(uint8_t Byte, uint8_t WhichPixel)
 {
     if (WhichPixel == 1)
         Byte >>= 4;
 
-    const uint8 Pixel = Extend4to8(Byte);
+    const uint8_t Pixel = Extend4to8(Byte);
     return CColor::Integral(Pixel, Pixel, Pixel);
 }
 
-CColor CTextureDecoder::DecodePixelI8(uint8 Byte)
+CColor CTextureDecoder::DecodePixelI8(uint8_t Byte)
 {
     return CColor::Integral(Byte, Byte, Byte);
 }
 
-CColor CTextureDecoder::DecodePixelIA4(uint8 Byte)
+CColor CTextureDecoder::DecodePixelIA4(uint8_t Byte)
 {
-    const uint8 Alpha = Extend4to8(Byte >> 4);
-    const uint8 Lum = Extend4to8(Byte);
+    const uint8_t Alpha = Extend4to8(Byte >> 4);
+    const uint8_t Lum = Extend4to8(Byte);
     return CColor::Integral(Lum, Lum, Lum, Alpha);
 }
 
-CColor CTextureDecoder::DecodePixelIA8(uint16 Short)
+CColor CTextureDecoder::DecodePixelIA8(uint16_t Short)
 {
-    const uint8 Alpha = (Short >> 8) & 0xFF;
-    const uint8 Lum = Short & 0xFF;
+    const uint8_t Alpha = (Short >> 8) & 0xFF;
+    const uint8_t Lum = Short & 0xFF;
     return CColor::Integral(Lum, Lum, Lum, Alpha);
 }
 
-CColor CTextureDecoder::DecodePixelC4(uint8 Byte, uint8 WhichPixel, IInputStream& rPaletteStream)
+CColor CTextureDecoder::DecodePixelC4(uint8_t Byte, uint8_t WhichPixel, IInputStream& rPaletteStream)
 {
     if (WhichPixel == 1)
         Byte >>= 4;
@@ -826,7 +826,7 @@ CColor CTextureDecoder::DecodePixelC4(uint8 Byte, uint8 WhichPixel, IInputStream
     return CColor::TransparentBlack();
 }
 
-CColor CTextureDecoder::DecodePixelC8(uint8 Byte, IInputStream& rPaletteStream)
+CColor CTextureDecoder::DecodePixelC8(uint8_t Byte, IInputStream& rPaletteStream)
 {
     rPaletteStream.Seek(Byte * 2, SEEK_SET);
 
@@ -842,34 +842,34 @@ CColor CTextureDecoder::DecodePixelC8(uint8 Byte, IInputStream& rPaletteStream)
     return CColor::TransparentBlack();
 }
 
-CColor CTextureDecoder::DecodePixelRGB565(uint16 Short)
+CColor CTextureDecoder::DecodePixelRGB565(uint16_t Short)
 {
-    const uint8 B = Extend5to8(static_cast<uint8>(Short >> 11));
-    const uint8 G = Extend6to8(static_cast<uint8>(Short >> 5));
-    const uint8 R = Extend5to8(static_cast<uint8>(Short));
+    const uint8_t B = Extend5to8(static_cast<uint8_t>(Short >> 11));
+    const uint8_t G = Extend6to8(static_cast<uint8_t>(Short >> 5));
+    const uint8_t R = Extend5to8(static_cast<uint8_t>(Short));
     return CColor::Integral(R, G, B, 0xFF);
 }
 
-CColor CTextureDecoder::DecodePixelRGB5A3(uint16 Short)
+CColor CTextureDecoder::DecodePixelRGB5A3(uint16_t Short)
 {
     if (Short & 0x8000) // RGB5
     {
-        const uint8 B = Extend5to8(static_cast<uint8>(Short >> 10));
-        const uint8 G = Extend5to8(static_cast<uint8>(Short >> 5));
-        const uint8 R = Extend5to8(static_cast<uint8>(Short));
+        const uint8_t B = Extend5to8(static_cast<uint8_t>(Short >> 10));
+        const uint8_t G = Extend5to8(static_cast<uint8_t>(Short >> 5));
+        const uint8_t R = Extend5to8(static_cast<uint8_t>(Short));
         return CColor::Integral(R, G, B, 0xFF);
     }
     else // RGB4A3
     {
-        const uint8 A = Extend3to8(static_cast<uint8>(Short >> 12));
-        const uint8 B = Extend4to8(static_cast<uint8>(Short >> 8));
-        const uint8 G = Extend4to8(static_cast<uint8>(Short >> 4));
-        const uint8 R = Extend4to8(static_cast<uint8>(Short));
+        const uint8_t A = Extend3to8(static_cast<uint8_t>(Short >> 12));
+        const uint8_t B = Extend4to8(static_cast<uint8_t>(Short >> 8));
+        const uint8_t G = Extend4to8(static_cast<uint8_t>(Short >> 4));
+        const uint8_t R = Extend4to8(static_cast<uint8_t>(Short));
         return CColor::Integral(R, G, B, A);
     }
 }
 
-void CTextureDecoder::DecodeSubBlockCMPR(IInputStream& rSrc, IOutputStream& rDst, uint16 Width)
+void CTextureDecoder::DecodeSubBlockCMPR(IInputStream& rSrc, IOutputStream& rDst, uint16_t Width)
 {
     const auto PaletteA = rSrc.ReadU16();
     const auto PaletteB = rSrc.ReadU16();
@@ -906,7 +906,7 @@ void CTextureDecoder::DecodeSubBlockCMPR(IInputStream& rSrc, IOutputStream& rDst
     }
 }
 
-void CTextureDecoder::DecodeBlockBC1(IInputStream& rSrc, IOutputStream& rDst, uint32 Width)
+void CTextureDecoder::DecodeBlockBC1(IInputStream& rSrc, IOutputStream& rDst, uint32_t Width)
 {
     // Very similar to the CMPR subblock function, but unfortunately a slight
     // difference in the order the pixel indices are read requires a separate function
@@ -945,7 +945,7 @@ void CTextureDecoder::DecodeBlockBC1(IInputStream& rSrc, IOutputStream& rDst, ui
     }
 }
 
-void CTextureDecoder::DecodeBlockBC2(IInputStream& rSrc, IOutputStream& rDst, uint32 Width)
+void CTextureDecoder::DecodeBlockBC2(IInputStream& rSrc, IOutputStream& rDst, uint32_t Width)
 {
     const auto PaletteA = rSrc.ReadU16();
     const auto PaletteB = rSrc.ReadU16();
@@ -982,7 +982,7 @@ void CTextureDecoder::DecodeBlockBC2(IInputStream& rSrc, IOutputStream& rDst, ui
     }
 }
 
-void CTextureDecoder::DecodeBlockBC3(IInputStream& rSrc, IOutputStream& rDst, uint32 Width)
+void CTextureDecoder::DecodeBlockBC3(IInputStream& rSrc, IOutputStream& rDst, uint32_t Width)
 {
     const auto PaletteA = rSrc.ReadU16();
     const auto PaletteB = rSrc.ReadU16();

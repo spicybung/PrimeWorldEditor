@@ -61,7 +61,7 @@ bool CResourceStore::SerializeDatabaseCache(IArchive& rArc)
     if (rArc.ParamBegin("Resources", 0))
     {
         // Serialize resources
-        uint32 ResourceCount = mResourceEntries.size();
+        uint32_t ResourceCount = mResourceEntries.size();
 
         if (rArc.IsWriter())
         {
@@ -78,7 +78,7 @@ bool CResourceStore::SerializeDatabaseCache(IArchive& rArc)
 
         if (rArc.IsReader())
         {
-            for (uint32 ResIdx = 0; ResIdx < ResourceCount; ResIdx++)
+            for (uint32_t ResIdx = 0; ResIdx < ResourceCount; ResIdx++)
             {
                 if (rArc.ParamBegin("Resource", 0))
                 {
@@ -542,7 +542,7 @@ void CResourceStore::TrackLoadedResource(CResourceEntry *pEntry)
 void CResourceStore::DestroyUnreferencedResources()
 {
     // This can be updated to avoid the do-while loop when reference lookup is implemented.
-    uint32 NumDeleted;
+    uint32_t NumDeleted;
 
     do
     {

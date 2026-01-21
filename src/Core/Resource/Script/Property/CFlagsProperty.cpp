@@ -47,7 +47,7 @@ TString CFlagsProperty::ValueAsString(const void* pData) const
  * Checks whether there are any unrecognized bits toggled on in the property value.
  * Returns the mask of any invalid bits. If all bits are valid, returns 0.
  */
-uint32 CFlagsProperty::HasValidValue(const void* pPropertyData) const
+uint32_t CFlagsProperty::HasValidValue(const void* pPropertyData) const
 {
     if (!mAllFlags)
         return 0;

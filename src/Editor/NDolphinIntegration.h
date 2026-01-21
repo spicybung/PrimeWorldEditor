@@ -43,18 +43,18 @@ AXIO_DECLARE_FLAGS_ENUMCLASS(EQuickplayFeature, FQuickplayFeatures)
 struct SQuickplayParameters
 {
     /** Magic/Version */
-    static const uint32 kParmsMagic = 0x00BADB01;
-    static const uint32 kParmsVersion = 2;
+    static constexpr uint32_t kParmsMagic = 0x00BADB01;
+    static constexpr uint32_t kParmsVersion = 2;
 
     /** Flags indicating which features are enabled. */
     FQuickplayFeatures      Features;
     /** Asset ID of the world/area to load on boot (if JumpToArea is set). */
-    uint32                  BootWorldAssetID;
-    uint32                  BootAreaAssetID;
+    uint32_t                BootWorldAssetID;
+    uint32_t                BootAreaAssetID;
     /** Explicit align to 64 bits */
-    uint32                  __PADDING;
+    uint32_t                __PADDING;
     /** Flags indicating which layers to enable on boot (if JumpToArea is set). */
-    uint64                  BootAreaLayerFlags;
+    uint64_t                BootAreaLayerFlags;
     /** Location to spawn the player at when the game initially starts up. */
     CTransform4f            SpawnTransform;
 

@@ -29,7 +29,7 @@ bool CCharacterUsageMap::IsAnimationUsed(const CAssetID& rkID, CSetAnimationDepe
 
     const std::vector<bool>& rkUsageList = Find->second;
 
-    for (uint32 iChar = 0; iChar < rkUsageList.size(); iChar++)
+    for (uint32_t iChar = 0; iChar < rkUsageList.size(); iChar++)
     {
         if (rkUsageList[iChar] && pAnim->IsUsedByCharacter(iChar))
             return true;
@@ -79,7 +79,7 @@ void CCharacterUsageMap::FindUsagesForArea(CWorld *pWorld, size_t AreaIndex)
     }
 }
 
-void CCharacterUsageMap::FindUsagesForLayer(CResourceEntry *pAreaEntry, uint32 LayerIndex)
+void CCharacterUsageMap::FindUsagesForLayer(CResourceEntry *pAreaEntry, uint32_t LayerIndex)
 {
     Clear();
     mLayerIndex = LayerIndex;
@@ -155,7 +155,7 @@ void CCharacterUsageMap::ParseDependencyNode(IDependencyNode *pNode)
         }
 
         std::vector<bool>& rUsageList = mUsageMap[ResID];
-        const uint32 UsedChar = pDep->UsedChar();
+        const uint32_t UsedChar = pDep->UsedChar();
 
         if (rUsageList.size() <= UsedChar)
             rUsageList.resize(UsedChar + 1, false);
@@ -305,7 +305,7 @@ void CPackageDependencyListBuilder::EvaluateDependencyNode(CResourceEntry *pCurE
     else if (Type == EDependencyNodeType::AnimEvent)
     {
         const auto *pDep = static_cast<CAnimEventDependency*>(pNode);
-        const uint32 CharIndex = pDep->CharIndex();
+        const uint32_t CharIndex = pDep->CharIndex();
 
         if (CharIndex == UINT32_MAX || mCharacterUsageMap.IsCharacterUsed(mCurrentAnimSetID, CharIndex))
             AddDependency(pCurEntry, pDep->ID(), rOut);
@@ -332,7 +332,7 @@ void CPackageDependencyListBuilder::EvaluateDependencyNode(CResourceEntry *pCurE
     {
         if (Type == EDependencyNodeType::ScriptInstance)
         {
-            const uint32 ObjType = static_cast<CScriptInstanceDependency*>(pNode)->ObjectType();
+            const uint32_t ObjType = static_cast<CScriptInstanceDependency*>(pNode)->ObjectType();
             mIsPlayerActor = (ObjType == 0x4C || ObjType == FOURCC('PLAC'));
         }
 
@@ -393,7 +393,7 @@ void CPackageDependencyListBuilder::FindUniversalAreaAssets()
 }
 
 // ************ CAreaDependencyListBuilder ************
-void CAreaDependencyListBuilder::BuildDependencyList(std::list<CAssetID>& rAssetsOut, std::list<uint32>& rLayerOffsetsOut, std::set<CAssetID> *pAudioGroupsOut)
+void CAreaDependencyListBuilder::BuildDependencyList(std::list<CAssetID>& rAssetsOut, std::list<uint32_t>& rLayerOffsetsOut, std::set<CAssetID> *pAudioGroupsOut)
 {
     CAreaDependencyTree *pTree = static_cast<CAreaDependencyTree*>(mpAreaEntry->Dependencies());
 
@@ -545,7 +545,7 @@ void CAreaDependencyListBuilder::EvaluateDependencyNode(CResourceEntry *pCurEntr
     else if (Type == EDependencyNodeType::AnimEvent)
     {
         const auto* pDep = static_cast<const CAnimEventDependency*>(pNode);
-        const uint32 CharIndex = pDep->CharIndex();
+        const uint32_t CharIndex = pDep->CharIndex();
 
         if (CharIndex == UINT32_MAX || mCharacterUsageMap.IsCharacterUsed(mCurrentAnimSetID, CharIndex))
             AddDependency(pDep->ID(), rOut, pAudioGroupsOut);
@@ -553,10 +553,10 @@ void CAreaDependencyListBuilder::EvaluateDependencyNode(CResourceEntry *pCurEntr
     else if (Type == EDependencyNodeType::SetCharacter)
     {
         // Note: For MP1/2 PlayerActor, always treat as if Empty Suit is the only used one
-        const uint32 kEmptySuitIndex = (mGame >= EGame::EchoesDemo ? 3 : 5);
+        const uint32_t kEmptySuitIndex = (mGame >= EGame::EchoesDemo ? 3 : 5);
 
         const auto *pChar = static_cast<const CSetCharacterDependency*>(pNode);
-        const uint32 SetIndex = pChar->CharSetIndex();
+        const uint32_t SetIndex = pChar->CharSetIndex();
         ParseChildren = mCharacterUsageMap.IsCharacterUsed(mCurrentAnimSetID, pChar->CharSetIndex()) || (mIsPlayerActor && SetIndex == kEmptySuitIndex);
     }
     else if (Type == EDependencyNodeType::SetAnimation)
@@ -629,7 +629,7 @@ void CAssetDependencyListBuilder::EvaluateDependencyNode(CResourceEntry* pCurEnt
     else if (Type == EDependencyNodeType::AnimEvent)
     {
         const auto* pDep = static_cast<CAnimEventDependency*>(pNode);
-        const uint32 CharIndex = pDep->CharIndex();
+        const uint32_t CharIndex = pDep->CharIndex();
 
         if (CharIndex == UINT32_MAX || mCharacterUsageMap.IsCharacterUsed(mCurrentAnimSetID, CharIndex))
             AddDependency(pDep->ID(), Out);

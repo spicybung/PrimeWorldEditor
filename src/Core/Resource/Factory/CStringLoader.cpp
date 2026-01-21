@@ -12,14 +12,14 @@ void CStringLoader::LoadPrimeDemoSTRG(IInputStream& STRG)
     mpStringTable->mLanguages.resize(1);
     CStringTable::SLanguageData& Language = mpStringTable->mLanguages[0];
     Language.Language = ELanguage::English;
-    const uint32 TableStart = STRG.Tell();
+    const auto TableStart = STRG.Tell();
 
     // Header
-    const uint32 NumStrings = STRG.ReadU32();
+    const auto NumStrings = STRG.ReadU32();
     Language.Strings.resize(NumStrings);
 
     // String offsets (yeah, that wasn't much of a header)
-    std::vector<uint32> StringOffsets(NumStrings);
+    std::vector<uint32_t> StringOffsets(NumStrings);
     for (auto& offset : StringOffsets)
         offset = STRG.ReadU32();
 

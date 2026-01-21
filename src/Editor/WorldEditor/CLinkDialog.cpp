@@ -118,12 +118,12 @@ void CLinkDialog::SetReceiver(CScriptObject *pReceiver)
     }
 }
 
-uint32 CLinkDialog::State() const
+uint32_t CLinkDialog::State() const
 {
     return mSenderStateModel.State(ui->SenderStateComboBox->currentIndex());
 }
 
-uint32 CLinkDialog::Message() const
+uint32_t CLinkDialog::Message() const
 {
     return mReceiverMessageModel.Message(ui->ReceiverMessageComboBox->currentIndex());
 }

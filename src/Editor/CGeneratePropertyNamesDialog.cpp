@@ -58,7 +58,7 @@ void CGeneratePropertyNamesDialog::AddToIDPool(IProperty* pProperty)
         return;
     }
 
-    const uint32 ID = pProperty->ID();
+    const uint32_t ID = pProperty->ID();
     const char* pkTypeName = pProperty->HashableTypeName();
     mIdPairs.push_back(SPropertyIdTypePair{ID, pkTypeName});
 
@@ -283,7 +283,7 @@ void CGeneratePropertyNamesDialog::ApplyChanges()
     // Perform rename operation
     for (QTreeWidgetItem* pItem : mCheckedItems)
     {
-        const uint32 ID = TO_TSTRING(pItem->text(2)).ToInt32(16);
+        const uint32_t ID = TO_TSTRING(pItem->text(2)).ToInt32(16);
         const TString Type = TO_TSTRING(pItem->text(1));
         const TString NewName = TO_TSTRING(pItem->text(0));
 

@@ -195,7 +195,7 @@ void CModelCooker::WriteModelPrime(IOutputStream& rOut)
                 if (VtxAttribs.HasFlag(EVertexAttribute::Color1))
                     rOut.WriteU16(VertexIndex);
 
-                uint16 TexOffset = 0;
+                uint16_t TexOffset = 0;
                 for (uint32_t iTex = 0; iTex < 8; iTex++)
                 {
                     const auto TexBit = EVertexAttribute(EVertexAttribute::Tex0 << iTex);

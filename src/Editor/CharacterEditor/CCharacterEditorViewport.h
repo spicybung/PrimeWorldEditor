@@ -15,7 +15,7 @@ class CCharacterEditorViewport : public CBasicViewport
     CCharacterNode *mpCharNode = nullptr;
     CGridRenderable mGrid;
     std::unique_ptr<CRenderer> mpRenderer;
-    uint32 mHoverBone = 0;
+    uint32_t mHoverBone = 0;
     bool mGridEnabled = true;
 
 public:
@@ -28,11 +28,11 @@ public:
     void OnResize() override;
     void OnMouseClick(QMouseEvent *pEvent) override;
 
-    uint32 HoverBoneID() const       { return mHoverBone; }
+    uint32_t HoverBoneID() const       { return mHoverBone; }
     void SetGridEnabled(bool Enable) { mGridEnabled = Enable; }
 
 signals:
-    void HoverBoneChanged(uint32 BoneID);
+    void HoverBoneChanged(uint32_t BoneID);
     void ViewportClick(QMouseEvent *pEvent);
 };
 

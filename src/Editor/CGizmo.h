@@ -93,7 +93,7 @@ private:
 
     // Model parts
     SGizmoModelPart* mpCurrentParts = nullptr;
-    uint32 mNumCurrentParts = 0;
+    uint32_t mNumCurrentParts = 0;
 
 public:
     CGizmo();
@@ -106,7 +106,7 @@ public:
     void DecrementSize();
     void UpdateForCamera(const CCamera& rkCamera);
     bool CheckSelectedAxes(const CRay& rkRay);
-    uint32 NumSelectedAxes() const;
+    uint32_t NumSelectedAxes() const;
     void ResetSelectedAxes();
     void StartTransform();
     bool TransformFromInput(const CRay& rkRay, const CCamera& rkCamera);

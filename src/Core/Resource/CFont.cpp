@@ -30,7 +30,7 @@ std::unique_ptr<CDependencyTree> CFont::BuildDependencyTree()
 }
 
 CVector2f CFont::RenderString(const TString& rkString, CRenderer* /*pRenderer*/, float /*AspectRatio*/,
-                              CVector2f /*Position*/, CColor FillColor, CColor StrokeColor, uint32 FontSize)
+                              CVector2f /*Position*/, CColor FillColor, CColor StrokeColor, uint32_t FontSize)
 {
     // WIP
     if (!smBuffersInitialized)
@@ -113,7 +113,7 @@ CVector2f CFont::RenderString(const TString& rkString, CRenderer* /*pRenderer*/,
         GlyphTransform.Translate(CVector3f(XTrans, YTrans, 0.f));
 
         // Get glyph layer
-        uint8 GlyphLayer = pGlyph->RGBAChannel;
+        uint8_t GlyphLayer = pGlyph->RGBAChannel;
         if (mTextureFormat == 3)
             GlyphLayer *= 2;
         else if (mTextureFormat == 8)
@@ -131,7 +131,7 @@ CVector2f CFont::RenderString(const TString& rkString, CRenderer* /*pRenderer*/,
         // Draw stroke
         if (mTextureFormat == 1 || mTextureFormat == 3 || mTextureFormat == 8)
         {
-            uint8 StrokeLayer = 0;
+            uint8_t StrokeLayer = 0;
             if (mTextureFormat == 1)
                 StrokeLayer = 1;
             else if (mTextureFormat == 3)

@@ -672,7 +672,7 @@ bool CResourceBrowser::CreateDir()
     {
         TString DirNameBase = "New Folder";
         TString DirName = DirNameBase;
-        uint32 AppendNum = 0;
+        uint32_t AppendNum = 0;
 
         while (mpSelectedDir->FindChildDirectory(DirName, false) != nullptr)
         {

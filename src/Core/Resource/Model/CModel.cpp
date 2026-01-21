@@ -60,17 +60,17 @@ void CModel::BufferGL()
 
         for (size_t iSurf = 0; iSurf < mSurfaces.size(); iSurf++)
         {
-            SSurface *pSurf = mSurfaces[iSurf];
+            SSurface* pSurf = mSurfaces[iSurf];
 
-            uint16 VBOStartOffset = (uint16) mVBO.Size();
-            mVBO.Reserve((uint16) pSurf->VertexCount);
+            auto VBOStartOffset = uint16_t(mVBO.Size());
+            mVBO.Reserve(uint16_t(pSurf->VertexCount));
 
             for (SSurface::SPrimitive& pPrim : pSurf->Primitives)
             {
                 CIndexBuffer *pIBO = InternalGetIBO(iSurf, pPrim.Type);
                 pIBO->Reserve(pPrim.Vertices.size() + 1); // Allocate enough space for this primitive, plus the restart index
 
-                std::vector<uint16> Indices(pPrim.Vertices.size());
+                std::vector<uint16_t> Indices(pPrim.Vertices.size());
                 for (size_t iVert = 0; iVert < pPrim.Vertices.size(); iVert++)
                     Indices[iVert] = mVBO.AddIfUnique(pPrim.Vertices[iVert], VBOStartOffset);
 

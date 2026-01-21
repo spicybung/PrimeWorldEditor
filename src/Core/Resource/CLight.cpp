@@ -159,13 +159,13 @@ CStructProperty* CLight::GetProperties() const
 
         //@todo it would be really cool if the property could detect all possible values automatically from TEnumReflection
         CChoiceProperty* pLightType = (CChoiceProperty*) IProperty::CreateIntrinsic(EPropertyType::Choice,
-                                                                                       pProperties,
-                                                                                       MEMBER_OFFSET(CLight, mType),
-                                                                                       "LightType");
-        pLightType->AddValue("LocalAmbient", (uint32) ELightType::LocalAmbient);
-        pLightType->AddValue("Directional", (uint32) ELightType::Directional);
-        pLightType->AddValue("Spot", (uint32) ELightType::Spot);
-        pLightType->AddValue("Custom", (uint32) ELightType::Custom);
+                                                                                    pProperties,
+                                                                                    MEMBER_OFFSET(CLight, mType),
+                                                                                    "LightType");
+        pLightType->AddValue("LocalAmbient", (uint32_t) ELightType::LocalAmbient);
+        pLightType->AddValue("Directional", (uint32_t) ELightType::Directional);
+        pLightType->AddValue("Spot", (uint32_t) ELightType::Spot);
+        pLightType->AddValue("Custom", (uint32_t) ELightType::Custom);
 
         IProperty::CreateIntrinsic(EPropertyType::Color,
                                       pProperties,

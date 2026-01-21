@@ -16,7 +16,7 @@ class CCreateInstanceCommand : public IUndoCommand
     CScene *mpScene;
     CGameArea *mpArea;
     CScriptTemplate *mpTemplate;
-    uint32 mLayerIndex;
+    uint32_t mLayerIndex;
     CVector3f mSpawnPosition;
 
     CNodePtrList mOldSelection;

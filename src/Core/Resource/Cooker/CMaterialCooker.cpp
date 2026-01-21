@@ -203,8 +203,8 @@ void CMaterialCooker::WriteMaterialPrime(IOutputStream& rOut)
 
     // Blend Mode
     // Some modifications are done to convert the GLenum to the corresponding GX enum
-    auto BlendSrcFac = static_cast<uint16>(mpMat->BlendSrcFac());
-    auto BlendDstFac = static_cast<uint16>(mpMat->BlendDstFac());
+    auto BlendSrcFac = static_cast<uint16_t>(mpMat->BlendSrcFac());
+    auto BlendDstFac = static_cast<uint16_t>(mpMat->BlendDstFac());
     if (BlendSrcFac >= 0x300) BlendSrcFac -= 0x2FE;
     if (BlendDstFac >= 0x300) BlendDstFac -= 0x2FE;
     rOut.WriteU16(BlendDstFac);

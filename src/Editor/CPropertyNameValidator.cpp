@@ -32,7 +32,7 @@ QValidator::State CPropertyNameValidator::validate(QString& rInput, int&) const
     CCRC32 Hash;
     Hash.Hash(InputString.c_str());
     Hash.Hash(TypeName.Data());
-    uint32 PropertyID = Hash.Digest();
+    uint32_t PropertyID = Hash.Digest();
 
     if (PropertyID != mpProperty->ID())
     {

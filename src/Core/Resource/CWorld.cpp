@@ -32,7 +32,7 @@ std::unique_ptr<CDependencyTree> CWorld::BuildDependencyTree()
 
 void CWorld::SetAreaLayerInfo(CGameArea *pArea)
 {
-    for (uint32 iArea = 0; iArea < mAreas.size(); iArea++)
+    for (uint32_t iArea = 0; iArea < mAreas.size(); iArea++)
     {
         if (mAreas[iArea].AreaResID == pArea->ID())
         {
@@ -62,7 +62,7 @@ TString CWorld::InGameName() const
         return Entry()->Name();
 }
 
-TString CWorld::AreaInGameName(uint32 AreaIndex) const
+TString CWorld::AreaInGameName(uint32_t AreaIndex) const
 {
     const SArea& rkArea = mAreas[AreaIndex];
 
@@ -72,9 +72,9 @@ TString CWorld::AreaInGameName(uint32 AreaIndex) const
         return "!!" + rkArea.InternalName;
 }
 
-uint32 CWorld::AreaIndex(const CAssetID& AreaID) const
+uint32_t CWorld::AreaIndex(const CAssetID& AreaID) const
 {
-    for (uint32 AreaIdx = 0; AreaIdx < mAreas.size(); AreaIdx++)
+    for (uint32_t AreaIdx = 0; AreaIdx < mAreas.size(); AreaIdx++)
     {
         if (mAreas[AreaIdx].AreaResID == AreaID)
             return AreaIdx;

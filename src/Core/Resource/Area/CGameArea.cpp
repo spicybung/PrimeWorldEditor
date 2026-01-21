@@ -44,7 +44,7 @@ std::unique_ptr<CDependencyTree> CGameArea::BuildDependencyTree()
     // Layer dependencies
     std::vector<CAssetID> DummyDeps;
 
-    for (uint32 iLayer = 0; iLayer < mScriptLayers.size(); iLayer++)
+    for (size_t iLayer = 0; iLayer < mScriptLayers.size(); iLayer++)
     {
         const std::vector<CAssetID>& rkExtras = (mExtraLayerDeps.size() > iLayer ? mExtraLayerDeps[iLayer] : DummyDeps);
         pTree->AddScriptLayer(mScriptLayers[iLayer].get(), rkExtras);
@@ -159,7 +159,7 @@ CScriptObject* CGameArea::SpawnInstance(CScriptTemplate *pTemplate,
                                         const CQuaternion& rkRotation,
                                         const CVector3f& rkScale,
                                         CInstanceID SuggestedID,
-                                        uint32 SuggestedLayerIndex)
+                                        uint32_t SuggestedLayerIndex)
 {
     // Verify we can fit another instance in this area.
     const size_t NumInstances = TotalInstanceCount();
@@ -183,7 +183,7 @@ CScriptObject* CGameArea::SpawnInstance(CScriptTemplate *pTemplate,
     if (InstanceID.IsInvalid())
     {
         // Determine layer index
-        const uint32 LayerIndex = pLayer->AreaIndex();
+        const uint32_t LayerIndex = pLayer->AreaIndex();
 
         if (LayerIndex == UINT32_MAX)
         {
