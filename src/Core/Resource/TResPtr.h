@@ -29,6 +29,11 @@ public:
             mpRes->Release();
     }
 
+    explicit operator bool() const
+    {
+        return mpRes != nullptr;
+    }
+
     void Serialize(IArchive& rArc)
     {
         CAssetID ID = (mpRes && !rArc.IsReader() ? mpRes->ID() : CAssetID::InvalidID(rArc.Game()));
