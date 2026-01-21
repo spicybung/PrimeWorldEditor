@@ -14,7 +14,7 @@ by running `git submodule update --init --recursive`.
 **64-bit Note:** Except for Visual Studio and the Qt installer, ensure 64-bit (x86-64, x64) packages are installed.
 
 * [Visual Studio 2022](https://visualstudio.microsoft.com/vs/) (Desktop development with C++)
-* [Qt 6.5+](https://download.qt.io/official_releases/qt/) (MSVC 2022 64-bit specification)
+* [Qt 6.5+](https://www.qt.io/development/download-qt-installer-oss) (MSVC 2022 64-bit specification)
 
 ## Build using Qt Creator
 
@@ -62,7 +62,7 @@ They should be set to `C:/Qt/<QT VERSION>/msvc2022_64/lib/cmake/Qt6`.
 ## Requirements
 
 * [Xcode 10.2+](https://developer.apple.com/xcode/)
-* [Qt 6.5+](https://download.qt.io/official_releases/qt/) (macOS specification)
+* [Qt 6.5+](https://www.qt.io/development/download-qt-installer-oss) (macOS specification)
 * *cmake* and *ninja* installed using [Homebrew](https://brew.sh/)
 
 ## Build using Xcode
