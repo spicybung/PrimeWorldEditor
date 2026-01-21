@@ -1,7 +1,7 @@
 #ifndef CTWEAKCOOKER_H
 #define CTWEAKCOOKER_H
 
-#include <vector>
+#include <span>
 
 class CTweakData;
 class IOutputStream;
@@ -14,7 +14,7 @@ public:
 
     /** Cooker entry point */
     static bool CookCTWK(CTweakData* pTweakData, IOutputStream& CTWK);
-    static bool CookNTWK(const std::vector<CTweakData*>& kTweaks, IOutputStream& NTWK);
+    static bool CookNTWK(std::span<CTweakData*> tweaks, IOutputStream& NTWK);
 };
 
 #endif // CTWEAKCOOKER_H
