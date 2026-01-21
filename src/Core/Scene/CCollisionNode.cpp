@@ -56,7 +56,7 @@ void CCollisionNode::Draw(FRenderOptions /*Options*/, int /*ComponentIndex*/, ER
 
     CColor BaseTint = TintColor(rkViewInfo);
 
-    for (const auto& mesh : mpCollision->Meshes())
+    for (auto* mesh : mpCollision->Meshes())
     {
         CCollisionRenderData& RenderData = mesh->GetRenderData();
         const SCollisionIndexData& kIndexData = mesh->GetIndexData();
@@ -93,7 +93,7 @@ void CCollisionNode::Draw(FRenderOptions /*Options*/, int /*ComponentIndex*/, ER
     {
         const int Depth = rkViewInfo.CollisionSettings.BoundingHierarchyRenderDepth;
 
-        for (const auto& mesh : mpCollision->Meshes())
+        for (auto* mesh : mpCollision->Meshes())
         {
             mesh->GetRenderData().RenderBoundingHierarchy(Depth);
         }
@@ -140,6 +140,6 @@ void CCollisionNode::SetCollision(CCollisionMeshGroup *pCollision)
     // Update bounds
     mLocalAABox = CAABox::Infinite();
 
-    for (const auto& mesh : pCollision->Meshes())
+    for (const auto* mesh : pCollision->Meshes())
         mLocalAABox.ExpandBounds(mesh->Bounds());
 }

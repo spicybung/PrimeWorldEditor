@@ -5,7 +5,7 @@
 #include "Core/Resource/Collision/CCollisionMesh.h"
 
 #include <memory>
-#include <span>
+#include <ranges>
 #include <vector>
 
 class CCollisionMeshGroup : public CResource
@@ -17,7 +17,7 @@ public:
     explicit CCollisionMeshGroup(CResourceEntry *pEntry = nullptr) : CResource(pEntry) {}
     ~CCollisionMeshGroup() override = default;
 
-    std::span<const std::unique_ptr<CCollisionMesh>> Meshes() const { return mMeshes; }
+    auto Meshes() const { return std::views::transform(mMeshes, [](const auto& entry) { return entry.get(); }); }
     void AddMesh(std::unique_ptr<CCollisionMesh>&& pMesh) { mMeshes.push_back(std::move(pMesh)); }
 
     void BuildRenderData()

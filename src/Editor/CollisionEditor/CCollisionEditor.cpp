@@ -32,7 +32,7 @@ CCollisionEditor::CCollisionEditor(CCollisionMeshGroup* pCollisionMesh, QWidget*
     mpUI->ToolBar->addWidget(new QLabel(tr("OBBTree: "), this));
 
     int MaxDepth = 0;
-    for (const auto& mesh : pCollisionMesh->Meshes())
+    for (const auto* mesh : pCollisionMesh->Meshes())
     {
         const int MeshDepth = mesh->GetRenderData().MaxBoundingHierarchyDepth();
         MaxDepth = std::max(MeshDepth, MaxDepth);
