@@ -42,16 +42,13 @@ constexpr auto format_as(const CInstanceID& id)
     return id.Value();
 }
 
-namespace std
-{
 template <>
-struct hash<CInstanceID>
+struct std::hash<CInstanceID>
 {
     size_t operator()(const CInstanceID& id) const noexcept
     {
         return hash<CInstanceID::value_type>()(id.Value());
     }
 };
-} // namespace std
 
 #endif
