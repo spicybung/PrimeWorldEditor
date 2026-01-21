@@ -81,7 +81,7 @@ void ApplyGeneratedName(CResourceEntry *pEntry, const TString& rkDir, const TStr
             if (pConflict == pEntry)
                 return;
 
-            NewName = TString::Format("%s_%d", *SanitizedName, AppendNum);
+            NewName = fmt::format("{}_{}", SanitizedName.ToStdString(), AppendNum);
             AppendNum++;
         }
     }
@@ -152,7 +152,7 @@ void GenerateAssetNames(CGameProject *pProj)
 
         // Move world stuff
         const TString WorldNamesDir = "Strings/Worlds/General/";
-        const TString AreaNamesDir = TString::Format("Strings/Worlds/%s/", *WorldName);
+        const TString AreaNamesDir = fmt::format("Strings/Worlds/{}/", WorldName.ToStdString());
 
         CModel *pSkyModel = pWorld->DefaultSkybox();
         CStringTable *pWorldNameTable = pWorld->NameString();
@@ -259,11 +259,11 @@ void GenerateAssetNames(CGameProject *pProj)
 
                     if (IsLightmap)
                     {
-                        TexName = TString::Format("%s_lit_lightmap%d", *AreaName, LightmapNum);
+                        TexName = fmt::format("{}_lit_lightmap{}", AreaName.ToStdString(), LightmapNum);
                     }
                     else if (IsBloomLightmap)
                     {
-                        TexName = TString::Format("%s_lit_lightmap_bloom%d", *AreaName, LightmapNum);
+                        TexName = fmt::format("{}_lit_lightmap_bloom{}", AreaName.ToStdString(), LightmapNum);
                     }
 
                     if (!TexName.IsEmpty())
@@ -628,7 +628,7 @@ void GenerateAssetNames(CGameProject *pProj)
             {
                 const CAssetID ImageID = kParms.ScanImages[iImg].Texture;
                 if (CResourceEntry* pImgEntry = pStore->FindEntry(ImageID))
-                    ApplyGeneratedName(pImgEntry, pImgEntry->DirectoryPath(), TString::Format("%s_Image%zu", *ScanName, iImg));
+                    ApplyGeneratedName(pImgEntry, pImgEntry->DirectoryPath(), fmt::format("{}_Image{}", ScanName.ToStdString(), iImg));
             }
         }
     }
