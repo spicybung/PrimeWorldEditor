@@ -363,7 +363,7 @@ void CGameExporter::LoadPaks()
             {
                 const auto Type = CFourCC(Pak.ReadU32());
                 const auto Size = Pak.ReadU32();
-                PakSections.push_back(SPakSection{Type, Size});
+                PakSections.emplace_back(Type, Size);
             }
             Pak.SeekToBoundary(64);
 
@@ -492,7 +492,7 @@ void CGameExporter::LoadResource(const SResourceInstance& rkResource, std::vecto
                     const auto UncompressedSize = Pak.ReadU32();
 
                     TotalUncompressedSize += UncompressedSize;
-                    CompressedBlocks.push_back(SCompressedBlock{CompressedSize, UncompressedSize});
+                    CompressedBlocks.emplace_back(CompressedSize, UncompressedSize);
                 }
 
                 rBuffer.resize(TotalUncompressedSize);
