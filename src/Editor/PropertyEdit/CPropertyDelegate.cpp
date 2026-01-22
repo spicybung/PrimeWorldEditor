@@ -20,6 +20,8 @@
 #include <QEvent>
 #include <QLineEdit>
 
+#include <memory>
+
 // This macro should be used on every widget where changes should be reflected in realtime and not just when the edit is finished.
 #define CONNECT_RELAY(Widget, Index, Signal) \
     do { \
@@ -58,7 +60,6 @@ QWidget* CPropertyDelegate::createEditor(QWidget* pParent, const QStyleOptionVie
 
         switch (Type)
         {
-
         case EPropertyType::Bool:
         {
             auto* pCheckBox = new QCheckBox(pParent);
@@ -162,7 +163,8 @@ QWidget* CPropertyDelegate::createEditor(QWidget* pParent, const QStyleOptionVie
             break;
         }
 
-        default: break;
+        default:
+            break;
         }
     }
 
@@ -334,7 +336,6 @@ void CPropertyDelegate::setEditorData(QWidget *pEditor, const QModelIndex &rkInd
                 }
             }
         }
-
         // Set editor data for animation set/flags sub-property
         else if (rkIndex.internalId() & 0x80000000)
         {
@@ -342,8 +343,9 @@ void CPropertyDelegate::setEditorData(QWidget *pEditor, const QModelIndex &rkInd
             EPropertyType Type = mpModel->GetEffectiveFieldType(pProp);
 
             if (Type == EPropertyType::AnimationSet)
+            {
                 SetCharacterEditorData(pEditor, rkIndex);
-
+            }
             else if (Type == EPropertyType::Flags)
             {
                 auto* pCheckBox = static_cast<QCheckBox*>(pEditor);
@@ -363,7 +365,7 @@ void CPropertyDelegate::setModelData(QWidget *pEditor, QAbstractItemModel* /*pMo
     if (!mpModel) return;
     if (!pEditor) return;
 
-    IEditPropertyCommand* pCommand = nullptr;
+    std::unique_ptr<IEditPropertyCommand> pCommand;
     IProperty* pProp = mpModel->PropertyForIndex(rkIndex, true);
     void* pData = mpModel->DataPointerForIndex(rkIndex);
 
@@ -375,14 +377,14 @@ void CPropertyDelegate::setModelData(QWidget *pEditor, QAbstractItemModel* /*pMo
         if (!pObject)
         {
             const QList<void*> DataPointers{pData};
-            pCommand = new CEditIntrinsicPropertyCommand(pProp, DataPointers, mpModel, rkIndex);
+            pCommand = std::make_unique<CEditIntrinsicPropertyCommand>(pProp, DataPointers, mpModel, rkIndex);
         }
         else
         {
             QList<CScriptObject*> Objects{pObject};
             pCommand = (Type != EPropertyType::Array) ?
-                        new CEditScriptPropertyCommand(pProp, Objects, mpModel, rkIndex) :
-                        new CResizeScriptArrayCommand (pProp, Objects, mpModel, rkIndex);
+                        std::make_unique<CEditScriptPropertyCommand>(pProp, Objects, mpModel, rkIndex) :
+                        std::make_unique<CResizeScriptArrayCommand>(pProp, Objects, mpModel, rkIndex);
         }
 
         pCommand->SaveOldData();
@@ -536,11 +538,9 @@ void CPropertyDelegate::setModelData(QWidget *pEditor, QAbstractItemModel* /*pMo
         {
             // Always consider the edit done for bool properties
             pCommand->SetEditComplete(!mEditInProgress || pProp->Type() == EPropertyType::Bool);
-            mpEditor->UndoStack().push(pCommand);
-        }
-        else
-        {
-            delete pCommand;
+
+            // Transfer ownership of the command to the undo stack
+            mpEditor->UndoStack().push(pCommand.release());
         }
     }
 }
