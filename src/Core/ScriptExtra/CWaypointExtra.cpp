@@ -8,6 +8,12 @@
 #include "Core/Scene/CScriptNode.h"
 #include "Core/ScriptExtra/CSplinePathExtra.h"
 
+struct CWaypointExtra::SWaypointLink
+{
+    CScriptNode* pWaypoint;
+    CAABox LineAABB;
+};
+
 CWaypointExtra::CWaypointExtra(CScriptObject *pInstance, CScene *pScene, CScriptNode *pParent)
     : CScriptExtra(pInstance, pScene, pParent)
 {

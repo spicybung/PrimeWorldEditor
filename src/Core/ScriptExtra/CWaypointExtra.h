@@ -17,11 +17,7 @@ class CWaypointExtra : public CScriptExtra
     bool mLinksBuilt = false;
     std::list<CSplinePathExtra*> mPaths;
 
-    struct SWaypointLink
-    {
-        CScriptNode *pWaypoint;
-        CAABox LineAABB;
-    };
+    struct SWaypointLink;
     std::vector<SWaypointLink> mLinks;
 
 public:
