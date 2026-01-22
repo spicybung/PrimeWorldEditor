@@ -8,6 +8,8 @@
 
 #include <QMimeData>
 
+#include <fmt/format.h>
+
 CStringListModel::CStringListModel(CStringEditor* pInEditor)
     : QAbstractListModel(pInEditor)
     , mpEditor(pInEditor)
@@ -56,7 +58,7 @@ QVariant CStringListModel::data(const QModelIndex& kIndex, int Role) const
 
         if (StringName.IsEmpty())
         {
-            StringName = TString::Format("<String #%d>", kIndex.row()+1);
+            StringName = fmt::format("<String #{}>", kIndex.row() + 1);
         }
 
         return TO_QSTRING(StringName);

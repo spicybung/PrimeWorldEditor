@@ -17,6 +17,8 @@
 #include <Common/Serialization/CXMLReader.h>
 #include <Common/Serialization/CXMLWriter.h>
 
+#include <fmt/format.h>
+
 CResourceEntry::CResourceEntry(CResourceStore *pStore)
     : mpStore(pStore)
     , mID(CAssetID::InvalidID(pStore->Game()))
@@ -544,7 +546,10 @@ bool CResourceEntry::MoveAndRename(const TString& rkDir, const TString& rkName, 
             FSMoveSuccess = FileUtil::MoveFile(OldRawPath, NewRawPath);
 
             if (!FSMoveSuccess)
-                MoveFailReason = TString::Format("Failed to move raw file to new destination (%s --> %s)", *OldRawPath, *NewRawPath);
+            {
+                MoveFailReason = fmt::format("Failed to move raw file to new destination ({} --> {})",
+                                             OldRawPath.ToStdString(), NewRawPath.ToStdString());
+            }
         }
 
         // Move cooked file to new location
@@ -554,7 +559,8 @@ bool CResourceEntry::MoveAndRename(const TString& rkDir, const TString& rkName, 
 
             if (!FSMoveSuccess)
             {
-                MoveFailReason = TString::Format("Failed to move cooked file to new destination (%s --> %s)", *OldCookedPath, *NewCookedPath);
+                MoveFailReason = fmt::format("Failed to move cooked file to new destination ({} --> {})",
+                                             OldCookedPath.ToStdString(), NewCookedPath.ToStdString());
             }
         }
 
@@ -567,12 +573,14 @@ bool CResourceEntry::MoveAndRename(const TString& rkDir, const TString& rkName, 
 
                 if (!FSMoveSuccess)
                 {
-                    MoveFailReason = TString::Format("Failed to move metadata file to new destination (%s --> %s)", *OldMetaPath, *NewMetaPath);
+                    MoveFailReason = fmt::format("Failed to move metadata file to new destination ({} --> {})",
+                                                 OldMetaPath.ToStdString(), NewMetaPath.ToStdString());
                 }
             }
-
             else
+            {
                 mMetadataDirty = true;
+            }
         }
     }
     else
@@ -583,7 +591,8 @@ bool CResourceEntry::MoveAndRename(const TString& rkDir, const TString& rkName, 
         TString BadFileType = HasCooked ? "cooked"      : (HasRaw ? "raw"      : "metadata");
         TString BadFilePath = HasCooked ? NewCookedPath : (HasRaw ? NewRawPath : NewMetaPath);
 
-        MoveFailReason = TString::Format("File already exists at %s asset destination (%s)", *BadFileType, *BadFilePath);
+        MoveFailReason = fmt::format("File already exists at {} asset destination ({})",
+                                     BadFileType.ToStdString(), BadFilePath.ToStdString());
     }
 
     // If we succeeded, finish the move

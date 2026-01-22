@@ -29,6 +29,8 @@
 #include <QVBoxLayout>
 #include <QtConcurrent/QtConcurrentRun>
 
+#include <fmt/format.h>
+
 CResourceBrowser::CResourceBrowser(QWidget *pParent)
     : QWidget(pParent)
     , mpUI(std::make_unique<Ui::CResourceBrowser>())
@@ -472,13 +474,8 @@ CResourceEntry* CResourceBrowser::CreateNewResource(EResourceType Type,
 
     // Boring generic default name - user will immediately be prompted to change this
     TString BaseName = Name;
-
     if (BaseName.IsEmpty())
-    {
-        BaseName = TString::Format(
-            "New %s", *CResTypeInfo::FindTypeInfo(Type)->TypeName()
-        );
-    }
+        BaseName = fmt::format("New {}", CResTypeInfo::FindTypeInfo(Type)->TypeName().ToStdString());
 
     Name = BaseName;
     int Num = 0;
@@ -486,7 +483,7 @@ CResourceEntry* CResourceBrowser::CreateNewResource(EResourceType Type,
     while (pDir->FindChildResource(Name, Type) != nullptr)
     {
         Num++;
-        Name = TString::Format("%s (%d)", *BaseName, Num);
+        Name = fmt::format("{} ({})", BaseName.ToStdString(), Num);
     }
 
     // Create the actual resource
@@ -677,7 +674,7 @@ bool CResourceBrowser::CreateDir()
         while (mpSelectedDir->FindChildDirectory(DirName, false) != nullptr)
         {
             AppendNum++;
-            DirName = TString::Format("%s (%d)", *DirNameBase, AppendNum);
+            DirName = fmt::format("{} ({})", DirNameBase.ToStdString(), AppendNum);
         }
 
         // Push create command to actually create the directory

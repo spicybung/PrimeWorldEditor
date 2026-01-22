@@ -5,7 +5,9 @@
 #include <Common/Serialization/CXMLReader.h>
 #include <Common/Serialization/CXMLWriter.h>
 #include <Common/Serialization/IArchive.h>
+
 #include <algorithm>
+#include <fmt/format.h>
 
 constexpr char gkGameInfoDir[] = "resources/gameinfo";
 constexpr char gkGameInfoExt[] = "xml";
@@ -110,7 +112,7 @@ TString CGameInfo::GetDefaultGameInfoPath(EGame Game)
         return "";
 
     const TString GameName = GetGameShortName(Game);
-    return TString::Format("%s/%s/GameInfo%s.%s", gDataDir.CString(), gkGameInfoDir, GameName.CString(), gkGameInfoExt);
+    return fmt::format("{}/{}/GameInfo{}.{}", gDataDir.ToStdString(), gkGameInfoDir, GameName.ToStdString(), gkGameInfoExt);
 }
 
 TString CGameInfo::GetExtension()

@@ -5,6 +5,7 @@
 
 #include <array>
 #include <cstdint>
+#include <fmt/format.h>
 
 // GUID representing a value stored in the save file for MP3/DKCR
 class CSavedStateID
@@ -30,7 +31,7 @@ public:
         const uint32_t Part4 = (m[1] >> 48) & 0x0000FFFF;
         const uint32_t Part5 = (m[1] >> 32) & 0x0000FFFF;
         const uint32_t Part6 = (m[1] >> 00) & 0xFFFFFFFF;
-        return TString::Format("%08X-%04X-%04X-%04X-%04X%08X", Part1, Part2, Part3, Part4, Part5, Part6);
+        return fmt::format("{:08X}-{:04X}-{:04X}-{:04X}-{:04X}{:08X}", Part1, Part2, Part3, Part4, Part5, Part6);
     }
 
     void Write(IOutputStream& rOutput)
