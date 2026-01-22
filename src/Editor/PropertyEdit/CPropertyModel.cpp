@@ -11,6 +11,7 @@
 #include <QSize>
 
 #include <array>
+#include <fmt/format.h>
 #include <vector>
 
 struct CPropertyModel::SProperty
@@ -361,11 +362,10 @@ QVariant CPropertyModel::data(const QModelIndex& rkIndex, int Role) const
                         return tr("%1 [INVALID]").arg(SoundID);
 
                     // Always display define ID. Display sound name if we have one, otherwise display AGSC ID.
-                    QString Out = QString::number(SoundID);
-                    Out += QStringLiteral(" [") + TO_QSTRING(TString::HexString(SoundInfo.DefineID, 4));
                     const QString AudioGroupName = (SoundInfo.pAudioGroup ? TO_QSTRING(SoundInfo.pAudioGroup->Entry()->Name()) : tr("NO AUDIO GROUP"));
-                    const QString Name = (!SoundInfo.Name.IsEmpty() ? TO_QSTRING(SoundInfo.Name) : AudioGroupName);
-                    Out += QLatin1Char{' '} + Name + QLatin1Char{']'};
+                    const QString Name = (SoundInfo.Name.IsEmpty() ? AudioGroupName : TO_QSTRING(SoundInfo.Name));
+
+                    QString Out = TO_QSTRING(fmt::format("{} [0x{:04X} {}]", SoundID, SoundInfo.DefineID, Name.toStdString()));
 
                     // If we have a sound name and this is a tooltip, add a second line with the AGSC name
                     if (Role == Qt::ToolTipRole && !SoundInfo.Name.IsEmpty())
