@@ -56,9 +56,7 @@ void CWaypointExtra::CheckColor()
 
 void CWaypointExtra::AddToSplinePath(CSplinePathExtra *pPath)
 {
-    const auto iter = std::find_if(mPaths.cbegin(), mPaths.cend(),
-                                   [pPath](const auto* entry) { return entry == pPath; });
-
+    const auto iter = std::ranges::find(mPaths, pPath);
     if (iter != mPaths.cend())
         return;
 
@@ -69,9 +67,7 @@ void CWaypointExtra::AddToSplinePath(CSplinePathExtra *pPath)
 
 void CWaypointExtra::RemoveFromSplinePath(const CSplinePathExtra *pPath)
 {
-    const auto iter = std::find_if(mPaths.cbegin(), mPaths.cend(),
-                                   [pPath](const auto* entry) { return entry == pPath; });
-
+    const auto iter = std::ranges::find(mPaths, pPath);
     if (iter == mPaths.cend())
         return;
 
