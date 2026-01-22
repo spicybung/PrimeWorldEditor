@@ -203,11 +203,11 @@ void CScriptObject::AddLink(ELinkType Type, CLink *pLink, uint32_t Index)
     }
 }
 
-void CScriptObject::RemoveLink(ELinkType Type, CLink *pLink)
+void CScriptObject::RemoveLink(ELinkType Type, CLink* pLink)
 {
     auto& LinkVec = (Type == ELinkType::Incoming ? mInLinks : mOutLinks);
 
-    const auto it = std::ranges::find_if(LinkVec, [&](const auto& link) { return link == pLink; });
+    const auto it = std::ranges::find(LinkVec, pLink);
     if (it == LinkVec.end())
         return;
 

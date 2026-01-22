@@ -49,8 +49,8 @@ public:
 
     CMaterial* MaterialByName(const TString& rkName) const
     {
-        const auto iter = std::find_if(mMaterials.begin(), mMaterials.end(),
-                                       [&rkName](const auto& entry) { return entry->Name() == rkName; });
+        const auto iter = std::ranges::find_if(mMaterials,
+                                               [&rkName](const auto& entry) { return entry->Name() == rkName; });
 
         if (iter == mMaterials.cend())
             return nullptr;

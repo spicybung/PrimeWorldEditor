@@ -78,8 +78,8 @@ void CGameInfo::Serialize(IArchive& rArc)
 
 TString CGameInfo::GetBuildName(float BuildVer, ERegion Region) const
 {
-    const auto it = std::find_if(mBuilds.cbegin(), mBuilds.cend(),
-                                 [=](const auto& entry) { return entry.Version == BuildVer && entry.Region == Region; });
+    const auto it = std::ranges::find_if(mBuilds,
+                                         [=](const auto& entry) { return entry.Version == BuildVer && entry.Region == Region; });
 
     if (it == mBuilds.cend())
         return "Unknown Build";

@@ -72,8 +72,8 @@ CSkeleton::~CSkeleton() = default;
 
 CBone* CSkeleton::BoneByID(uint32_t BoneID) const
 {
-    const auto iter = std::find_if(mBones.begin(), mBones.end(),
-                                   [BoneID](const auto& bone) { return bone->ID() == BoneID; });
+    const auto iter = std::ranges::find_if(mBones,
+                                           [BoneID](const auto& bone) { return bone->ID() == BoneID; });
 
     if (iter == mBones.cend())
         return nullptr;
@@ -83,8 +83,8 @@ CBone* CSkeleton::BoneByID(uint32_t BoneID) const
 
 CBone* CSkeleton::BoneByName(std::string_view name) const
 {
-    const auto iter = std::find_if(mBones.begin(), mBones.end(),
-                                   [&name](const auto& bone) { return bone->Name() == name; });
+    const auto iter = std::ranges::find_if(mBones,
+                                           [&name](const auto& bone) { return bone->Name() == name; });
 
     if (iter == mBones.cend())
         return nullptr;
@@ -94,13 +94,11 @@ CBone* CSkeleton::BoneByName(std::string_view name) const
 
 uint32_t CSkeleton::MaxBoneID() const
 {
-    const auto iter = std::max_element(mBones.cbegin(), mBones.cend(),
-                                       [](const auto& a, const auto& b) { return a->ID() < b->ID(); });
+    const auto iter = std::ranges::max_element(mBones,
+                                               [](const auto& a, const auto& b) { return a->ID() < b->ID(); });
 
     if (iter == mBones.cend())
-    {
         return 0;
-    }
 
     return (*iter)->ID();
 }

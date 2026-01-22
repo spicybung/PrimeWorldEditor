@@ -233,11 +233,9 @@ bool CVirtualDirectory::AddChild(CVirtualDirectory *pDir)
     return true;
 }
 
-bool CVirtualDirectory::RemoveChildDirectory(CVirtualDirectory *pSubdir)
+bool CVirtualDirectory::RemoveChildDirectory(CVirtualDirectory* pSubdir)
 {
-    const auto it = std::ranges::find_if(mSubdirectories,
-                                         [pSubdir](const auto* dir) { return dir == pSubdir; });
-
+    const auto it = std::ranges::find(mSubdirectories, pSubdir);
     if (it == mSubdirectories.cend())
         return false;
 
@@ -245,11 +243,9 @@ bool CVirtualDirectory::RemoveChildDirectory(CVirtualDirectory *pSubdir)
     return true;
 }
 
-bool CVirtualDirectory::RemoveChildResource(CResourceEntry *pEntry)
+bool CVirtualDirectory::RemoveChildResource(CResourceEntry* pEntry)
 {
-    const auto it = std::ranges::find_if(mResources,
-                                         [pEntry](const auto* resource) { return resource == pEntry; });
-
+    const auto it = std::ranges::find(mResources, pEntry);
     if (it == mResources.cend())
         return false;
 

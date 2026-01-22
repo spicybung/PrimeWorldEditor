@@ -44,11 +44,9 @@ public:
         }
     }
 
-    void RemoveInstance(const CScriptObject *pInstance)
+    void RemoveInstance(const CScriptObject* pInstance)
     {
-        const auto it = std::ranges::find_if(mInstances,
-                                             [pInstance](const auto* instance) { return instance == pInstance; });
-
+        const auto it = std::ranges::find(mInstances, pInstance);
         if (it == mInstances.cend())
             return;
 

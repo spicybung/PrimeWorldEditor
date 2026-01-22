@@ -66,11 +66,9 @@ void CSplinePathExtra::AddWaypoints()
     }
 }
 
-void CSplinePathExtra::RemoveWaypoint(const CWaypointExtra *pWaypoint)
+void CSplinePathExtra::RemoveWaypoint(const CWaypointExtra* pWaypoint)
 {
-    const auto iter = std::find_if(mWaypoints.cbegin(), mWaypoints.cend(),
-                                   [pWaypoint](const auto* entry) { return entry == pWaypoint; });
-
+    const auto iter = std::ranges::find(mWaypoints, pWaypoint);
     if (iter == mWaypoints.cend())
         return;
 

@@ -305,9 +305,7 @@ void CScriptTemplate::AddObject(CScriptObject *pObject)
 
 void CScriptTemplate::RemoveObject(const CScriptObject *pObject)
 {
-    const auto iter = std::find_if(mObjectList.cbegin(), mObjectList.cend(),
-                                   [pObject](const auto* ptr) { return ptr == pObject; });
-
+    const auto iter = std::ranges::find(mObjectList, pObject);
     if (iter == mObjectList.cend())
         return;
 

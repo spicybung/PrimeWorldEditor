@@ -244,13 +244,11 @@ const void* IProperty::RawValuePtr(const void* pData) const
 
 IProperty* IProperty::ChildByID(uint32_t ID) const
 {
-    const auto iter = std::find_if(mChildren.begin(), mChildren.end(),
-                                   [ID](const auto* element) { return element->mID == ID; });
+    const auto iter = std::ranges::find_if(mChildren,
+                                           [ID](const auto* element) { return element->mID == ID; });
 
     if (iter == mChildren.cend())
-    {
         return nullptr;
-    }
 
     return *iter;
 }

@@ -143,7 +143,7 @@ void CScene::DeleteNode(CSceneNode *pNode)
     const ENodeType Type = pNode->NodeType();
     auto& nodeEntry = mNodes[Type];
 
-    const auto entryIt = std::ranges::find_if(nodeEntry, [&](const auto* entry)  { return entry == pNode; });
+    const auto entryIt = std::ranges::find(nodeEntry, pNode);
     if (entryIt != nodeEntry.end())
         nodeEntry.erase(entryIt);
 

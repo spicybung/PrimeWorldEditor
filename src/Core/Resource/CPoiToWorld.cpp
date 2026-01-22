@@ -55,7 +55,7 @@ void CPoiToWorld::RemovePoiMeshMap(CInstanceID PoiID, uint32_t ModelID)
         return;
 
     SPoiMap* pMap = MapIt->second;
-    const auto ListIt = std::ranges::find_if(pMap->ModelIDs, [=](const auto& ID) { return ID == ModelID; });
+    const auto ListIt = std::ranges::find(pMap->ModelIDs, ModelID);
     if (ListIt == pMap->ModelIDs.end())
         return;
 

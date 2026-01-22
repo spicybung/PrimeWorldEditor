@@ -30,9 +30,7 @@ public:
 
     void RemoveDependency(const CAssetID& rkID)
     {
-        const auto it = std::find_if(mDependencies.cbegin(), mDependencies.cend(),
-                                     [&rkID](const auto& entry) { return entry == rkID; });
-
+        const auto it = std::ranges::find(mDependencies, rkID);
         if (it == mDependencies.cend())
             return;
 
@@ -41,8 +39,8 @@ public:
     
     bool HasDependency(const CAssetID& rkID) const
     {
-        return std::any_of(mDependencies.cbegin(), mDependencies.cend(),
-                           [&rkID](const auto& entry) { return entry == rkID; });
+        return std::ranges::any_of(mDependencies,
+                                   [&rkID](const auto& entry) { return entry == rkID; });
     }
 
     std::unique_ptr<CDependencyTree> BuildDependencyTree() override
