@@ -82,7 +82,7 @@ void CSceneNode::Unparent()
     mpParent = nullptr;
 }
 
-void CSceneNode::RemoveChild(CSceneNode* pChild)
+void CSceneNode::RemoveChild(const CSceneNode* pChild)
 {
     const auto iter = std::ranges::find(mChildren, pChild);
     if (iter == mChildren.end())

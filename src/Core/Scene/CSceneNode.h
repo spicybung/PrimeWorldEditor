@@ -123,7 +123,7 @@ public:
 
     void OnLoadFinished();
     void Unparent();
-    void RemoveChild(CSceneNode *pChild);
+    void RemoveChild(const CSceneNode* pChild);
     void DeleteChildren();
     void SetInheritance(bool InheritPos, bool InheritRot, bool InheritScale);
     void LoadModelMatrix();
