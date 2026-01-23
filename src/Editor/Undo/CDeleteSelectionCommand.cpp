@@ -66,30 +66,28 @@ CDeleteSelectionCommand::CDeleteSelectionCommand(CWorldEditor *pEditor, const QS
             rNode.pLayer = pInst->Layer();
             rNode.LayerIndex = pInst->LayerIndex();
 
-            for (const auto Type : {ELinkType::Outgoing, ELinkType::Incoming})
+            for (const auto type : {ELinkType::Outgoing, ELinkType::Incoming})
             {
-                for (size_t iLink = 0; iLink < pInst->NumLinks(Type); iLink++)
+                for (CLink* link : pInst->Links(type))
                 {
-                    CLink* pLink = pInst->Link(Type, iLink);
-
-                    if (!Links.contains(pLink))
+                    if (!Links.contains(link))
                     {
                         mDeletedLinks.push_back({
-                            .State = pLink->State(),
-                            .Message = pLink->Message(),
-                            .SenderID = pLink->SenderID(),
-                            .SenderIndex = pLink->SenderIndex(),
-                            .ReceiverID = pLink->ReceiverID(),
-                            .ReceiverIndex = pLink->ReceiverIndex(),
-                            .pSender = pLink->Sender(),
-                            .pReceiver = pLink->Receiver(),
+                            .State = link->State(),
+                            .Message = link->Message(),
+                            .SenderID = link->SenderID(),
+                            .SenderIndex = link->SenderIndex(),
+                            .ReceiverID = link->ReceiverID(),
+                            .ReceiverIndex = link->ReceiverIndex(),
+                            .pSender = link->Sender(),
+                            .pReceiver = link->Receiver(),
                         });
-                        Links.insert(pLink);
+                        Links.insert(link);
 
-                        if (!LinkedInstances.contains(pLink->Sender()))
-                            LinkedInstances.push_back(pLink->Sender());
-                        if (!LinkedInstances.contains(pLink->Receiver()))
-                            LinkedInstances.push_back(pLink->Receiver());
+                        if (!LinkedInstances.contains(link->Sender()))
+                            LinkedInstances.push_back(link->Sender());
+                        if (!LinkedInstances.contains(link->Receiver()))
+                            LinkedInstances.push_back(link->Receiver());
                     }
                 }
             }
