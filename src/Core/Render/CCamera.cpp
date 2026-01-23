@@ -26,8 +26,10 @@ void CCamera::Pan(float XAmount, float YAmount)
 {
     if (mMode == ECameraMoveMode::Free)
     {
-        mPosition += mRightVector * (XAmount * mMoveSpeed);
-        mPosition += mUpVector * (YAmount * mMoveSpeed);
+        const auto actualMoveSpeed = ActualMoveSpeed();
+
+        mPosition += mRightVector * (XAmount * actualMoveSpeed);
+        mPosition += mUpVector * (YAmount * actualMoveSpeed);
         mTransformDirty = true;
         mViewDirty = true;
         mFrustumPlanesDirty = true;
@@ -51,13 +53,15 @@ void CCamera::Rotate(float XAmount, float YAmount)
 
 void CCamera::Zoom(float Amount)
 {
+    const auto actualMoveSpeed = ActualMoveSpeed();
+
     if (mMode == ECameraMoveMode::Free)
     {
-        mPosition += mDirection * (Amount * mMoveSpeed);
+        mPosition += mDirection * (Amount * actualMoveSpeed);
     }
     else
     {
-        mOrbitDistance -= Amount * mMoveSpeed;
+        mOrbitDistance -= Amount * actualMoveSpeed;
         mTransformDirty = true;
     }
 
@@ -77,14 +81,9 @@ void CCamera::Snap(const CVector3f& Position)
 
 void CCamera::ProcessKeyInput(FKeyInputs KeyFlags, double DeltaTime)
 {
+    mWasShiftHeld = KeyFlags.HasFlag(EKeyInput::Shift);
+
     const auto FDeltaTime = static_cast<float>(DeltaTime);
-
-    // Generally the camera moves at a fixed rate without any modifier
-    // key held down. However in a lot of editors, it's a little more intuitive
-    // to allow holding down e.g. Shift for a toggleable speed.
-    const auto is_shift_pressed = KeyFlags.HasFlag(EKeyInput::Shift);
-    mMoveSpeed = is_shift_pressed ? 2.0f : default_move_speed;
-
     if (KeyFlags.HasFlag(EKeyInput::W)) Zoom(FDeltaTime * 25.f);
     if (KeyFlags.HasFlag(EKeyInput::S)) Zoom(-FDeltaTime * 25.f);
     if (KeyFlags.HasFlag(EKeyInput::Q)) Pan(0, -FDeltaTime * 25.f);
@@ -281,4 +280,10 @@ void CCamera::UpdateFrustum() const
         mFrustumPlanes.SetPlanes(mPosition, mDirection, 55.f, mAspectRatio, 0.1f, 4096.f);
         mFrustumPlanesDirty = false;
     }
+}
+
+float CCamera::ActualMoveSpeed() const
+{
+    // We allow the movement speed to double when shift is pressed.
+    return mWasShiftHeld ? mMoveSpeed * 2.0f : mMoveSpeed;
 }

@@ -1208,8 +1208,7 @@ void CWorldEditor::UpdateCameraOrbit()
 
 void CWorldEditor::OnCameraSpeedChange(double Speed)
 {
-    static const double skDefaultSpeed = 1.0;
-    ui->MainViewport->Camera().SetMoveSpeed(skDefaultSpeed * Speed);
+    ui->MainViewport->Camera().SetMoveSpeed(CCamera::default_move_speed * Speed);
 
     ui->CamSpeedSpinBox->blockSignals(true);
     ui->CamSpeedSpinBox->setValue(Speed);

@@ -24,9 +24,6 @@ enum class ECameraMoveMode
  * const function). */
 class CCamera
 {
-    static const float default_move_speed;
-    static const float default_look_speed;
-
     ECameraMoveMode mMode{ECameraMoveMode::Free};
     mutable CVector3f mPosition;
     mutable CVector3f mDirection;
@@ -50,7 +47,12 @@ class CCamera
     mutable bool mProjectionDirty = true;
     mutable bool mFrustumPlanesDirty = true;
 
+    mutable bool mWasShiftHeld = false;
+
 public:
+    static const float default_move_speed;
+    static const float default_look_speed;
+
     CCamera();
     explicit CCamera(const CVector3f& Position, const CVector3f& Target);
 
@@ -98,6 +100,8 @@ private:
     void UpdateView() const;
     void UpdateProjection() const;
     void UpdateFrustum() const;
+
+    float ActualMoveSpeed() const;
 };
 
 #endif // CCAMERA_H
