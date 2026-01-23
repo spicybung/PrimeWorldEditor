@@ -20,7 +20,7 @@ struct SGizmoModelPart
     bool IsBillboard = false;
     TResPtr<CModel> pModel;
 
-    SGizmoModelPart() : ModelAxes(EAxis::None) {};
+    constexpr SGizmoModelPart() : ModelAxes(EAxis::None) {};
     SGizmoModelPart(FAxes Axes, bool RayCastOn, bool Billboard, TResPtr<CModel> _pModel)
         : ModelAxes(Axes)
         , EnableRayCast(RayCastOn)
@@ -33,9 +33,9 @@ struct SGizmoModelPart
 namespace
 {
 constinit bool smModelsLoaded = false;
-std::array<SGizmoModelPart, CGIZMO_TRANSLATE_NUM> smTranslateModels;
-std::array<SGizmoModelPart, CGIZMO_ROTATE_NUM> smRotateModels;
-std::array<SGizmoModelPart, CGIZMO_SCALE_NUM> smScaleModels;
+constinit std::array<SGizmoModelPart, CGIZMO_TRANSLATE_NUM> smTranslateModels;
+constinit std::array<SGizmoModelPart, CGIZMO_ROTATE_NUM> smRotateModels;
+constinit std::array<SGizmoModelPart, CGIZMO_SCALE_NUM> smScaleModels;
  }
 
 static void LoadModels()
