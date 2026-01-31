@@ -308,8 +308,8 @@ CScriptObject* CScriptLoader::LoadObjectMP1(IInputStream& rSCLY)
         return nullptr;
     }
 
-    auto InstanceID = CInstanceID(rSCLY.ReadU32());
-    if (InstanceID.Value() == 0xFFFFFFFFU)
+    auto InstanceID = CInstanceID(rSCLY.ReadU32() & 0x03FFFFFF);
+    if (InstanceID.Value() == 0x03FFFFFFU)
         InstanceID = mpArea->FindUnusedInstanceID();
     mpObj = new CScriptObject(InstanceID, mpArea, mpLayer, pTemplate);
 
@@ -321,7 +321,7 @@ CScriptObject* CScriptLoader::LoadObjectMP1(IInputStream& rSCLY)
     {
         const auto State = rSCLY.ReadU32();
         const auto Message = rSCLY.ReadU32();
-        const auto ReceiverID = CInstanceID(rSCLY.ReadU32());
+        const auto ReceiverID = CInstanceID(rSCLY.ReadU32() & 0x03FFFFFF);
 
         CLink *pLink = new CLink(mpArea, State, Message, mpObj->mInstanceID, ReceiverID);
         mpObj->mOutLinks.push_back(pLink);
@@ -419,8 +419,8 @@ CScriptObject* CScriptLoader::LoadObjectMP2(IInputStream& rSCLY)
         return nullptr;
     }
 
-    auto InstanceID = CInstanceID(rSCLY.ReadU32());
-    if (InstanceID.Value() == 0xFFFFFFFFU)
+    auto InstanceID = CInstanceID(rSCLY.ReadU32() & 0x03FFFFFF);
+    if (InstanceID.Value() == 0x03FFFFFFU)
         InstanceID = mpArea->FindUnusedInstanceID();
     mpObj = new CScriptObject(InstanceID, mpArea, mpLayer, pTemplate);
 
@@ -432,7 +432,7 @@ CScriptObject* CScriptLoader::LoadObjectMP2(IInputStream& rSCLY)
     {
         const auto State = rSCLY.ReadU32();
         const auto Message = rSCLY.ReadU32();
-        const auto ReceiverID = CInstanceID(rSCLY.ReadU32());
+        const auto ReceiverID = CInstanceID(rSCLY.ReadU32() & 0x03FFFFFF);
 
         auto* pLink = new CLink(mpArea, State, Message, mpObj->mInstanceID, ReceiverID);
         mpObj->mOutLinks.push_back(pLink);

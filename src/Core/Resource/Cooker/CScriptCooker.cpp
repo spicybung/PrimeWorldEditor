@@ -257,7 +257,7 @@ void CScriptCooker::WriteInstance(IOutputStream& rOut, CScriptObject *pInstance)
     IsPrime1 ? rOut.WriteU32(0) : rOut.WriteU16(0);
 
     const auto InstanceStart = rOut.Tell();
-    const auto InstanceID = pInstance->InstanceID().Value();
+    const auto InstanceID = (pInstance->Layer()->AreaIndex() << 26) | pInstance->InstanceID().Value();
     rOut.WriteU32(InstanceID);
 
     const auto Links = pInstance->Links(ELinkType::Outgoing);
