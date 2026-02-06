@@ -231,12 +231,7 @@ bool CGizmo::CheckSelectedAxes(const CRay& rkRay)
             }
 
             if (Hit)
-            {
-                Results.push_back({
-                    .pPart = pPart,
-                    .Dist = Dist,
-                });
-            }
+                Results.emplace_back(pPart, Dist);
         }
 
         pPart++;
