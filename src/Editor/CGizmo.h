@@ -10,6 +10,10 @@
 #include <Common/Math/ETransformSpace.h>
 #include <Core/Render/CCamera.h>
 #include <Core/Render/IRenderable.h>
+#include <Core/Resource/TResPtr.h>
+#include <Core/Resource/Model/CModel.h>
+
+#include <span>
 
 #define CGIZMO_TRANSLATE_X 0
 #define CGIZMO_TRANSLATE_Y 1
@@ -39,8 +43,20 @@
 #define CGIZMO_SCALE_XYZ 9
 #define CGIZMO_SCALE_NUM 10
 
+struct SGizmoModelPart
+{
+    FAxes ModelAxes;
+    bool EnableRayCast = false;
+    bool IsBillboard = false;
+    TResPtr<CModel> pModel;
 
-struct SGizmoModelPart;
+    constexpr SGizmoModelPart() : ModelAxes(EAxis::None) {};
+    SGizmoModelPart(FAxes Axes, bool RayCastOn, bool Billboard, TResPtr<CModel> _pModel)
+        : ModelAxes(Axes), EnableRayCast(RayCastOn), IsBillboard(Billboard), pModel(std::move(_pModel))
+    {
+    }
+};
+
 class CGizmo : public IRenderable
 {
 public:
@@ -92,8 +108,7 @@ private:
     CVector3f mMoveDir;
 
     // Model parts
-    SGizmoModelPart* mpCurrentParts = nullptr;
-    uint32_t mNumCurrentParts = 0;
+    std::span<SGizmoModelPart> mpCurrentParts;
 
 public:
     CGizmo();

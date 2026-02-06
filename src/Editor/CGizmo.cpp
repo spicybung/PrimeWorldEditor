@@ -2,6 +2,7 @@
 
 #include <Common/Log.h>
 #include <Common/Math/MathUtil.h>
+#include <Core/NRangeUtils.h>
 #include <Core/GameProject/CResourceStore.h>
 #include <Core/Render/CDrawUtil.h>
 #include <Core/Render/CGraphics.h>
@@ -12,23 +13,6 @@
 #include <cmath>
 #include <QApplication>
 #include <QScreen>
-
-struct SGizmoModelPart
-{
-    FAxes ModelAxes;
-    bool EnableRayCast = false;
-    bool IsBillboard = false;
-    TResPtr<CModel> pModel;
-
-    constexpr SGizmoModelPart() : ModelAxes(EAxis::None) {};
-    SGizmoModelPart(FAxes Axes, bool RayCastOn, bool Billboard, TResPtr<CModel> _pModel)
-        : ModelAxes(Axes)
-        , EnableRayCast(RayCastOn)
-        , IsBillboard(Billboard)
-        , pModel(std::move(_pModel))
-    {
-    }
-};
 
 namespace
 {
@@ -88,36 +72,32 @@ void CGizmo::AddToRenderer(CRenderer *pRenderer, const SViewInfo&)
     // Transform is updated every frame even if the user doesn't modify the gizmo
     // in order to account for scale changes based on camera distance
     UpdateTransform();
-    const auto* pPart = mpCurrentParts;
 
     // Add all parts to renderer
-    for (uint32_t iPart = 0; iPart < mNumCurrentParts; iPart++)
+    for (auto&& [idx, part] : Utils::enumerate(mpCurrentParts))
     {
-        const CModel* pModel = pPart->pModel;
+        const CModel* pModel = part.pModel;
 
         // Determine whether to use the mat set for regular (0) or highlight (1)
-        const FAxes PartAxes = pPart->ModelAxes;
-        const bool IsHighlighted = (PartAxes != EAxis::None) && ((mSelectedAxes & PartAxes) == pPart->ModelAxes);
-        const size_t SetID = (IsHighlighted ? 1 : 0);
+        const FAxes PartAxes = part.ModelAxes;
+        const bool IsHighlighted = (PartAxes != EAxis::None) && ((mSelectedAxes & PartAxes) == part.ModelAxes);
+        const auto SetID = (IsHighlighted ? 1U : 0U);
 
         // Add to renderer...
-        pRenderer->AddMesh(this, iPart, pModel->AABox().Transformed(mTransform), pModel->HasTransparency(SetID), ERenderCommand::DrawMesh, EDepthGroup::Foreground);
-        pPart++;
+        pRenderer->AddMesh(this, int(idx), pModel->AABox().Transformed(mTransform), pModel->HasTransparency(SetID), ERenderCommand::DrawMesh, EDepthGroup::Foreground);
     }
 }
 
 void CGizmo::Draw(FRenderOptions /*Options*/, int ComponentIndex, ERenderCommand /*Command*/, const SViewInfo& /*rkViewInfo*/)
 {
     // Determine which SGizmoModelPart array to use
-    if (ComponentIndex >= (int) mNumCurrentParts)
+    if (ComponentIndex >= std::ssize(mpCurrentParts))
         return;
 
-    auto* pPart = mpCurrentParts;
-
     // Set model matrix
-    if (pPart[ComponentIndex].IsBillboard)
+    if (mpCurrentParts[ComponentIndex].IsBillboard)
         CGraphics::sMVPBlock.ModelMatrix = mBillboardTransform;
-    else if (mMode == EGizmoMode::Scale && (mSelectedAxes & pPart[ComponentIndex].ModelAxes))
+    else if (mMode == EGizmoMode::Scale && (mSelectedAxes & mpCurrentParts[ComponentIndex].ModelAxes))
         CGraphics::sMVPBlock.ModelMatrix = mScaledTransform;
     else
         CGraphics::sMVPBlock.ModelMatrix = mTransform;
@@ -129,12 +109,12 @@ void CGizmo::Draw(FRenderOptions /*Options*/, int ComponentIndex, ERenderCommand
     CGraphics::UpdatePixelBlock();
 
     // Choose material set
-    FAxes PartAxes = pPart[ComponentIndex].ModelAxes;
-    bool IsHighlighted = (PartAxes != EAxis::None) && ((mSelectedAxes & PartAxes) == pPart[ComponentIndex].ModelAxes);
-    uint32_t SetID = (IsHighlighted ? 1 : 0);
+    const FAxes PartAxes = mpCurrentParts[ComponentIndex].ModelAxes;
+    const bool IsHighlighted = (PartAxes != EAxis::None) && ((mSelectedAxes & PartAxes) == mpCurrentParts[ComponentIndex].ModelAxes);
+    const auto SetID = (IsHighlighted ? 1U : 0U);
 
     // Draw model
-    pPart[ComponentIndex].pModel->Draw((FRenderOptions) 0, SetID);
+    mpCurrentParts[ComponentIndex].pModel->Draw(FRenderOptions(0), SetID);
 }
 
 void CGizmo::IncrementSize()
@@ -181,7 +161,7 @@ bool CGizmo::CheckSelectedAxes(const CRay& rkRay)
     const CRay BillRay = rkRay.Transformed(mBillboardTransform.Inverse());
 
     // Do raycast on each model
-    const auto* pPart = mpCurrentParts;
+    const auto* pPart = mpCurrentParts.data();
 
     struct SResult {
         const SGizmoModelPart* pPart;
@@ -194,7 +174,7 @@ bool CGizmo::CheckSelectedAxes(const CRay& rkRay)
     };
     std::list<SResult> Results;
 
-    for (uint32_t iPart = 0; iPart < mNumCurrentParts; iPart++)
+    for (size_t iPart = 0; iPart < mpCurrentParts.size(); iPart++)
     {
         if (!pPart->EnableRayCast)
         {
@@ -567,26 +547,25 @@ void CGizmo::SetMode(EGizmoMode Mode)
     switch (Mode)
     {
     case EGizmoMode::Translate:
-        mpCurrentParts = smTranslateModels.data();
-        mNumCurrentParts = smTranslateModels.size();
+        mpCurrentParts = smTranslateModels;
         mDeltaRotation = CQuaternion::Identity();
         mDeltaScale = CVector3f::One();
         break;
 
     case EGizmoMode::Rotate:
-        mpCurrentParts = smRotateModels.data();
-        mNumCurrentParts = smRotateModels.size();
+        mpCurrentParts = smRotateModels;
         mDeltaTranslation = CVector3f::Zero();
         mDeltaScale = CVector3f::One();
         break;
 
     case EGizmoMode::Scale:
-        mpCurrentParts = smScaleModels.data();
-        mNumCurrentParts = smScaleModels.size();
+        mpCurrentParts = smScaleModels;
         mDeltaTranslation = CVector3f::Zero();
         mDeltaRotation = CQuaternion::Identity();
         break;
-    default: break;
+
+    case EGizmoMode::Off:
+        break;
     }
 }
 
