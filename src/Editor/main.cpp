@@ -13,6 +13,8 @@
 #include <QStyleFactory>
 #include <QtGlobal>
 
+#include <string>
+
 #ifdef __APPLE__
 #include "Editor/MacOSExtras.h"
 #endif
@@ -81,10 +83,10 @@ static TString LocateDataDirectory()
     return dir;
 }
 
-static TString LocateLogPath()
+static std::string LocateLogPath()
 {
 #ifndef _WIN32
-    return TString(getenv("HOME")) + "/.primeworldeditor.log";
+    return std::string(getenv("HOME")) + "/.primeworldeditor.log";
 #else
     return "primeworldeditor.log";
 #endif
