@@ -10,9 +10,8 @@ class IInputStream;
 
 class CDependencyGroupLoader
 {
-    CDependencyGroupLoader() = delete;
-
 public:
+    CDependencyGroupLoader() = delete;
     static std::unique_ptr<CDependencyGroup> LoadDGRP(IInputStream& rDGRP, CResourceEntry *pEntry);
 };
 
