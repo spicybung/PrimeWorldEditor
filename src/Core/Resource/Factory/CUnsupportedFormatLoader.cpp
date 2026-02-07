@@ -3,6 +3,7 @@
 #include <Common/CAssetID.h>
 #include <Common/EGame.h>
 #include <Common/Log.h>
+#include "Core/NRangeUtils.h"
 #include "Core/GameProject/CGameProject.h"
 #include "Core/Resource/CAudioMacro.h"
 #include "Core/Resource/CDependencyGroup.h"
@@ -457,11 +458,11 @@ std::unique_ptr<CMapArea> CUnsupportedFormatLoader::LoadMAPA(IInputStream& /*rMA
     {
         auto *pGroup = static_cast<CDependencyGroup*>(It->Load());
 
-        for (size_t AreaIdx = 0; AreaIdx < pGroup->NumDependencies(); AreaIdx++)
+        for (const auto& [idx, dep] : Utils::enumerate(pGroup->Dependencies()))
         {
-            if (pGroup->DependencyByIndex(AreaIdx) == MapAreaID)
+            if (dep == MapAreaID)
             {
-                WorldIndex = AreaIdx;
+                WorldIndex = idx;
                 MapWorldID = pGroup->ID();
                 break;
             }

@@ -382,10 +382,8 @@ void CPackageDependencyListBuilder::FindUniversalAreaAssets()
         if (!pMapWorld)
             continue;
 
-        for (size_t DepIdx = 0; DepIdx < pMapWorld->NumDependencies(); DepIdx++)
+        for (const auto& DepID : pMapWorld->Dependencies())
         {
-            const CAssetID& DepID = pMapWorld->DependencyByIndex(DepIdx);
-
             if (DepID.IsValid())
                 mUniversalAreaAssets.insert(DepID);
         }

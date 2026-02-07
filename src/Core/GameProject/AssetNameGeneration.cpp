@@ -228,7 +228,7 @@ void GenerateAssetNames(CGameProject *pProj)
                 CDependencyGroup *pGroup = dynamic_cast<CDependencyGroup*>(pMapWorld);
                 ASSERT(pGroup != nullptr);
 
-                const CAssetID& MapID = pGroup->DependencyByIndex(iArea);
+                const CAssetID& MapID = pGroup->Dependencies()[iArea];
                 CResourceEntry *pMapEntry = pStore->FindEntry(MapID);
                 ASSERT(pMapEntry != nullptr);
 
