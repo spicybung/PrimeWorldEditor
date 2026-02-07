@@ -11,9 +11,9 @@ class IInputStream;
 
 class CAudioGroupLoader
 {
-    CAudioGroupLoader() = default;
-
 public:
+    CAudioGroupLoader() = delete;
+
     static std::unique_ptr<CAudioGroup> LoadAGSC(IInputStream& rAGSC, CResourceEntry *pEntry);
     static std::unique_ptr<CAudioLookupTable> LoadATBL(IInputStream& rATBL, CResourceEntry *pEntry);
     static std::unique_ptr<CStringList> LoadSTLC(IInputStream& rSTLC, CResourceEntry *pEntry);
