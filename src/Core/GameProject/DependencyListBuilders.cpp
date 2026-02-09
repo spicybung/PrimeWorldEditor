@@ -115,7 +115,7 @@ void CCharacterUsageMap::DebugPrintContents()
         for (auto&& [idx, character] : Utils::enumerate(pSet->Characters()))
         {
             const bool Used = usedList.size() > idx && usedList[idx];
-            NLog::Debug("{} : Char {} : {} : {}", ID.ToString().ToStdString(), idx, character.Name.ToStdString(), (Used ? "USED" : "UNUSED"));
+            NLog::Debug("{} : Char {} : {} : {}", ID.ToString(), idx, character.Name, (Used ? "USED" : "UNUSED"));
         }
     }
 }

@@ -97,9 +97,9 @@ void CAudioManager::LogSoundInfo(uint32_t SoundID) const
         return;
 
     if (mpProject->Game() >= EGame::EchoesDemo)
-        NLog::Debug("Sound Name:  {}", SoundInfo.Name.ToStdString());
+        NLog::Debug("Sound Name:  {}", SoundInfo.Name);
 
     NLog::Debug("Sound ID:    0x{:04x}", SoundInfo.SoundID);
     NLog::Debug("Define ID:   0x{:04x}", SoundInfo.DefineID);
-    NLog::Debug("Audio Group: {}\n", SoundInfo.pAudioGroup->Entry()->Name().ToStdString());
+    NLog::Debug("Audio Group: {}\n", SoundInfo.pAudioGroup->Entry()->Name());
 }

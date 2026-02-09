@@ -168,13 +168,13 @@ void CAssetNameMap::CopyFromStore(CResourceStore *pStore)
 
                 while (mUsedSet.contains(NewNameInfo))
                 {
-                    NewNameInfo.Name = fmt::format("{}_{}", NameInfo.Name.ToStdString(), NumConflicted);
+                    NewNameInfo.Name = fmt::format("{}_{}", NameInfo.Name, NumConflicted);
                     NumConflicted++;
                 }
 
                 NLog::Warn("Detected name conflict when copying asset name from the resource store; renaming.");
-                NLog::Warn("\tOld Path: {}", NameInfo.FullPath().ToStdString());
-                NLog::Warn("\tNew Path: {}", NewNameInfo.FullPath().ToStdString());
+                NLog::Warn("\tOld Path: {}", NameInfo.FullPath());
+                NLog::Warn("\tNew Path: {}", NewNameInfo.FullPath());
                 NameInfo.Name = NewNameInfo.Name;
             }
 
@@ -216,7 +216,7 @@ void CAssetNameMap::PostLoadValidate()
             // Verify the name/path is valid
             if (!CResourceStore::IsValidResourcePath(rkInfo.Directory, rkInfo.Name))
             {
-                NLog::Error("Invalid resource path in asset name map: {}{}.{}", rkInfo.Directory.ToStdString(), rkInfo.Name.ToStdString(), rkInfo.Type.ToString().ToStdString());
+                NLog::Error("Invalid resource path in asset name map: {}{}.{}", rkInfo.Directory, rkInfo.Name, rkInfo.Type.ToString());
                 Iter = mMap.erase(Iter);
                 FoundErrors = true;
             }
@@ -224,7 +224,7 @@ void CAssetNameMap::PostLoadValidate()
             // Verify correct ID length
             if (Iter->first.Length() != mIDLength)
             {
-                NLog::Error("Incorrect asset ID length in asset name map: {}", Iter->first.ToString().ToStdString());
+                NLog::Error("Incorrect asset ID length in asset name map: {}", Iter->first.ToString());
                 Iter = mMap.erase(Iter);
                 FoundErrors = true;
             }
@@ -238,7 +238,7 @@ void CAssetNameMap::PostLoadValidate()
 
         for (const auto& dupe : Dupes)
         {
-            NLog::Warn("\t{}", dupe.FullPath().ToStdString());
+            NLog::Warn("\t{}", dupe.FullPath());
         }
 
         mMap.clear();

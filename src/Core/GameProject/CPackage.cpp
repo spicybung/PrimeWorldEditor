@@ -97,7 +97,7 @@ void CPackage::Cook(IProgressNotifier *pProgress)
     CPackageDependencyListBuilder Builder(this);
     std::list<CAssetID> AssetList;
     Builder.BuildDependencyList(true, AssetList);
-    NLog::Debug("{} assets in {}.pak", AssetList.size(), Name().ToStdString());
+    NLog::Debug("{} assets in {}.pak", AssetList.size(), Name());
 
     // Write new pak
     const TString PakPath = CookedPackagePath(false);
@@ -105,7 +105,7 @@ void CPackage::Cook(IProgressNotifier *pProgress)
 
     if (!Pak.IsValid())
     {
-        NLog::Error("Couldn't cook package {}; unable to open package for writing", CookedPackagePath(true).ToStdString());
+        NLog::Error("Couldn't cook package {}; unable to open package for writing", CookedPackagePath(true));
         return;
     }
 
@@ -349,7 +349,7 @@ void CPackage::Cook(IProgressNotifier *pProgress)
 
         // Clear recook flag
         mNeedsRecook = false;
-        NLog::Debug("Finished writing {}", PakPath.ToStdString());
+        NLog::Debug("Finished writing {}", PakPath);
     }
 
     Save();
@@ -435,7 +435,7 @@ void CPackage::CompareOriginalAssetList(const std::list<CAssetID>& rkNewList)
         {
             const CResourceEntry *pEntry = gpResourceStore->FindEntry(ID);
             const TString Extension = (pEntry != nullptr ? "." + pEntry->CookedExtension() : "");
-            NLog::Warn("Missing resource: {}{}", ID.ToString().ToStdString(), Extension.ToStdString());
+            NLog::Warn("Missing resource: {}{}", ID.ToString(), Extension);
         }
     }
 
@@ -446,7 +446,7 @@ void CPackage::CompareOriginalAssetList(const std::list<CAssetID>& rkNewList)
         {
             const CResourceEntry *pEntry = gpResourceStore->FindEntry(ID);
             const TString Extension = (pEntry != nullptr ? "." + pEntry->CookedExtension() : "");
-            NLog::Warn("Extra resource: {}{}", ID.ToString().ToStdString(), Extension.ToStdString());
+            NLog::Warn("Extra resource: {}{}", ID.ToString(), Extension);
         }
     }
 }

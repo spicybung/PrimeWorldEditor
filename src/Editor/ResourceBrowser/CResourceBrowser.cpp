@@ -475,7 +475,7 @@ CResourceEntry* CResourceBrowser::CreateNewResource(EResourceType Type,
     // Boring generic default name - user will immediately be prompted to change this
     TString BaseName = Name;
     if (BaseName.IsEmpty())
-        BaseName = fmt::format("New {}", CResTypeInfo::FindTypeInfo(Type)->TypeName().ToStdString());
+        BaseName = fmt::format("New {}", CResTypeInfo::FindTypeInfo(Type)->TypeName());
 
     Name = BaseName;
     int Num = 0;
@@ -483,7 +483,7 @@ CResourceEntry* CResourceBrowser::CreateNewResource(EResourceType Type,
     while (pDir->FindChildResource(Name, Type) != nullptr)
     {
         Num++;
-        Name = fmt::format("{} ({})", BaseName.ToStdString(), Num);
+        Name = fmt::format("{} ({})", BaseName, Num);
     }
 
     // Create the actual resource
@@ -674,7 +674,7 @@ bool CResourceBrowser::CreateDir()
         while (mpSelectedDir->FindChildDirectory(DirName, false) != nullptr)
         {
             AppendNum++;
-            DirName = fmt::format("{} ({})", DirNameBase.ToStdString(), AppendNum);
+            DirName = fmt::format("{} ({})", DirNameBase, AppendNum);
         }
 
         // Push create command to actually create the directory

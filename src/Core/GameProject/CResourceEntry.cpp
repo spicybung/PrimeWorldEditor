@@ -548,7 +548,7 @@ bool CResourceEntry::MoveAndRename(const TString& rkDir, const TString& rkName, 
             if (!FSMoveSuccess)
             {
                 MoveFailReason = fmt::format("Failed to move raw file to new destination ({} --> {})",
-                                             OldRawPath.ToStdString(), NewRawPath.ToStdString());
+                                             OldRawPath, NewRawPath);
             }
         }
 
@@ -560,7 +560,7 @@ bool CResourceEntry::MoveAndRename(const TString& rkDir, const TString& rkName, 
             if (!FSMoveSuccess)
             {
                 MoveFailReason = fmt::format("Failed to move cooked file to new destination ({} --> {})",
-                                             OldCookedPath.ToStdString(), NewCookedPath.ToStdString());
+                                             OldCookedPath, NewCookedPath);
             }
         }
 
@@ -574,7 +574,7 @@ bool CResourceEntry::MoveAndRename(const TString& rkDir, const TString& rkName, 
                 if (!FSMoveSuccess)
                 {
                     MoveFailReason = fmt::format("Failed to move metadata file to new destination ({} --> {})",
-                                                 OldMetaPath.ToStdString(), NewMetaPath.ToStdString());
+                                                 OldMetaPath, NewMetaPath);
                 }
             }
             else
@@ -592,7 +592,7 @@ bool CResourceEntry::MoveAndRename(const TString& rkDir, const TString& rkName, 
         TString BadFilePath = HasCooked ? NewCookedPath : (HasRaw ? NewRawPath : NewMetaPath);
 
         MoveFailReason = fmt::format("File already exists at {} asset destination ({})",
-                                     BadFileType.ToStdString(), BadFilePath.ToStdString());
+                                     BadFileType, BadFilePath);
     }
 
     // If we succeeded, finish the move
@@ -619,7 +619,7 @@ bool CResourceEntry::MoveAndRename(const TString& rkDir, const TString& rkName, 
     // Otherwise, revert changes and let the caller know the move failed
     else
     {
-        NLog::Error("MOVE FAILED: {}", MoveFailReason.ToStdString());
+        NLog::Error("MOVE FAILED: {}", MoveFailReason);
         mpDirectory = pOldDir;
         mName = OldName;
 

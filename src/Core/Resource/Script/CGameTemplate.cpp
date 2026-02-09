@@ -109,7 +109,7 @@ void CGameTemplate::SaveGameTemplates(bool ForceAll)
             const TString kOutPath = kGameDir + Path.Path;
             FileUtil::MakeDirectory(kOutPath.GetFileDirectory());
 
-            NLog::Debug("Saving property template: {}", kOutPath.ToStdString());
+            NLog::Debug("Saving property template: {}", kOutPath);
             CXMLWriter Writer(kOutPath, "PropertyTemplate", 0, Game());
             ASSERT(Writer.IsValid());
 

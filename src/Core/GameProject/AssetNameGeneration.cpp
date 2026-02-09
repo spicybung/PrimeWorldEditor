@@ -81,7 +81,7 @@ void ApplyGeneratedName(CResourceEntry *pEntry, const TString& rkDir, const TStr
             if (pConflict == pEntry)
                 return;
 
-            NewName = fmt::format("{}_{}", SanitizedName.ToStdString(), AppendNum);
+            NewName = fmt::format("{}_{}", SanitizedName, AppendNum);
             AppendNum++;
         }
     }
@@ -152,7 +152,7 @@ void GenerateAssetNames(CGameProject *pProj)
 
         // Move world stuff
         const TString WorldNamesDir = "Strings/Worlds/General/";
-        const TString AreaNamesDir = fmt::format("Strings/Worlds/{}/", WorldName.ToStdString());
+        const TString AreaNamesDir = fmt::format("Strings/Worlds/{}/", WorldName);
 
         CModel *pSkyModel = pWorld->DefaultSkybox();
         CStringTable *pWorldNameTable = pWorld->NameString();
@@ -259,11 +259,11 @@ void GenerateAssetNames(CGameProject *pProj)
 
                     if (IsLightmap)
                     {
-                        TexName = fmt::format("{}_lit_lightmap{}", AreaName.ToStdString(), LightmapNum);
+                        TexName = fmt::format("{}_lit_lightmap{}", AreaName, LightmapNum);
                     }
                     else if (IsBloomLightmap)
                     {
-                        TexName = fmt::format("{}_lit_lightmap_bloom{}", AreaName.ToStdString(), LightmapNum);
+                        TexName = fmt::format("{}_lit_lightmap_bloom{}", AreaName, LightmapNum);
                     }
 
                     if (!TexName.IsEmpty())
@@ -430,7 +430,7 @@ void GenerateAssetNames(CGameProject *pProj)
                         if (pTexEntry->IsNamed() || pTexEntry->IsCategorized())
                             continue;
 
-                        TString TexName = fmt::format("{}_lightmap{}", It->Name().ToStdString(), LightmapNum);
+                        TString TexName = fmt::format("{}_lightmap{}", It->Name(), LightmapNum);
                         ApplyGeneratedName(pTexEntry, pModel->Entry()->DirectoryPath(), TexName);
                         pTexEntry->SetHidden(true);
                         LightmapNum++;
@@ -477,7 +477,7 @@ void GenerateAssetNames(CGameProject *pProj)
             if (pMacro->NumSamples() == 1)
                 SampleName = MacroName;
             else
-                SampleName = fmt::format("{}_{}", MacroName.ToStdString(), idx);
+                SampleName = fmt::format("{}_{}", MacroName, idx);
 
             ApplyGeneratedName(pSample, kSfxDir, SampleName);
         }
@@ -512,7 +512,7 @@ void GenerateAssetNames(CGameProject *pProj)
 
                 if (pAnimDataEntry)
                 {
-                    TString AnimDataName = fmt::format("{}_animdata", CharName.ToStdString());
+                    TString AnimDataName = fmt::format("{}_animdata", CharName);
                     ApplyGeneratedName(pAnimDataEntry, SetDir, AnimDataName);
                 }
             }
@@ -530,7 +530,7 @@ void GenerateAssetNames(CGameProject *pProj)
                     );
                     ASSERT(TypeName != "");
 
-                    TString OverlayName = fmt::format("{}_{}", CharName.ToStdString(), TypeName.ToStdString());
+                    TString OverlayName = fmt::format("{}_{}", CharName, TypeName);
 
                     if (rkOverlay.ModelID.IsValid())
                     {
@@ -628,7 +628,7 @@ void GenerateAssetNames(CGameProject *pProj)
             {
                 const CAssetID ImageID = kParms.ScanImages[iImg].Texture;
                 if (CResourceEntry* pImgEntry = pStore->FindEntry(ImageID))
-                    ApplyGeneratedName(pImgEntry, pImgEntry->DirectoryPath(), fmt::format("{}_Image{}", ScanName.ToStdString(), iImg));
+                    ApplyGeneratedName(pImgEntry, pImgEntry->DirectoryPath(), fmt::format("{}_Image{}", ScanName, iImg));
             }
         }
     }
