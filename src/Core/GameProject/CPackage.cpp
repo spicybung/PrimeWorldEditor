@@ -199,14 +199,14 @@ void CPackage::Cook(IProgressNotifier *pProgress)
 
         if (pEntry->NeedsRecook())
         {
-            pProgress->Report(ResIdx, AssetList.size(), fmt::format("Cooking asset: {}.{}", *pEntry->Name(), *pEntry->CookedExtension().ToString()));
+            pProgress->Report(ResIdx, AssetList.size(), fmt::format("Cooking asset: {}.{}", pEntry->Name(), pEntry->CookedExtension().ToString()));
             pEntry->Cook();
         }
 
         // Update progress bar
         if ((ResIdx & 1) != 0 || ResIdx == AssetList.size() - 1)
         {
-            pProgress->Report(ResIdx, AssetList.size(), fmt::format("Writing asset {}/{}: {}", ResIdx+1, AssetList.size(), *(pEntry->Name() + "." + pEntry->CookedExtension())));
+            pProgress->Report(ResIdx, AssetList.size(), fmt::format("Writing asset {}/{}: {}", ResIdx+1, AssetList.size(), (pEntry->Name() + "." + pEntry->CookedExtension())));
         }
 
         // Update table info

@@ -579,7 +579,7 @@ void CGameExporter::ExportResourceEditorData()
             // Update progress
             if ((ResIndex & 0x3) == 0 || It->ResourceType() == EResourceType::Area)
             {
-                mpProgress->Report(ResIndex, mpStore->NumTotalResources(), fmt::format("Processing asset {}/{}: {}", ResIndex, mpStore->NumTotalResources(), *It->CookedAssetPath(true).GetFileName()));
+                mpProgress->Report(ResIndex, mpStore->NumTotalResources(), fmt::format("Processing asset {}/{}: {}", ResIndex, mpStore->NumTotalResources(), It->CookedAssetPath(true).GetFileName()));
             }
 
             // Worlds need some info we can only get from the pak at export time; namely, which areas can

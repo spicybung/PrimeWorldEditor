@@ -99,7 +99,7 @@ bool CGameProject::BuildISO(const TString& rkIsoPath, IProgressNotifier *pProgre
         pProgress->Report(static_cast<int>(ProgressPercent * 10000), 10000, std::string(rkInfoString));
     };
 
-    pProgress->SetTask(0, fmt::format("Building {}", *rkIsoPath.GetFileName()));
+    pProgress->SetTask(0, fmt::format("Building {}", rkIsoPath.GetFileName()));
     const TString DiscRoot = DiscDir(false);
 
     if (!IsWiiBuild())
@@ -125,7 +125,7 @@ bool CGameProject::MergeISO(const TString& rkIsoPath, nod::DiscWii *pOriginalIso
         pProgress->Report(static_cast<int>(ProgressPercent * 10000), 10000, std::string(rkInfoString));
     };
 
-    pProgress->SetTask(0, fmt::format("Building {}", *rkIsoPath.GetFileName()));
+    pProgress->SetTask(0, fmt::format("Building {}", rkIsoPath.GetFileName()));
 
     const TString DiscRoot = DiscFilesystemRoot(false);
 
@@ -214,7 +214,7 @@ std::unique_ptr<CGameProject> CGameProject::LoadProject(const TString& rkProjPat
     pProj->mProjectRoot.Replace("\\", "/");
 
     // Init progress
-    pProgress->SetTask(0, fmt::format("Loading project: {}", *rkProjPath.GetFileName()));
+    pProgress->SetTask(0, fmt::format("Loading project: {}", rkProjPath.GetFileName()));
 
     // Load main project file
     pProgress->Report("Loading project settings");
