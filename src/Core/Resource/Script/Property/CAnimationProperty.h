@@ -2,6 +2,7 @@
 #define CANIMATIONPROPERTY_H
 
 #include "Core/Resource/Script/Property/IProperty.h"
+#include <fmt/format.h>
 
 class CAnimationProperty : public TSerializeableTypedProperty<uint32_t, EPropertyType::Animation>
 {
@@ -20,7 +21,7 @@ public:
 
     TString ValueAsString(const void* pData) const override
     {
-        return TString::HexString(Value(pData));
+        return fmt::format("0x{:08X}", Value(pData));
     }
 };
 

@@ -11,6 +11,8 @@
 #include <type_traits>
 #include <cfloat>
 
+#include <fmt/format.h>
+
 /** Forward declares */
 class CGameTemplate;
 class CScriptTemplate;
@@ -268,9 +270,9 @@ public:
     TIDString IDString(bool FullyQualified) const
     {
         if (FullyQualified && mpParent != nullptr && mpParent->Parent() != nullptr)
-            return mpParent->IDString(FullyQualified) + ":" + TString::HexString(mID);
+            return fmt::format("{}:0x{:08X}", mpParent->IDString(FullyQualified), mID);
         else
-            return TString::HexString(mID);
+            return fmt::format("0x{:08X}", mID);
     }
 
     uint32_t Offset() const { return mOffset; }

@@ -12,6 +12,8 @@
 #include <QApplication>
 #include <QIcon>
 
+#include <fmt/format.h>
+
 /*
  * The tree has 3 levels:
  * 1. Node Type (Script Object, Light, World Mesh, etc) - represented with ID of 0
@@ -256,7 +258,7 @@ QVariant CInstancesModel::data(const QModelIndex& rkIndex, int Role) const
                 return TO_QSTRING(pObj->InstanceName());
             
             if (rkIndex.column() == 1)
-                return TO_QSTRING(TString::HexString(pObj->InstanceID().Value(), 8, true));
+                return TO_QSTRING(fmt::format("0x{:08X}", pObj->InstanceID().Value()));
 
             if (rkIndex.column() == 2)
             {

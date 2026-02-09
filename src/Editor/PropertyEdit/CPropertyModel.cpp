@@ -266,7 +266,7 @@ QVariant CPropertyModel::data(const QModelIndex& rkIndex, int Role) const
                     if (Role == Qt::DisplayRole)
                         return QString{};
 
-                    return TO_QSTRING(TString::HexString(pFlags->FlagMask(rkIndex.row())));
+                    return TO_QSTRING(fmt::format("0x{:08X}", pFlags->FlagMask(rkIndex.row())));
                 }
             }
             else if (Type == EPropertyType::AnimationSet)

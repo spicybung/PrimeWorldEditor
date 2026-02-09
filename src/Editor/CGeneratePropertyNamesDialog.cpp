@@ -13,6 +13,8 @@
 #include <QThreadPool>
 #include <iterator>
 
+#include <fmt/format.h>
+
 CGeneratePropertyNamesDialog::CGeneratePropertyNamesDialog(QWidget* pParent)
     : QDialog(pParent)
     , mpUI(std::make_unique<Ui::CGeneratePropertyNamesDialog>())
@@ -62,7 +64,7 @@ void CGeneratePropertyNamesDialog::AddToIDPool(IProperty* pProperty)
     const char* pkTypeName = pProperty->HashableTypeName();
     mIdPairs.push_back(SPropertyIdTypePair{ID, pkTypeName});
 
-    const QString ItemText = tr("%1 [%2]").arg(*TString::HexString(pProperty->ID(), 8, false)).arg(pkTypeName);
+    const QString ItemText = tr("%1 [%2]").arg(TO_QSTRING(fmt::format("{:08X}", pProperty->ID()))).arg(pkTypeName);
     mpUI->IdPoolList->addItem(ItemText);
 
     // We probably don't want to call UpdateUI every single time we add a property, but
@@ -317,7 +319,7 @@ void CGeneratePropertyNamesDialog::CheckForNewResults()
             QStringList ColumnText{
                 TO_QSTRING(rkName.Name),
                 TO_QSTRING(rkName.Type),
-                TO_QSTRING(TString::HexString(rkName.ID)),
+                TO_QSTRING(fmt::format("0x{:08X}", rkName.ID)),
                 TO_QSTRING(std::string(NPropertyMap::GetPropertyName(rkName.ID, rkName.Type))),
             };
 

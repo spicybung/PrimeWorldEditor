@@ -12,6 +12,8 @@
 #include <QLineEdit>
 #include <QVBoxLayout>
 
+#include <fmt/format.h>
+
 WEditorProperties::WEditorProperties(QWidget *pParent)
     : QWidget(pParent)
 {
@@ -144,11 +146,11 @@ void WEditorProperties::OnSelectionModified()
         const auto& ObjectType = pScript->Template()->Name();
         mpInstanceInfoLabel->setText(tr("[%1] [%2]")
                                          .arg(TO_QSTRING(ObjectType))
-                                         .arg(TO_QSTRING(TString::HexString(InstanceID.Value(), 8, false))));
+                                         .arg(TO_QSTRING(fmt::format("{:08X}", InstanceID.Value()))));
         mpInstanceInfoLabel->setToolTip(tr("[Layer: %1] [Area: %2] [ID: %3]")
                                             .arg(InstanceID.Layer())
                                             .arg(InstanceID.Area())
-                                            .arg(TO_QSTRING(TString::HexString(InstanceID.Id(), 4, false))));
+                                            .arg(TO_QSTRING(fmt::format("{:04X}", InstanceID.Id()))));
 
         UpdatePropertyValues();
     }
