@@ -54,7 +54,7 @@ public:
         if (base::mpArchetype)
             return base::mpArchetype->HashableTypeName();
         else if (mOverrideTypeName)
-            return *base::mName;
+            return base::mName.CString();
         else if (TypeEnum == EPropertyType::Enum)
             return "enum";
         else

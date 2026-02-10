@@ -174,7 +174,7 @@ void CProjectSettingsDialog::BuildISO()
             const nod::Header& rkHeader = pBaseDisc->getHeader();
             const TString& GameID = pProj->GameID();
 
-            if (strncmp(*GameID, rkHeader.m_gameID, 6) != 0)
+            if (strncmp(GameID.CString(), rkHeader.m_gameID, 6) != 0)
             {
                 UICommon::ErrorMsg(this, tr("The ISO provided doesn't match the project!"));
                 return;
