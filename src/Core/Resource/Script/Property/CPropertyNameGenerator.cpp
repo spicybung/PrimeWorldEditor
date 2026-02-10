@@ -90,26 +90,25 @@ void CPropertyNameGenerator::Generate(const SPropertyNameGenerationParameters& r
     pProgress->Report(0, TotalTests);
 
     const uint32_t WordsPerThread = kNumWords / rkParams.ConcurrentTasks;
-    std::vector<std::thread> Threads;
-    for (int i = 0; i < rkParams.ConcurrentTasks; ++i)
+
     {
-        SPropertyNameGenerationTaskParameters Params{};
-        Params.TaskIndex = i;
-        Params.StartWord = WordsPerThread * i;
-        if (i == rkParams.ConcurrentTasks - 1)
+        std::vector<std::jthread> Threads;
+        for (int i = 0; i < rkParams.ConcurrentTasks; ++i)
         {
-            // Ensure last task takes any remaining words
-            Params.EndWord = kNumWords - 1;
+            SPropertyNameGenerationTaskParameters Params{};
+            Params.TaskIndex = i;
+            Params.StartWord = WordsPerThread * i;
+            if (i == rkParams.ConcurrentTasks - 1)
+            {
+                // Ensure last task takes any remaining words
+                Params.EndWord = kNumWords - 1;
+            }
+            else
+            {
+                Params.EndWord = Params.StartWord + WordsPerThread;
+            }
+            Threads.emplace_back(&CPropertyNameGenerator::GenerateTask, this, rkParams, Params, pProgress);
         }
-        else
-        {
-            Params.EndWord = Params.StartWord + WordsPerThread;
-        }
-        Threads.emplace_back(&CPropertyNameGenerator::GenerateTask, this, rkParams, Params, pProgress);
-    }
-    for (auto& Thread : Threads)
-    {
-        Thread.join();
     }
 
     mIsRunning = false;
