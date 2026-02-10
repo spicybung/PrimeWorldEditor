@@ -61,21 +61,20 @@ void CWorldLoader::LoadPrimeMLVL(IInputStream& rMLVL)
         rMLVL.Seek(0x4, SEEK_CUR);
     mpWorld->mAreas.resize(NumAreas);
 
-    for (uint32_t iArea = 0; iArea < NumAreas; iArea++)
+    for (auto& area : mpWorld->mAreas)
     {
         // Area header
-        CWorld::SArea *pArea = &mpWorld->mAreas[iArea];
-        pArea->pAreaName = gpResourceStore->LoadResource<CStringTable>(CAssetID(rMLVL, mVersion));
-        pArea->Transform = CTransform4f(rMLVL);
-        pArea->AetherBox = CAABox(rMLVL);
-        pArea->AreaResID = CAssetID(rMLVL, mVersion);
-        pArea->AreaID = CAssetID(rMLVL, mVersion);
+        area.pAreaName = gpResourceStore->LoadResource<CStringTable>(CAssetID(rMLVL, mVersion));
+        area.Transform = CTransform4f(rMLVL);
+        area.AetherBox = CAABox(rMLVL);
+        area.AreaResID = CAssetID(rMLVL, mVersion);
+        area.AreaID = CAssetID(rMLVL, mVersion);
 
         // Attached areas
         const auto NumAttachedAreas = rMLVL.ReadU32();
-        pArea->AttachedAreaIDs.reserve(NumAttachedAreas);
+        area.AttachedAreaIDs.reserve(NumAttachedAreas);
         for (uint32_t iAttached = 0; iAttached < NumAttachedAreas; iAttached++)
-            pArea->AttachedAreaIDs.push_back(rMLVL.ReadU16());
+            area.AttachedAreaIDs.push_back(rMLVL.ReadU16());
 
         // Skip dependency list - this is very fast to regenerate so there's no use in caching it
         if (mVersion < EGame::CorruptionProto)
@@ -90,28 +89,24 @@ void CWorldLoader::LoadPrimeMLVL(IInputStream& rMLVL)
 
         // Docks
         const auto NumDocks = rMLVL.ReadU32();
-        pArea->Docks.resize(NumDocks);
+        area.Docks.resize(NumDocks);
 
-        for (uint32_t iDock = 0; iDock < NumDocks; iDock++)
+        for (auto& dock : area.Docks)
         {
             const auto NumConnectingDocks = rMLVL.ReadU32();
+            dock.ConnectingDocks.resize(NumConnectingDocks);
 
-            CWorld::SArea::SDock* pDock = &pArea->Docks[iDock];
-            pDock->ConnectingDocks.reserve(NumConnectingDocks);
-
-            for (uint32_t iConnect = 0; iConnect < NumConnectingDocks; iConnect++)
+            for (auto& ConnectingDock : dock.ConnectingDocks)
             {
-                auto& ConnectingDock = pDock->ConnectingDocks.emplace_back();
                 ConnectingDock.AreaIndex = rMLVL.ReadU32();
                 ConnectingDock.DockIndex = rMLVL.ReadU32();
-               
             }
 
             const auto NumCoordinates = rMLVL.ReadU32();
             ASSERT(NumCoordinates == 4);
-            pDock->DockCoordinates.resize(NumCoordinates);
+            dock.DockCoordinates.resize(NumCoordinates);
 
-            for (auto& coordinate : pDock->DockCoordinates)
+            for (auto& coordinate : dock.DockCoordinates)
                 coordinate = CVector3f(rMLVL);
         }
 
@@ -119,24 +114,24 @@ void CWorldLoader::LoadPrimeMLVL(IInputStream& rMLVL)
         if (mVersion == EGame::EchoesDemo || mVersion == EGame::Echoes)
         {
             const auto NumRels = rMLVL.ReadU32();
-            pArea->RelFilenames.resize(NumRels);
+            area.RelFilenames.resize(NumRels);
 
-            for (auto& filename : pArea->RelFilenames)
+            for (auto& filename : area.RelFilenames)
                 filename = rMLVL.ReadString();
 
             if (mVersion == EGame::Echoes)
             {
                 const auto NumRelOffsets = rMLVL.ReadU32(); // Don't know what these offsets correspond to
-                pArea->RelOffsets.resize(NumRelOffsets);
+                area.RelOffsets.resize(NumRelOffsets);
 
-                for (auto& offset : pArea->RelOffsets)
+                for (auto& offset : area.RelOffsets)
                     offset = rMLVL.ReadU32();
             }
         }
 
         // Internal name - MP1 doesn't have this, we'll get it from the GameInfo file later
         if (mVersion >= EGame::EchoesDemo)
-            pArea->InternalName = rMLVL.ReadString();
+            area.InternalName = rMLVL.ReadString();
     }
 
     // MapWorld
@@ -153,40 +148,33 @@ void CWorldLoader::LoadPrimeMLVL(IInputStream& rMLVL)
 
     // Layer flags
     rMLVL.Seek(0x4, SEEK_CUR); // Skipping redundant area count
-    for (uint32_t iArea = 0; iArea < NumAreas; iArea++)
+    for (auto& area : mpWorld->mAreas)
     {
-        CWorld::SArea* pArea = &mpWorld->mAreas[iArea];
         const auto NumLayers = rMLVL.ReadU32();
-        if (NumLayers != pArea->Layers.size())
-            pArea->Layers.resize(NumLayers);
+        if (NumLayers != area.Layers.size())
+            area.Layers.resize(NumLayers);
 
         const auto LayerFlags = rMLVL.ReadU64();
         for (uint32_t iLayer = 0; iLayer < NumLayers; iLayer++)
-            pArea->Layers[iLayer].Active = (((LayerFlags >> iLayer) & 0x1) == 1);
+            area.Layers[iLayer].Active = (((LayerFlags >> iLayer) & 0x1) == 1);
     }
 
     // Layer names
     rMLVL.Seek(0x4, SEEK_CUR); // Skipping redundant layer count
-    for (size_t iArea = 0; iArea < NumAreas; iArea++)
+    for (auto& area : mpWorld->mAreas)
     {
-        CWorld::SArea* pArea = &mpWorld->mAreas[iArea];
-        const size_t NumLayers = pArea->Layers.size();
-
-        for (size_t iLayer = 0; iLayer < NumLayers; iLayer++)
-            pArea->Layers[iLayer].LayerName = rMLVL.ReadString();
+        for (auto& layer : area.Layers)
+            layer.LayerName = rMLVL.ReadString();
     }
 
     // Layer state IDs
     if (mVersion >= EGame::Corruption)
     {
         rMLVL.Seek(0x4, SEEK_CUR); // Skipping redundant layer count
-        for (size_t iArea = 0; iArea < NumAreas; iArea++)
+        for (auto& area : mpWorld->mAreas)
         {
-            CWorld::SArea *pArea = &mpWorld->mAreas[iArea];
-            const size_t NumLayers = pArea->Layers.size();
-
-            for (size_t iLayer = 0; iLayer < NumLayers; iLayer++)
-                pArea->Layers[iLayer].LayerStateID = CSavedStateID(rMLVL);
+            for (auto& layer : area.Layers)
+                layer.LayerStateID = CSavedStateID(rMLVL);
         }
     }
 
@@ -246,20 +234,16 @@ void CWorldLoader::LoadReturnsMLVL(IInputStream& rMLVL)
     rMLVL.Seek(0x4, SEEK_CUR); // Skipping redundant layer count
     for (auto& area : mpWorld->mAreas)
     {
-        const size_t NumLayers = area.Layers.size();
-
-        for (size_t iLayer = 0; iLayer < NumLayers; iLayer++)
-            area.Layers[iLayer].LayerName = rMLVL.ReadString();
+        for (auto& layer : area.Layers)
+            layer.LayerName = rMLVL.ReadString();
     }
 
     // Layer state IDs
     rMLVL.Seek(0x4, SEEK_CUR); // Skipping redundant layer count
     for (auto& area : mpWorld->mAreas)
     {
-        const size_t NumLayers = area.Layers.size();
-
-        for (uint32_t iLayer = 0; iLayer < NumLayers; iLayer++)
-            area.Layers[iLayer].LayerStateID = CSavedStateID(rMLVL);
+        for (auto& layer : area.Layers)
+            layer.LayerStateID = CSavedStateID(rMLVL);
     }
 
     // Last part of the file is layer name offsets, but we don't need it
@@ -272,11 +256,10 @@ void CWorldLoader::GenerateEditorData()
     if (mVersion > EGame::Prime)
         return;
 
-    for (size_t iArea = 0; iArea < mpWorld->NumAreas(); iArea++)
+    for (auto& area : mpWorld->mAreas)
     {
-        CWorld::SArea& rArea = mpWorld->mAreas[iArea];
-        rArea.InternalName = pGameInfo->GetAreaName(rArea.AreaResID);
-        ASSERT(!rArea.InternalName.IsEmpty());
+        area.InternalName = pGameInfo->GetAreaName(area.AreaResID);
+        ASSERT(!area.InternalName.IsEmpty());
     }
 }
 
