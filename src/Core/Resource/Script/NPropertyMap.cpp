@@ -241,13 +241,13 @@ const char* GetPropertyName(const IProperty* pInProperty)
     if constexpr (gkUseLegacyMapForNameLookups)
     {
         const auto MapFind = gLegacyNameMap.find(pInProperty->ID());
-        return MapFind == gLegacyNameMap.cend() ? "Unknown" : *MapFind->second;
+        return MapFind == gLegacyNameMap.cend() ? "Unknown" : MapFind->second.CString();
     }
     else
     {
         const SNameKey Key = CreateKey(pInProperty);
         const auto MapFind = gNameMap.find(Key);
-        return MapFind == gNameMap.end() ? "Unknown" : *MapFind->second.Name;
+        return MapFind == gNameMap.end() ? "Unknown" : MapFind->second.Name.CString();
     }
 }
 
@@ -261,7 +261,7 @@ const char* GetPropertyName(uint32_t ID, std::string_view typeName)
 
     const SNameKey Key = CreateKey(ID, typeName);
     const auto MapFind = gNameMap.find(Key);
-    return MapFind == gNameMap.cend() ? "Unknown" : *MapFind->second.Name;
+    return MapFind == gNameMap.cend() ? "Unknown" : MapFind->second.Name.CString();
 }
 
 /** Calculate the property ID of a given name/type. */

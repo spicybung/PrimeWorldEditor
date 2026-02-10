@@ -319,7 +319,7 @@ TString IProperty::GetTemplateFileName() const
     pTemplateRoot = pTemplateRoot->RootParent();
 
     // Now that we have the base property of our template, we can return the file path.
-    static const size_t kChopAmount = strlen(*(gDataDir + "templates/"));
+    static const size_t kChopAmount = strlen((gDataDir + "templates/").CString());
 
     if (pTemplateRoot->ScriptTemplate())
     {
@@ -573,7 +573,7 @@ bool IProperty::HasAccurateName()
     if (!mFlags.HasFlag(EPropertyFlag::HasCachedNameCheck))
     {
         CCRC32 Hash;
-        Hash.Hash(*mName);
+        Hash.Hash(mName);
         Hash.Hash(HashableTypeName());
         uint32_t GeneratedID = Hash.Digest();
 
@@ -582,7 +582,7 @@ bool IProperty::HasAccurateName()
         if (GeneratedID != mID && Type() == EPropertyType::Int)
         {
             Hash = CCRC32();
-            Hash.Hash(*mName);
+            Hash.Hash(mName);
             Hash.Hash("choice");
             GeneratedID = Hash.Digest();
         }

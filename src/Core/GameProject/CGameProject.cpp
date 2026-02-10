@@ -43,7 +43,7 @@ bool CGameProject::Save()
     CXMLWriter Writer(ProjPath, "GameProject", static_cast<int>(EProjectVersion::Current), mGame);
     Serialize(Writer);
     const bool SaveSuccess = Writer.Save();
-    mProjFileLock.Lock(*ProjPath);
+    mProjFileLock.Lock(ProjPath);
     return SaveSuccess;
 }
 

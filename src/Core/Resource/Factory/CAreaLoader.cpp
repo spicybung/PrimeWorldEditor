@@ -783,7 +783,7 @@ std::unique_ptr<CGameArea> CAreaLoader::LoadMREA(IInputStream& MREA, CResourceEn
             }
             break;
         default:
-            NLog::Error("{}: Unsupported MREA version: 0x{:X}", *MREA.GetSourceString(), Version);
+            NLog::Error("{}: Unsupported MREA version: 0x{:X}", MREA.GetSourceString(), Version);
             Loader.mpArea.Delete();
             return nullptr;
     }

@@ -74,7 +74,7 @@ void CStructProperty::SetDefaultFromData(void* pData)
 
 const char* CStructProperty::HashableTypeName() const
 {
-    return mpArchetype ? mpArchetype->HashableTypeName() : *mName;
+    return mpArchetype ? mpArchetype->HashableTypeName() : mName.CString();
 }
 
 void CStructProperty::Serialize(IArchive& rArc)

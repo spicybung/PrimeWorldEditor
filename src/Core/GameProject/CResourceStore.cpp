@@ -613,7 +613,7 @@ void CResourceStore::ImportNamesFromPakContentsTxt(const TString& rkTxtPath, boo
     // todo: move to CAssetNameMap?
     std::map<CResourceEntry*, TString> PathMap;
     FILE *pContentsFile;
-    wrap_fopen(&pContentsFile, *rkTxtPath, "r");
+    wrap_fopen(&pContentsFile, rkTxtPath.CString(), "r");
 
     if (!pContentsFile)
     {

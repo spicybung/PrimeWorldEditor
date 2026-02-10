@@ -266,7 +266,7 @@ void CWorldTreeModel::OnProjectChanged(CGameProject *pProj)
 
             // I really need a good text stream class at some point
             using FILEPtr = std::unique_ptr<FILE, decltype(&std::fclose)>;
-            FILEPtr pAreaList{std::fopen(*AreaListPath, "r"), std::fclose};
+            FILEPtr pAreaList{std::fopen(AreaListPath.CString(), "r"), std::fclose};
             SWorldInfo *pInfo = nullptr;
             std::set<CAssetID> UsedWorlds;
 

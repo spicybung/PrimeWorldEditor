@@ -28,7 +28,7 @@ void CPropertyNameGenerator::Warmup()
 
     // Load the word list from the file
     using FILEPtr = std::unique_ptr<FILE, decltype(&std::fclose)>;
-    auto pListFile = FILEPtr{std::fopen(*(gDataDir + "resources/WordList.txt"), "r"), std::fclose};
+    auto pListFile = FILEPtr{std::fopen((gDataDir + "resources/WordList.txt").CString(), "r"), std::fclose};
     ASSERT(pListFile);
 
     while (!feof(pListFile.get()))
@@ -183,9 +183,11 @@ void CPropertyNameGenerator::GenerateTask(const SPropertyNameGenerationParameter
             // For camelcase, hash the first letter of the first word as lowercase
             if (RecalcIndex == 0 && rkParams.Casing == ENameCasing::camelCase)
             {
-                const char* pkWord = *mWords[Index];
-                LastValidHash.Hash(TString::CharToLower(pkWord[0]));
-                LastValidHash.Hash(&pkWord[1]);
+                std::string_view word = mWords[Index];
+                LastValidHash.Hash(TString::CharToLower(word[0]));
+
+                word.remove_prefix(1);
+                LastValidHash.Hash(word);
             }
             else
             {
@@ -193,7 +195,7 @@ void CPropertyNameGenerator::GenerateTask(const SPropertyNameGenerationParameter
                 if (RecalcIndex > 0 && rkParams.Casing == ENameCasing::Snake_Case)
                     LastValidHash.Hash("_");
 
-                LastValidHash.Hash( *mWords[Index] );
+                LastValidHash.Hash(mWords[Index]);
             }
 
             WordCache[RecalcIndex].Hash = LastValidHash;
@@ -201,13 +203,14 @@ void CPropertyNameGenerator::GenerateTask(const SPropertyNameGenerationParameter
 
         // We got our hash yay! Now hash the suffix and then we can test with each type name
         CCRC32 BaseHash = LastValidHash;
-        BaseHash.Hash( *rkParams.Suffix );
+        BaseHash.Hash(rkParams.Suffix);
 
         for (const auto& typeName : mTypeNames)
         {
             CCRC32 FullHash = BaseHash;
-            const char* pkTypeName = *typeName;
-            FullHash.Hash(pkTypeName);
+            FullHash.Hash(typeName);
+
+            const char* pkTypeName = typeName.CString();
             const auto PropertyID = FullHash.Digest();
 
             // Check if this hash is a property ID
@@ -235,7 +238,7 @@ void CPropertyNameGenerator::GenerateTask(const SPropertyNameGenerationParameter
 
                 if (rkParams.Casing == ENameCasing::camelCase)
                 {
-                    PropertyName.Name[0] = TString::CharToLower( PropertyName.Name[0] );
+                    PropertyName.Name[0] = TString::CharToLower(PropertyName.Name[0]);
                 }
 
                 PropertyName.Name += rkParams.Suffix;
