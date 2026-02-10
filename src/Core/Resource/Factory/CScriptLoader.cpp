@@ -70,10 +70,10 @@ void CScriptLoader::ReadProperty(IProperty *pProp, uint32_t Size, IInputStream& 
         {
             const auto Value = pChoice->ValueRef(pData);
             NLog::Error("{} [0x{:X}]: Choice property \"{}\" ({}) has unrecognized value: 0x{:08X}",
-                        *rSCLY.GetSourceString(),
+                        rSCLY.GetSourceString(),
                         rSCLY.Tell() - 4,
-                        *pChoice->Name(),
-                        *pChoice->IDString(true),
+                        pChoice->Name(),
+                        pChoice->IDString(true),
                         Value);
         }
 #endif
@@ -90,10 +90,10 @@ void CScriptLoader::ReadProperty(IProperty *pProp, uint32_t Size, IInputStream& 
         {
             const auto Value = pEnum->ValueRef(pData);
             NLog::Error("{} [0x{:X}]: Enum property \"{}\" ({}) has unrecognized value: 0x{:08X}",
-                        *rSCLY.GetSourceString(),
+                        rSCLY.GetSourceString(),
                         rSCLY.Tell() - 4,
-                        *pEnum->Name(),
-                        *pEnum->IDString(true),
+                        pEnum->Name(),
+                        pEnum->IDString(true),
                         Value);
         }
 #endif
@@ -111,10 +111,10 @@ void CScriptLoader::ReadProperty(IProperty *pProp, uint32_t Size, IInputStream& 
         if (InvalidBits)
         {
             NLog::Warn("{} [0x{:X}]: Flags property \"{}\" ({}) has unrecognized flags set: 0x{:08X}",
-                       *rSCLY.GetSourceString(),
+                       rSCLY.GetSourceString(),
                        rSCLY.Tell() - 4,
-                       *pFlags->Name(),
-                       *pFlags->IDString(true),
+                       pFlags->Name(),
+                       pFlags->IDString(true),
                        InvalidBits);
         }
 #endif
@@ -162,11 +162,11 @@ void CScriptLoader::ReadProperty(IProperty *pProp, uint32_t Size, IInputStream& 
                 if (!Valid)
                 {
                     NLog::Warn("{} [0x{:X}]: Asset property \"{}\" ({}) has a reference to an illegal asset type: {}",
-                               *rSCLY.GetSourceString(),
+                               rSCLY.GetSourceString(),
                                rSCLY.Tell() - static_cast<uint32_t>(ID.Length()),
-                               *pAsset->Name(),
-                               *pAsset->IDString(true),
-                               *pEntry->CookedExtension().ToString());
+                               pAsset->Name(),
+                               pAsset->IDString(true),
+                               pEntry->CookedExtension().ToString());
                 }
             }
         }
@@ -303,7 +303,7 @@ CScriptObject* CScriptLoader::LoadObjectMP1(IInputStream& rSCLY)
     if (!pTemplate)
     {
         // No valid template for this object; can't load
-        NLog::Error("{} [0x{:X}]: Unknown object ID encountered: 0x{:02X}", *rSCLY.GetSourceString(), StartOffset, Type);
+        NLog::Error("{} [0x{:X}]: Unknown object ID encountered: 0x{:02X}", rSCLY.GetSourceString(), StartOffset, Type);
         rSCLY.Seek(End, SEEK_SET);
         return nullptr;
     }
@@ -396,7 +396,7 @@ void CScriptLoader::LoadStructMP2(IInputStream& rSCLY, CStructProperty* pStruct)
         if (pProperty)
             ReadProperty(pProperty, PropertySize, rSCLY);
         else
-            NLog::Error("{} [0x{:X}]: Can't find template for property 0x{:08X} - skipping", *rSCLY.GetSourceString(), PropertyStart, PropertyID);
+            NLog::Error("{} [0x{:X}]: Can't find template for property 0x{:08X} - skipping", rSCLY.GetSourceString(), PropertyStart, PropertyID);
 
         if (NextProperty > 0)
             rSCLY.Seek(NextProperty, SEEK_SET);
@@ -414,7 +414,7 @@ CScriptObject* CScriptLoader::LoadObjectMP2(IInputStream& rSCLY)
 
     if (!pTemplate)
     {
-        NLog::Error("{} [0x{:X}]: Unknown object ID encountered: {}", *rSCLY.GetSourceString(), ObjStart, *CFourCC(ObjectID).ToString());
+        NLog::Error("{} [0x{:X}]: Unknown object ID encountered: {}", rSCLY.GetSourceString(), ObjStart, CFourCC(ObjectID).ToString());
         rSCLY.Seek(ObjEnd, SEEK_SET);
         return nullptr;
     }

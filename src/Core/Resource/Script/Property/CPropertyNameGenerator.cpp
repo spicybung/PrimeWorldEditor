@@ -266,7 +266,7 @@ void CPropertyNameGenerator::GenerateTask(const SPropertyNameGenerationParameter
                         DelimitedXmlList += xml + '\n';
                     }
 
-                    NLog::Debug("{} [{}] : 0x{:08X}\n%s", *PropertyName.Name, *PropertyName.Type, PropertyName.ID, *DelimitedXmlList);
+                    NLog::Debug("{} [{}] : 0x{:08X}\n{}", PropertyName.Name, PropertyName.Type, PropertyName.ID, DelimitedXmlList);
                 }
             }
         }

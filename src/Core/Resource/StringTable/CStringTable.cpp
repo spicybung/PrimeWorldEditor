@@ -333,7 +333,7 @@ std::unique_ptr<CDependencyTree> CStringTable::BuildDependencyTree()
                     }
                     else
                     {
-                        NLog::Warn("Unrecognized image type: {}", *ImageType);
+                        NLog::Warn("Unrecognized image type: {}", ImageType);
                         continue;
                     }
 

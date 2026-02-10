@@ -344,14 +344,14 @@ bool SetDolphinPath(QWidget* pParentWidget, const QString& kDolphinPath, bool bS
         return false;
     }
 
-    NLog::Debug("Found {} version {}", *TO_TSTRING(VersionParts.first()), *TO_TSTRING(VersionParts.last()));
+    NLog::Debug("Found {} version {}", VersionParts.first().toStdString(), VersionParts.last().toStdString());
 
     // Build is legit, stash it
     QSettings Settings;
     Settings.setValue(gkDolphinPathSetting, kDolphinPath);
 
     gDolphinPath = kDolphinPath;
-    NLog::Debug("Setting Dolphin path to {}.", *TO_TSTRING(kDolphinPath));
+    NLog::Debug("Setting Dolphin path to {}.", kDolphinPath.toStdString());
 
     return true;
 }

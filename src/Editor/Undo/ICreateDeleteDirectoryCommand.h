@@ -55,7 +55,7 @@ protected:
             }
             else
             {
-                NLog::Debug("Directory delete failed, directory is not empty: {}", *(mParentPath + mDirName));
+                NLog::Debug("Directory delete failed, directory is not empty: {}", mParentPath + mDirName);
             }
         }
     }

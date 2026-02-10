@@ -32,7 +32,7 @@ public:
         case EResourceType::World:                return CWorldCooker::CookMLVL((CWorld*) pRes, rOutput);
 
         default:
-            NLog::Warn("Failed to cook {} asset; this resource type is not supported for cooking", *pEntry->CookedExtension().ToString());
+            NLog::Warn("Failed to cook {} asset; this resource type is not supported for cooking", pEntry->CookedExtension().ToString());
             return false;
         }
     }

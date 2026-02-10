@@ -56,7 +56,7 @@ void CGeneratePropertyNamesDialog::AddToIDPool(IProperty* pProperty)
 {
     if (!pProperty->UsesNameMap())
     {
-        NLog::Error("Failed to add property {} to the generator ID pool because it doesn't use the name map", *pProperty->IDString(false));
+        NLog::Error("Failed to add property {} to the generator ID pool because it doesn't use the name map", pProperty->IDString(false));
         return;
     }
 

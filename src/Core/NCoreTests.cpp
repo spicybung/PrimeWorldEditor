@@ -175,12 +175,12 @@ bool ValidateCooker(EResourceType ResourceType, bool DumpInvalidFileContents)
         // Print test results
         if (IsValid)
         {
-            NLog::Debug("[SUCCESS] {}", *CookedPath);
+            NLog::Debug("[SUCCESS] {}", CookedPath);
             NumValid++;
         }
         else
         {
-            NLog::Debug("[FAILED: {}] {}", pkInvalidReason, *CookedPath);
+            NLog::Debug("[FAILED: {}] {}", pkInvalidReason, CookedPath);
             NumInvalid++;
         }
 

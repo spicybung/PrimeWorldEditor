@@ -60,7 +60,7 @@ void CGameTemplate::Load(const TString& kFilePath)
 
 void CGameTemplate::Save()
 {
-    NLog::Debug("Saving game template: {}", *mSourceFile);
+    NLog::Debug("Saving game template: {}", mSourceFile);
     CXMLWriter Writer(mSourceFile, "Game", 0, mGame);
     ASSERT(Writer.IsValid());
     Serialize(Writer);

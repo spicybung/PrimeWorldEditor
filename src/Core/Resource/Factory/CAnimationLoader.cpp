@@ -483,7 +483,7 @@ std::unique_ptr<CAnimation> CAnimationLoader::LoadANIM(IInputStream& rANIM, CRes
     const auto CompressionType = rANIM.ReadU32();
     if (CompressionType != 0 && CompressionType != 2)
     {
-        NLog::Error("{}: Unknown ANIM compression type: {}", *rANIM.GetSourceString(), CompressionType);
+        NLog::Error("{}: Unknown ANIM compression type: {}", rANIM.GetSourceString(), CompressionType);
         return nullptr;
     }
 

@@ -271,7 +271,7 @@ std::unique_ptr<CWorld> CWorldLoader::LoadMLVL(IInputStream& rMLVL, CResourceEnt
     const auto Magic = rMLVL.ReadU32();
     if (Magic != 0xDEAFBABE)
     {
-        NLog::Error("{}: Invalid MLVL magic: 0x{:08X}", *rMLVL.GetSourceString(), Magic);
+        NLog::Error("{}: Invalid MLVL magic: 0x{:08X}", rMLVL.GetSourceString(), Magic);
         return nullptr;
     }
 
@@ -279,7 +279,7 @@ std::unique_ptr<CWorld> CWorldLoader::LoadMLVL(IInputStream& rMLVL, CResourceEnt
     const auto Version = GetFormatVersion(FileVersion);
     if (Version == EGame::Invalid)
     {
-        NLog::Error("{}: Unsupported MLVL version: 0x{:X}", *rMLVL.GetSourceString(), FileVersion);
+        NLog::Error("{}: Unsupported MLVL version: 0x{:X}", rMLVL.GetSourceString(), FileVersion);
         return nullptr;
     }
 

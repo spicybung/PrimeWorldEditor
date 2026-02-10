@@ -262,7 +262,7 @@ void CVirtualDirectory::SortSubdirectories()
 
 bool CVirtualDirectory::Rename(const TString& rkNewName)
 {
-    NLog::Debug("MOVING DIRECTORY: {} --> {}", *FullPath(), *(mpParent->FullPath() + rkNewName + '/'));
+    NLog::Debug("MOVING DIRECTORY: {} --> {}", FullPath(), mpParent->FullPath() + rkNewName + '/');
 
     if (!IsRoot())
     {
@@ -332,7 +332,7 @@ bool CVirtualDirectory::CreateFilesystemDirectory()
         const bool CreateSuccess = FileUtil::MakeDirectory(AbsPath);
 
         if (!CreateSuccess)
-            NLog::Error("FAILED to create filesystem directory: {}", *AbsPath);
+            NLog::Error("FAILED to create filesystem directory: {}", AbsPath);
 
         return CreateSuccess;
     }
@@ -346,7 +346,7 @@ bool CVirtualDirectory::SetParent(CVirtualDirectory *pParent)
     if (mpParent == pParent)
         return true;
 
-    NLog::Debug("MOVING DIRECTORY: {} -> {}", *FullPath(), *(pParent->FullPath() + mName + '/'));
+    NLog::Debug("MOVING DIRECTORY: {} -> {}", FullPath(), pParent->FullPath() + mName + '/');
 
     // Check for a conflict
     CVirtualDirectory *pConflictDir = pParent->FindChildDirectory(mName, false);

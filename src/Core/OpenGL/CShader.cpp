@@ -250,9 +250,9 @@ std::unique_ptr<CShader> CShader::FromResourceFile(const TString& rkShaderName)
     TString VertexShaderText, PixelShaderText;
 
     if (!FileUtil::LoadFileToString(VertexShaderFilename, VertexShaderText))
-        NLog::Error("Couldn't load vertex shader file for {}", *rkShaderName);
+        NLog::Error("Couldn't load vertex shader file for {}", rkShaderName);
     if (!FileUtil::LoadFileToString(PixelShaderFilename, PixelShaderText))
-        NLog::Error("Couldn't load pixel shader file for {}", *rkShaderName);
+        NLog::Error("Couldn't load pixel shader file for {}", rkShaderName);
     if (VertexShaderText.IsEmpty() || PixelShaderText.IsEmpty())
         return nullptr;
 

@@ -108,7 +108,7 @@ bool CResourceEntry::LoadMetadata()
     }
     else
     {
-        NLog::Error("{}: Failed to load metadata file!", *Path);
+        NLog::Error("{}: Failed to load metadata file!", Path);
     }
 
     return false;
@@ -304,7 +304,7 @@ bool CResourceEntry::Save(bool SkipCacheSave /*= false*/, bool FlagForRecook /*=
 
         if (!Writer.Save())
         {
-            NLog::Error("Failed to save raw resource: {}", *Path);
+            NLog::Error("Failed to save raw resource: {}", Path);
             return false;
         }
 
@@ -321,7 +321,7 @@ bool CResourceEntry::Save(bool SkipCacheSave /*= false*/, bool FlagForRecook /*=
 
         if (!CookSuccess)
         {
-            NLog::Error("Failed to save resource: {}.{}", *Name(), *CookedExtension().ToString());
+            NLog::Error("Failed to save resource: {}.{}", Name(), CookedExtension().ToString());
             return false;
         }
     }
@@ -365,7 +365,7 @@ bool CResourceEntry::Cook()
     CFileOutStream File(Path, std::endian::big);
     if (!File.IsValid())
     {
-        NLog::Error("Failed to open cooked file for writing: {}", *Path);
+        NLog::Error("Failed to open cooked file for writing: {}", Path);
         return false;
     }
 
@@ -404,7 +404,7 @@ CResource* CResourceEntry::Load()
 
             if (!Reader.IsValid())
             {
-                NLog::Error("Failed to load raw resource; falling back on cooked. Raw path: {}", *RawAssetPath());
+                NLog::Error("Failed to load raw resource; falling back on cooked. Raw path: {}", RawAssetPath());
                 mpResource.reset();
             }
 
@@ -427,14 +427,14 @@ CResource* CResourceEntry::Load()
 
         if (!File.IsValid())
         {
-            NLog::Error("Failed to open cooked resource: {}", *CookedAssetPath(true));
+            NLog::Error("Failed to open cooked resource: {}", CookedAssetPath(true));
             return nullptr;
         }
 
         return LoadCooked(File);
     }
 
-    NLog::Error("Couldn't locate resource: {}", *CookedAssetPath(true));
+    NLog::Error("Couldn't locate resource: {}", CookedAssetPath(true));
     return nullptr;
 }
 
@@ -525,8 +525,8 @@ bool CResourceEntry::MoveAndRename(const TString& rkDir, const TString& rkName, 
     TString NewMetaPath = MetadataFilePath();
 
     NLog::Debug("MOVING RESOURCE: {} --> {}",
-                *FileUtil::MakeRelative(OldCookedPath, mpStore->ResourcesDir()),
-                *FileUtil::MakeRelative(NewCookedPath, mpStore->ResourcesDir())
+                FileUtil::MakeRelative(OldCookedPath, mpStore->ResourcesDir()),
+                FileUtil::MakeRelative(NewCookedPath, mpStore->ResourcesDir())
     );
 
     // If the old/new paths are the same then we should have already exited as CanMoveTo() should have returned false
@@ -734,7 +734,7 @@ void CResourceEntry::MarkDeleted(bool InDeleted)
         }
 
         mpStore->SetCacheDirty();
-        NLog::Debug("{} FOR DELETION: [{}] {}", InDeleted ? "MARKED" : "UNMARKED", *ID().ToString(), *CookedPath.GetFileName());
+        NLog::Debug("{} FOR DELETION: [{}] {}", InDeleted ? "MARKED" : "UNMARKED", ID().ToString(), CookedPath.GetFileName());
     }
 }
 

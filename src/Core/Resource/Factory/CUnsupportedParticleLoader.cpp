@@ -219,7 +219,7 @@ bool CUnsupportedParticleLoader::ParseParticleParameter(IInputStream& rPART)
         break;
 
     default:
-        NLog::Error("{} [0x{:X}]: Unknown PART parameter: {}", *rPART.GetSourceString(), ParamOffset, *Param.ToString());
+        NLog::Error("{} [0x{:X}]: Unknown PART parameter: {}", rPART.GetSourceString(), ParamOffset, Param.ToString());
         return false;
     }
 
@@ -283,7 +283,7 @@ bool CUnsupportedParticleLoader::ParseElectricParameter(IInputStream& rELSC)
         break;
 
     default:
-        NLog::Error("{} [0x{:X}]: Unknown ELSC parameter: {}", *rELSC.GetSourceString(), ParamOffset, *Param.ToString());
+        NLog::Error("{} [0x{:X}]: Unknown ELSC parameter: {}", rELSC.GetSourceString(), ParamOffset, Param.ToString());
         return false;
     }
 
@@ -303,7 +303,7 @@ bool CUnsupportedParticleLoader::ParseSortedParameter(IInputStream& rSRSC)
     }
     else
     {
-        NLog::Error("{} [0x{:X}]: Unknown SRSC parameter: {}", *rSRSC.GetSourceString(), ParamOffset, *Param.ToString());
+        NLog::Error("{} [0x{:X}]: Unknown SRSC parameter: {}", rSRSC.GetSourceString(), ParamOffset, Param.ToString());
         return false;
     }
 
@@ -362,7 +362,7 @@ bool CUnsupportedParticleLoader::ParseSpawnParameter(IInputStream& rSPSC)
         break;
 
     default:
-        NLog::Error("{} [0x{:X}]: Unknown SPSC parameter: {}", *rSPSC.GetSourceString(), ParamOffset, *Param.ToString());
+        NLog::Error("{} [0x{:X}]: Unknown SPSC parameter: {}", rSPSC.GetSourceString(), ParamOffset, Param.ToString());
         return false;
     }
 
@@ -440,7 +440,7 @@ bool CUnsupportedParticleLoader::ParseSwooshParameter(IInputStream& rSWHC)
         break;
 
     default:
-        NLog::Error("{} [0x{:X}]: Unknown SWHC parameter: {}", *rSWHC.GetSourceString(), ParamOffset, *Param.ToString());
+        NLog::Error("{} [0x{:X}]: Unknown SWHC parameter: {}", rSWHC.GetSourceString(), ParamOffset, Param.ToString());
         return false;
     }
 
@@ -500,7 +500,7 @@ bool CUnsupportedParticleLoader::ParseDecalParameter(IInputStream& rDPSC)
         break;
 
     default:
-        NLog::Error("{} [0x{:X}]: Unknown DPSC parameter: {}", *rDPSC.GetSourceString(), ParamOffset, *Param.ToString());
+        NLog::Error("{} [0x{:X}]: Unknown DPSC parameter: {}", rDPSC.GetSourceString(), ParamOffset, Param.ToString());
         return false;
     }
 
@@ -612,7 +612,7 @@ bool CUnsupportedParticleLoader::ParseWeaponParameter(IInputStream& rWPSC)
         break;
 
     default:
-        NLog::Error("{} [0x{:X}]: Unknown WPSC parameter: {}", *rWPSC.GetSourceString(), ParamOffset, *Param.ToString());
+        NLog::Error("{} [0x{:X}]: Unknown WPSC parameter: {}", rWPSC.GetSourceString(), ParamOffset, Param.ToString());
         return false;
     }
 
@@ -740,7 +740,7 @@ bool CUnsupportedParticleLoader::ParseCollisionResponseParameter(IInputStream& r
         break;
 
     default:
-        NLog::Error("{} [0x{:X}]: Unknown CRSC parameter: {}", *rCRSC.GetSourceString(), ParamOffset, *Param.ToString());
+        NLog::Error("{} [0x{:X}]: Unknown CRSC parameter: {}", rCRSC.GetSourceString(), ParamOffset, Param.ToString());
         return false;
     }
 
@@ -783,7 +783,7 @@ bool CUnsupportedParticleLoader::ParseBurstFireParameter(IInputStream& rBFRC)
         break;
 
     default:
-        NLog::Error("{} [0x{:X}]: Unknown BFRC parameter: {}", *rBFRC.GetSourceString(), ParamOffset, *Param.ToString());
+        NLog::Error("{} [0x{:X}]: Unknown BFRC parameter: {}", rBFRC.GetSourceString(), ParamOffset, Param.ToString());
         return false;
     }
 
@@ -845,7 +845,7 @@ bool CUnsupportedParticleLoader::ParseUserEvaluatorParameter(IInputStream& rUSRC
         break;
 
     default:
-        NLog::Error("{} [0x{:X}]: Unknown USRC parameter: {}", *rUSRC.GetSourceString(), ParamOffset, *Param.ToString());
+        NLog::Error("{} [0x{:X}]: Unknown USRC parameter: {}", rUSRC.GetSourceString(), ParamOffset, Param.ToString());
         return false;
     }
 
@@ -897,7 +897,7 @@ bool CUnsupportedParticleLoader::ParseTransformParameter(IInputStream& rXFSC)
         break;
 
     default:
-        NLog::Error("{} [0x{:X}]: Unknown XFSC parameter: {}", *rXFSC.GetSourceString(), ParamOffset, *Param.ToString());
+        NLog::Error("{} [0x{:X}]: Unknown XFSC parameter: {}", rXFSC.GetSourceString(), ParamOffset, Param.ToString());
         return false;
     }
 
@@ -920,7 +920,7 @@ void CUnsupportedParticleLoader::ParseBool(IInputStream& rFile)
         break;
 
     default:
-        NLog::Error("{} [0x{:X}]: Unknown bool constant function: {}", *rFile.GetSourceString(), FuncOffset, *Func.ToString());
+        NLog::Error("{} [0x{:X}]: Unknown bool constant function: {}", rFile.GetSourceString(), FuncOffset, Func.ToString());
         break;
     }
 }
@@ -951,7 +951,7 @@ void CUnsupportedParticleLoader::ParseBoolFunction(IInputStream& rFile)
         break;
 
     default:
-        NLog::Error("{} [0x{:X}]: Unknown bool function: {}", *rFile.GetSourceString(), FuncOffset, *Func.ToString());
+        NLog::Error("{} [0x{:X}]: Unknown bool function: {}", rFile.GetSourceString(), FuncOffset, Func.ToString());
         break;
     }
 }
@@ -1044,7 +1044,7 @@ void CUnsupportedParticleLoader::ParseIntFunction(IInputStream& rFile)
         break;
 
     default:
-        NLog::Error("{} [0x{:X}]: Unknown int function: {}", *rFile.GetSourceString(), FuncOffset, *Func.ToString());
+        NLog::Error("{} [0x{:X}]: Unknown int function: {}", rFile.GetSourceString(), FuncOffset, Func.ToString());
         break;
     }
 }
@@ -1235,7 +1235,7 @@ void CUnsupportedParticleLoader::ParseFloatFunction(IInputStream& rFile)
         break;
 
     default:
-        NLog::Error("{} [0x{:X}]: Unknown float function: {}", *rFile.GetSourceString(), FuncOffset, *Func.ToString());
+        NLog::Error("{} [0x{:X}]: Unknown float function: {}", rFile.GetSourceString(), FuncOffset, Func.ToString());
         break;
     }
 }
@@ -1368,7 +1368,7 @@ void CUnsupportedParticleLoader::ParseVectorFunction(IInputStream& rFile)
         break;
 
     default:
-        NLog::Error("{} [0x{:X}]: Unknown vector function: {}", *rFile.GetSourceString(), FuncOffset, *Func.ToString());
+        NLog::Error("{} [0x{:X}]: Unknown vector function: {}", rFile.GetSourceString(), FuncOffset, Func.ToString());
         break;
     }
 }
@@ -1456,7 +1456,7 @@ void CUnsupportedParticleLoader::ParseModVectorFunction(IInputStream& rFile)
         break;
 
     default:
-        NLog::Error("{} [0x{:X}]: Unknown mod vector function: {}", *rFile.GetSourceString(), FuncOffset, *Func.ToString());
+        NLog::Error("{} [0x{:X}]: Unknown mod vector function: {}", rFile.GetSourceString(), FuncOffset, Func.ToString());
         break;
     }
 }
@@ -1537,7 +1537,7 @@ void CUnsupportedParticleLoader::ParseColorFunction(IInputStream& rFile)
         break;
 
     default:
-        NLog::Error("{} [0x{:X}]: Unknown color function: {}", *rFile.GetSourceString(), FuncOffset, *Func.ToString());
+        NLog::Error("{} [0x{:X}]: Unknown color function: {}", rFile.GetSourceString(), FuncOffset, Func.ToString());
         break;
     }
 }
@@ -1594,7 +1594,7 @@ void CUnsupportedParticleLoader::ParseRotationFunction(IInputStream& rFile)
         break;
 
     default:
-        NLog::Error("{} [0x{:X}]: Unknown rotation function: {}", *rFile.GetSourceString(), FuncOffset, *Func.ToString());
+        NLog::Error("{} [0x{:X}]: Unknown rotation function: {}", rFile.GetSourceString(), FuncOffset, Func.ToString());
         break;
     }
 }
@@ -1631,7 +1631,7 @@ void CUnsupportedParticleLoader::ParseUVFunction(IInputStream& rFile)
         break;
 
     default:
-        NLog::Error("{} [0x{:X}]: Unknown UV function: {}", *rFile.GetSourceString(), FuncOffset, *Func.ToString());
+        NLog::Error("{} [0x{:X}]: Unknown UV function: {}", rFile.GetSourceString(), FuncOffset, Func.ToString());
         break;
     }
 }
@@ -1690,7 +1690,7 @@ void CUnsupportedParticleLoader::ParseEmitterFunction(IInputStream& rFile)
         break;
 
     default:
-        NLog::Error("{} [0x{:X}]: Unknown emitter function: {}", *rFile.GetSourceString(), FuncOffset, *Func.ToString());
+        NLog::Error("{} [0x{:X}]: Unknown emitter function: {}", rFile.GetSourceString(), FuncOffset, Func.ToString());
         break;
     }
 }
@@ -1719,7 +1719,7 @@ void CUnsupportedParticleLoader::ParseSoundFunction(IInputStream& rFile)
     }
 
     default:
-        NLog::Error("{} [0x{:X}]: Unknown sound function: {}", *rFile.GetSourceString(), FuncOffset, *Func.ToString());
+        NLog::Error("{} [0x{:X}]: Unknown sound function: {}", rFile.GetSourceString(), FuncOffset, Func.ToString());
         break;
     }
 }
@@ -1739,7 +1739,7 @@ void CUnsupportedParticleLoader::ParseAssetFunction(IInputStream& rFile)
         break;
 
     default:
-        NLog::Error("{} [0x{:X}]: Unknown asset function: {}", *rFile.GetSourceString(), FuncOffset, *Func.ToString());
+        NLog::Error("{} [0x{:X}]: Unknown asset function: {}", rFile.GetSourceString(), FuncOffset, Func.ToString());
         break;
     }
 }
@@ -1823,7 +1823,7 @@ std::unique_ptr<CDependencyGroup> CUnsupportedParticleLoader::LoadParticle(IInpu
         case FOURCC('XFSM'): ShouldContinue = Loader.ParseTransformParameter(rFile);         break;
 
         default:
-            NLog::Error("Unrecognized particle system magic: {}", *Magic.ToString());
+            NLog::Error("Unrecognized particle system magic: {}", Magic.ToString());
             ShouldContinue = false;
             break;
         }

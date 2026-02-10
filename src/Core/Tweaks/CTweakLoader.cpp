@@ -48,7 +48,7 @@ std::unique_ptr<CTweakData> CTweakLoader::LoadCTWK(IInputStream& CTWK, CResource
     // Verify
     if (!CTWK.EoF() && CTWK.PeekS16() != -1)
     {
-        NLog::Error("{}: unread property data, tweak template may be malformed ({} bytes left)", *CTWK.GetSourceString(), CTWK.Size() - CTWK.Tell());
+        NLog::Error("{}: unread property data, tweak template may be malformed ({} bytes left)", CTWK.GetSourceString(), CTWK.Size() - CTWK.Tell());
         return nullptr;
     }
 
@@ -116,7 +116,7 @@ void CTweakLoader::LoadNTWK(IInputStream& NTWK, EGame Game, std::vector<CTweakDa
 
         if (Find == skIdToTemplateName.cend())
         {
-            NLog::Error("Unrecognized tweak ID: {} (0x{:08X})", *CFourCC(TweakID).ToString(), TweakID);
+            NLog::Error("Unrecognized tweak ID: {} (0x{:08X})", CFourCC(TweakID).ToString(), TweakID);
             NTWK.GoTo(NextTweak);
             continue;
         }

@@ -79,7 +79,7 @@ std::unique_ptr<CScan> CScanLoader::LoadSCAN(IInputStream& SCAN, CResourceEntry 
             return Loader.LoadScanMP1(SCAN, pEntry);
         }
 
-        NLog::Error("{}: Unsupported SCAN version: {}", *SCAN.GetSourceString(), VersionCheck);
+        NLog::Error("{}: Unsupported SCAN version: {}", SCAN.GetSourceString(), VersionCheck);
         return nullptr;
     }
 

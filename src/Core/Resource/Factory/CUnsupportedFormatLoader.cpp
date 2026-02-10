@@ -228,7 +228,7 @@ std::unique_ptr<CDependencyGroup> CUnsupportedFormatLoader::LoadFRME(IInputStrea
             }
             else
             {
-                NLog::Error("Unrecognized FRME widget type: {}", *WidgetType.ToString());
+                NLog::Error("Unrecognized FRME widget type: {}", WidgetType.ToString());
                 DEBUG_BREAK;
             }
 

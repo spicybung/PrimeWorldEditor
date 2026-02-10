@@ -321,12 +321,11 @@ bool CWorldEditor::SetArea(CWorld *pWorld, int AreaIndex)
     CGameTemplate *pGame = NGameList::GetGameTemplate(mpArea->Game());
     mpLinkDialog->SetGame(pGame);
 
-    QString AreaName = TO_QSTRING(mpWorld->AreaInGameName(AreaIndex));
-
+    const auto AreaName = mpWorld->AreaInGameName(AreaIndex);
     if (CurrentGame() < EGame::DKCReturns)
-        NLog::Debug("Loaded area: {} ({})", *mpArea->Entry()->Name(), *TO_TSTRING(AreaName));
+        NLog::Debug("Loaded area: {} ({})", mpArea->Entry()->Name(), AreaName);
     else
-        NLog::Debug("Loaded level: World {} / Area {} ({})", *mpWorld->Entry()->Name(), *mpArea->Entry()->Name(), *TO_TSTRING(AreaName));
+        NLog::Debug("Loaded level: World {} / Area {} ({})", mpWorld->Entry()->Name(), mpArea->Entry()->Name(), AreaName);
 
     // Update paste action
     OnClipboardDataModified();

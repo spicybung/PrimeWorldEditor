@@ -225,7 +225,7 @@ void CResourceStore::CloseProject()
         for (const auto& entry : mLoadedResources)
         {
             const CResourceEntry *pEntry = entry.second;
-            NLog::Warn("\t{}.{}", *pEntry->Name(), *pEntry->CookedExtension().ToString());
+            NLog::Warn("\t{}.{}", pEntry->Name(), pEntry->CookedExtension().ToString());
         }
 
         ASSERT(false);
@@ -326,7 +326,7 @@ void CResourceStore::ClearDatabase()
     {
         NLog::Debug("ERROR: Resources still loaded:");
         for (const auto& [asset, entry] : mLoadedResources)
-            NLog::Debug("\t[{}] {}", *asset.ToString(), *entry->CookedAssetPath(true));
+            NLog::Debug("\t[{}] {}", asset.ToString(), entry->CookedAssetPath(true));
         ASSERT(false);
     }
 
@@ -366,7 +366,7 @@ bool CResourceStore::BuildFromDirectory(bool ShouldGenerateCacheFile)
 
             if (!pTypeInfo)
             {
-                NLog::Error("Found resource but couldn't register because failed to identify resource type: {}", *RelPath);
+                NLog::Error("Found resource but couldn't register because failed to identify resource type: {}", RelPath);
                 continue;
             }
 
@@ -432,7 +432,7 @@ CResourceEntry* CResourceStore::CreateNewResource(const CAssetID& rkID, EResourc
 
     if (pEntry)
     {
-        NLog::Error("Attempted to register resource that's already tracked in the database: {} / {} / {}", *rkID.ToString(), *rkDir, *rkName);
+        NLog::Error("Attempted to register resource that's already tracked in the database: {} / {} / {}", rkID.ToString(), rkDir, rkName);
     }
     else
     {
@@ -452,13 +452,13 @@ CResourceEntry* CResourceStore::CreateNewResource(const CAssetID& rkID, EResourc
 
             if (!ExistingResource)
             {
-                NLog::Debug("CREATED NEW RESOURCE: [{}] {}", *rkID.ToString(), *resPtr->CookedAssetPath());
+                NLog::Debug("CREATED NEW RESOURCE: [{}] {}", rkID.ToString(), resPtr->CookedAssetPath());
             }
 
             return resPtr;
         }
 
-        NLog::Error("Invalid resource path, failed to register: {}{}", *rkDir, *rkName);
+        NLog::Error("Invalid resource path, failed to register: {}{}", rkDir, rkName);
     }
 
     return pEntry;
@@ -473,7 +473,7 @@ CResource* CResourceStore::LoadResource(const CAssetID& rkID)
     if (!pEntry)
     {
         // Resource doesn't seem to exist
-        NLog::Warn("Can't find requested resource with ID \"{}\"", *rkID.ToString());
+        NLog::Warn("Can't find requested resource with ID \"{}\"", rkID.ToString());
         return nullptr;
     }
 
@@ -496,7 +496,8 @@ CResource* CResourceStore::LoadResource(const CAssetID& rkID, EResourceType Type
             CResTypeInfo *pGotType = pRes->TypeInfo();
             ASSERT(pExpectedType && pGotType);
 
-            NLog::Error("Resource with ID \"{}\" requested with the wrong type; expected {} asset, get {} asset", *rkID.ToString(), *pExpectedType->TypeName(), *pGotType->TypeName());
+            NLog::Error("Resource with ID \"{}\" requested with the wrong type; expected {} asset, got {} asset",
+                        rkID.ToString(), pExpectedType->TypeName(), pGotType->TypeName());
             return nullptr;
         }
     }
@@ -616,7 +617,7 @@ void CResourceStore::ImportNamesFromPakContentsTxt(const TString& rkTxtPath, boo
 
     if (!pContentsFile)
     {
-        NLog::Error("Failed to open .contents.txt file: {}", *rkTxtPath);
+        NLog::Error("Failed to open .contents.txt file: {}", rkTxtPath);
         return;
     }
 

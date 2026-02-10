@@ -237,7 +237,7 @@ std::unique_ptr<CStringTable> CStringLoader::LoadSTRG(IInputStream& STRG, CResou
         // If not, then we seem to have an invalid file...
         if (Version != EGame::PrimeDemo)
         {
-            NLog::Error("{}: Invalid STRG magic: 0x{:08X}", *STRG.GetSourceString(), Magic);
+            NLog::Error("{}: Invalid STRG magic: 0x{:08X}", STRG.GetSourceString(), Magic);
             return nullptr;
         }
     }
@@ -248,7 +248,7 @@ std::unique_ptr<CStringTable> CStringLoader::LoadSTRG(IInputStream& STRG, CResou
 
         if (Version == EGame::Invalid)
         {
-            NLog::Error("{}: Unrecognized STRG version: 0x{:X}", *STRG.GetSourceString(), FileVersion);
+            NLog::Error("{}: Unrecognized STRG version: 0x{:X}", STRG.GetSourceString(), FileVersion);
             return nullptr;
         }
     }

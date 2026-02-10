@@ -80,7 +80,7 @@ std::unique_ptr<CFont> CFontLoader::LoadFONT(IInputStream& rFONT, CResourceEntry
     const CFourCC Magic(rFONT);
     if (Magic != FOURCC('FONT'))
     {
-        NLog::Error("{}: Invalid FONT magic: 0x{:08X}", *rFONT.GetSourceString(), Magic.ToU32());
+        NLog::Error("{}: Invalid FONT magic: 0x{:08X}", rFONT.GetSourceString(), Magic.ToU32());
         return nullptr;
     }
 
@@ -88,7 +88,7 @@ std::unique_ptr<CFont> CFontLoader::LoadFONT(IInputStream& rFONT, CResourceEntry
     const auto Version = GetFormatVersion(FileVersion);
     if (Version == EGame::Invalid)
     {
-        NLog::Error("{}: Unsupported FONT version: {}", *rFONT.GetSourceString(), FileVersion);
+        NLog::Error("{}: Unsupported FONT version: {}", rFONT.GetSourceString(), FileVersion);
         return nullptr;
     }
 
