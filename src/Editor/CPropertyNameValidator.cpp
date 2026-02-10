@@ -30,8 +30,9 @@ QValidator::State CPropertyNameValidator::validate(QString& rInput, int&) const
     const auto InputString = rInput.toStdString();
 
     CCRC32 Hash;
-    Hash.Hash(InputString.c_str());
-    Hash.Hash(TypeName.Data());
+    Hash.Hash(InputString);
+    Hash.Hash(TypeName);
+
     uint32_t PropertyID = Hash.Digest();
 
     if (PropertyID != mpProperty->ID())
@@ -39,7 +40,7 @@ QValidator::State CPropertyNameValidator::validate(QString& rInput, int&) const
         if (mpProperty->Type() == EPropertyType::Int)
         {
             CCRC32 Hash2;
-            Hash2.Hash(InputString.c_str());
+            Hash2.Hash(InputString);
             Hash2.Hash("choice");
             PropertyID = Hash2.Digest();
         }

@@ -129,7 +129,7 @@ void CPropertyNameGenerator::GenerateTask(const SPropertyNameGenerationParameter
 
     // The prefix only needs to be hashed this one time
     CCRC32 PrefixHash;
-    PrefixHash.Hash( *rkParams.Prefix );
+    PrefixHash.Hash(rkParams.Prefix);
 
     // Use a stack to keep track of the current word we are on. We can use this
     // to cache the hash of a word and then re-use it later instead of recaculating
@@ -193,7 +193,7 @@ void CPropertyNameGenerator::GenerateTask(const SPropertyNameGenerationParameter
             {
                 // Add an underscore for snake case
                 if (RecalcIndex > 0 && rkParams.Casing == ENameCasing::Snake_Case)
-                    LastValidHash.Hash("_");
+                    LastValidHash.Hash('_');
 
                 LastValidHash.Hash(mWords[Index]);
             }
