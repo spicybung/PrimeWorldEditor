@@ -574,9 +574,9 @@ void CAreaLoader::Decompress()
         }
     }
 
-    const TString Source = mpMREA->GetSourceString();
+    TString Source = mpMREA->GetSourceString();
     mpMREA = new CMemoryInStream(mpDecmpBuffer.get(), mTotalDecmpSize, std::endian::big);
-    mpMREA->SetSourceString(Source);
+    mpMREA->SetSourceString(std::move(Source));
     mpSectionMgr->SetInputStream(mpMREA);
     mHasDecompressedBuffer = true;
 }
