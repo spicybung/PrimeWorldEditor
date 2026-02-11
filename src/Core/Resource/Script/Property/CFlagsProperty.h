@@ -13,8 +13,8 @@ class CFlagsProperty : public TSerializeableTypedProperty<uint32_t, EPropertyTyp
         uint32_t Mask = 0;
 
         SBitFlag() = default;
-        SBitFlag(const TString& rkInName, uint32_t InMask)
-            : Name(rkInName), Mask(InMask)
+        SBitFlag(TString InName, uint32_t InMask)
+            : Name(std::move(InName)), Mask(InMask)
         {}
 
         bool operator==(const SBitFlag&) const = default;
