@@ -318,7 +318,7 @@ void GenerateAssetNames(CGameProject *pProj)
                                     if (pScan)
                                     {
                                         CAssetID StringID = pScan->ScanStringPropertyRef();
-                                        CResourceEntry* pStringEntry = gpResourceStore->FindEntry(StringID);
+                                        CResourceEntry* pStringEntry = pStore->FindEntry(StringID);
 
                                         if (pStringEntry)
                                         {
@@ -508,7 +508,7 @@ void GenerateAssetNames(CGameProject *pProj)
 
             if (pProj->Game() >= EGame::CorruptionProto && pProj->Game() <= EGame::Corruption && character.ID == 0)
             {
-                CResourceEntry* pAnimDataEntry = gpResourceStore->FindEntry(character.AnimDataID);
+                CResourceEntry* pAnimDataEntry = pStore->FindEntry(character.AnimDataID);
 
                 if (pAnimDataEntry)
                 {
@@ -611,7 +611,7 @@ void GenerateAssetNames(CGameProject *pProj)
         if (ScanName.IsEmpty())
         {
             const CAssetID StringID = pScan->ScanStringPropertyRef().Get();
-            if (const auto* pString = static_cast<CStringTable*>(gpResourceStore->LoadResource(StringID, EResourceType::StringTable)))
+            if (const auto* pString = static_cast<CStringTable*>(pStore->LoadResource(StringID, EResourceType::StringTable)))
                 ScanName = pString->Entry()->Name();
         }
 
