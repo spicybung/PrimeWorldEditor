@@ -370,6 +370,26 @@ CScriptObject* CInstancesModel::IndexObject(const QModelIndex& rkIndex) const
     return static_cast<CScriptObject*>(rkIndex.internalPointer());
 }
 
+// CSelectInstanceDialog cannot load any data listening on the active project changed signal
+// or the map changed signal, since its a modal dialog. And so, this exists to be used for that.
+//
+// Not the most ideal thing in the world, but it's relatively self contained if it ever needs to
+// be moved around.
+void CInstancesModel::LoadForDialog(const CGameProject* proj)
+{
+    if (mModelType == EInstanceModelType::Layers)
+    {
+        beginResetModel();
+        mpArea = mpEditor->ActiveArea();
+        endResetModel();
+    }
+    else
+    {
+        mpCurrentGame = NGameList::GetGameTemplate(proj->Game());
+        GenerateList();
+    }
+}
+
 // ************ PUBLIC SLOTS ************
 void CInstancesModel::OnActiveProjectChanged(CGameProject *pProj)
 {

@@ -61,6 +61,8 @@ public:
     CScriptTemplate* IndexTemplate(const QModelIndex& rkIndex) const;
     CScriptObject* IndexObject(const QModelIndex& rkIndex) const;
 
+    void LoadForDialog(const CGameProject* proj);
+
 public slots:
     void OnActiveProjectChanged(CGameProject *pProj);
     void OnMapChange();

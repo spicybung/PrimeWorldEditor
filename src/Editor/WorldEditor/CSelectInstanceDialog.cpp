@@ -1,6 +1,8 @@
 #include "Editor/WorldEditor/CSelectInstanceDialog.h"
 #include "ui_CSelectInstanceDialog.h"
 
+#include "Editor/UICommon.h"
+
 #include <QPushButton>
 
 CSelectInstanceDialog::CSelectInstanceDialog(CWorldEditor *pEditor, QWidget *pParent)
@@ -42,6 +44,11 @@ CSelectInstanceDialog::CSelectInstanceDialog(CWorldEditor *pEditor, QWidget *pPa
     connect(ui->LayersTreeView, &QTreeView::doubleClicked, this, &CSelectInstanceDialog::OnTreeDoubleClicked);
     connect(ui->TypesTreeView, &QTreeView::clicked, this, &CSelectInstanceDialog::OnTreeClicked);
     connect(ui->TypesTreeView, &QTreeView::doubleClicked, this, &CSelectInstanceDialog::OnTreeDoubleClicked);
+
+    // We can't listen on project changes to live-load everything in this instance (with current
+    // signal/slot setups), so give both models a punt to load relevant data.
+    mLayersModel.LoadForDialog(gpEdApp->ActiveProject());
+    mTypesModel.LoadForDialog(gpEdApp->ActiveProject());
 }
 
 CSelectInstanceDialog::~CSelectInstanceDialog() = default;
