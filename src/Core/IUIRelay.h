@@ -12,6 +12,8 @@ public:
     virtual bool AskYesNoQuestion(const std::string& rkInfoBoxTitle, const std::string& rkQuestion) = 0;
     virtual bool OpenProject(const std::string& kPath = {}) = 0;
 };
-extern IUIRelay *gpUIRelay;
+
+void SetUIRelay(IUIRelay* relay);
+IUIRelay* GetUIRelay();
 
 #endif // IUIRELAY_H

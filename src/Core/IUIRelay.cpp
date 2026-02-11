@@ -1,3 +1,29 @@
 #include "IUIRelay.h"
 
-IUIRelay *gpUIRelay = nullptr;
+namespace
+{
+class NullUIRelay final : public IUIRelay
+{
+public:
+    void ShowMessageBox(const std::string&, const std::string&) {}
+    void ShowMessageBoxAsync(const std::string&, const std::string&) {}
+    bool AskYesNoQuestion(const std::string&, const std::string&) override { return false; }
+    bool OpenProject(const std::string&) override { return false; }
+};
+
+constinit NullUIRelay sNullRelay;
+constinit IUIRelay* sUIRelay = &sNullRelay;
+}  // Anonymous namespace
+
+void SetUIRelay(IUIRelay* relay)
+{
+    if (relay)
+        sUIRelay = relay;
+    else
+        sUIRelay = &sNullRelay;
+}
+
+IUIRelay* GetUIRelay()
+{
+    return sUIRelay;
+}

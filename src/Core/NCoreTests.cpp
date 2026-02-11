@@ -65,9 +65,9 @@ bool RunTests(int argc, char* argv[])
 
         if (Type == EResourceType::Invalid)
         {
-            gpUIRelay->ShowMessageBox("ValidateCooker", "Usage: ValidateCooker -type=<ResourceType> [-allowdump] [-project=<Project>]");
+            GetUIRelay()->ShowMessageBox("ValidateCooker", "Usage: ValidateCooker -type=<ResourceType> [-allowdump] [-project=<Project>]");
         }
-        else if (gpUIRelay->OpenProject(ParseParameter("-project", argc, argv)))
+        else if (GetUIRelay()->OpenProject(ParseParameter("-project", argc, argv)))
         {
             ValidateCooker(Type, AllowDump);
         }

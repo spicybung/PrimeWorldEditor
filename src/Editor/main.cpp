@@ -114,7 +114,7 @@ public:
 
         // Create UI relay
         CUIRelay UIRelay(&App);
-        gpUIRelay = &UIRelay;
+        SetUIRelay(&UIRelay);
 
         // Set up dark theme
         qApp->setStyle(QStyleFactory::create(QStringLiteral("Fusion")));

@@ -139,7 +139,7 @@ bool CResourceStore::LoadDatabaseCache()
 
     if (!Reader.IsValid() || !SerializeDatabaseCache(Reader))
     {
-        if (gpUIRelay->AskYesNoQuestion("Error", "Failed to load the resource database. Attempt to build from the directory? (This may take a while.)"))
+        if (GetUIRelay()->AskYesNoQuestion("Error", "Failed to load the resource database. Attempt to build from the directory? (This may take a while.)"))
         {
             if (!BuildFromDirectory(true))
                 return false;

@@ -250,7 +250,7 @@ std::unique_ptr<CGameProject> CGameProject::LoadProject(const TString& rkProjPat
             // Resource database is corrupt. Ask the user if they want to rebuild it.
             if (!DatabaseIsValid)
             {
-                bool ShouldRebuild = gpUIRelay->AskYesNoQuestion("Error", "The resource database is corrupt. Attempt to repair it?");
+                bool ShouldRebuild = GetUIRelay()->AskYesNoQuestion("Error", "The resource database is corrupt. Attempt to repair it?");
 
                 if (ShouldRebuild)
                 {
@@ -258,7 +258,9 @@ std::unique_ptr<CGameProject> CGameProject::LoadProject(const TString& rkProjPat
                     pProj->mpResourceStore->RebuildFromDirectory();
                 }
                 else
+                {
                     LoadSuccess = false;
+                }
             }
         }
 #endif

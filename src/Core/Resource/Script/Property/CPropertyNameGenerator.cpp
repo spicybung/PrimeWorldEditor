@@ -252,7 +252,7 @@ void CPropertyNameGenerator::GenerateTask(const SPropertyNameGenerationParameter
                     // If we have too many saved results, then to avoid crashing we will force enable log output.
                     if (mGeneratedNames.size() > 9999)
                     {
-                        gpUIRelay->ShowMessageBoxAsync("Warning", "There are over 10,000 results. Results will no longer print to the screen. Check the log for the remaining output.");
+                        GetUIRelay()->ShowMessageBoxAsync("Warning", "There are over 10,000 results. Results will no longer print to the screen. Check the log for the remaining output.");
                         WriteToLog = true;
                         SaveResults = false;
                     }
