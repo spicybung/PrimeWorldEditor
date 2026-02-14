@@ -235,7 +235,7 @@ bool CGameExporter::ExtractDiscNodeRecursive(const nod::Node *pkNode, const TStr
 
         if (Iter->getKind() == nod::Node::Kind::File)
         {
-            TString FilePath = rkDir + Iter->getName().data();
+            TString FilePath = rkDir + TString(Iter->getName());
             bool Success = Iter->extractToDirectory(rkDir, rkContext);
             if (!Success)
                 return false;
@@ -244,12 +244,12 @@ bool CGameExporter::ExtractDiscNodeRecursive(const nod::Node *pkNode, const TStr
             {
                 // For multi-game Wii discs, don't track packages for frontend unless we're exporting frontend
                 if (mDiscType == EDiscType::Normal || mFrontEnd || pkNode->getName() != "fe")
-                    mPaks.push_back(FilePath);
+                    mPaks.push_back(std::move(FilePath));
             }
         }
         else
         {
-            TString Subdir = rkDir + Iter->getName().data() + "/";
+            TString Subdir = rkDir + TString(Iter->getName()) + '/';
             bool Success = FileUtil::MakeDirectory(Subdir);
             if (!Success)
                 return false;
