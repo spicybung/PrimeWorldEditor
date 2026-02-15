@@ -16,17 +16,12 @@ CRenderBucket::CSubBucket::~CSubBucket() = default;
 
 void CRenderBucket::CSubBucket::Add(const SRenderablePtr& rkPtr)
 {
-    if (mSize >= mEstSize)
-        mRenderables.push_back(rkPtr);
-    else
-        mRenderables[mSize] = rkPtr;
-
-    mSize++;
+    mRenderables.push_back(rkPtr);
 }
 
 void CRenderBucket::CSubBucket::Sort(const CCamera* pkCamera, bool DebugVisualization)
 {
-    std::stable_sort(mRenderables.begin(), mRenderables.begin() + mSize,
+    std::stable_sort(mRenderables.begin(), mRenderables.end(),
                      [&, pkCamera](const auto& rkLeft, const auto& rkRight) {
                          const CVector3f& CamPos = pkCamera->Position();
                          const CVector3f& CamDir = pkCamera->Direction();
@@ -41,11 +36,10 @@ void CRenderBucket::CSubBucket::Sort(const CCamera* pkCamera, bool DebugVisualiz
     if (!DebugVisualization)
         return;
 
-    for (size_t iPtr = 0; iPtr < mSize; iPtr++)
+    for (const auto& ptr : mRenderables)
     {
-        const SRenderablePtr *pPtr = &mRenderables[iPtr];
-        const CVector3f Point = pPtr->AABox.ClosestPointAlongVector(pkCamera->Direction());
-        CDrawUtil::DrawWireCube(pPtr->AABox, CColor::White());
+        const CVector3f Point = ptr.AABox.ClosestPointAlongVector(pkCamera->Direction());
+        CDrawUtil::DrawWireCube(ptr.AABox, CColor::White());
 
         const CVector3f Dist = Point - pkCamera->Position();
         float Dot = Dist.Dot(pkCamera->Direction());
@@ -63,27 +57,20 @@ void CRenderBucket::CSubBucket::Sort(const CCamera* pkCamera, bool DebugVisualiz
 
 void CRenderBucket::CSubBucket::Clear()
 {
-    mEstSize = mSize;
-
-    if (mRenderables.size() > mSize)
-        mRenderables.resize(mSize);
-
-    mSize = 0;
+    mRenderables.clear();
 }
 
 void CRenderBucket::CSubBucket::Draw(const SViewInfo& rkViewInfo)
 {
     const FRenderOptions Options = rkViewInfo.pRenderer->RenderOptions();
 
-    for (size_t iPtr = 0; iPtr < mSize; iPtr++)
+    for (const auto& ptr : mRenderables)
     {
-        const SRenderablePtr& rkPtr = mRenderables[iPtr];
-
         // todo: DrawSelection probably shouldn't be a separate function anymore.
-        if (rkPtr.Command == ERenderCommand::DrawSelection)
-            rkPtr.pRenderable->DrawSelection();
+        if (ptr.Command == ERenderCommand::DrawSelection)
+            ptr.pRenderable->DrawSelection();
         else
-            rkPtr.pRenderable->Draw(Options, rkPtr.ComponentIndex, rkPtr.Command, rkViewInfo);
+            ptr.pRenderable->Draw(Options, ptr.ComponentIndex, ptr.Command, rkViewInfo);
     }
 }
 

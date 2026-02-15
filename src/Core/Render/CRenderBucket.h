@@ -10,13 +10,9 @@ struct SViewInfo;
 
 class CRenderBucket
 {
-    bool mEnableDepthSortDebugVisualization = false;
-
     class CSubBucket
     {
         std::vector<SRenderablePtr> mRenderables;
-        uint32_t mEstSize = 0;
-        uint32_t mSize = 0;
 
     public:
         CSubBucket();
@@ -30,6 +26,7 @@ class CRenderBucket
 
     CSubBucket mOpaqueSubBucket;
     CSubBucket mTransparentSubBucket;
+    bool mEnableDepthSortDebugVisualization = false;
 
 public:
     CRenderBucket();
