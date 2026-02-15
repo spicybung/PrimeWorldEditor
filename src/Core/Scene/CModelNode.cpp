@@ -68,7 +68,7 @@ void CModelNode::Draw(FRenderOptions Options, int ComponentIndex, ERenderCommand
         return;
 
     if (mForceAlphaOn)
-        Options = static_cast<FRenderOptions>(Options & ~ERenderOption::NoAlpha);
+        Options &= ~ERenderOption::NoAlpha;
 
     if (!mWorldModel)
     {
