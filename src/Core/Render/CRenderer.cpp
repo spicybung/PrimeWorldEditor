@@ -47,14 +47,12 @@ FRenderOptions CRenderer::RenderOptions() const
 
 void CRenderer::ToggleBackfaceCull(bool Enable)
 {
-    if (Enable) mOptions |= ERenderOption::EnableBackfaceCull;
-    else        mOptions &= ~ERenderOption::EnableBackfaceCull;
+    mOptions.AssignFlag(ERenderOption::EnableBackfaceCull, Enable);
 }
 
 void CRenderer::ToggleUVAnimation(bool Enable)
 {
-    if (Enable) mOptions |= ERenderOption::EnableUVScroll;
-    else        mOptions &= ~ERenderOption::EnableUVScroll;
+    mOptions.AssignFlag(ERenderOption::EnableUVScroll, Enable);
 }
 
 void CRenderer::ToggleGrid(bool Enable)
@@ -64,24 +62,20 @@ void CRenderer::ToggleGrid(bool Enable)
 
 void CRenderer::ToggleOccluders(bool Enable)
 {
-    if (Enable) mOptions |= ERenderOption::EnableOccluders;
-    else        mOptions &= ~ERenderOption::EnableOccluders;
+    mOptions.AssignFlag(ERenderOption::EnableOccluders, Enable);
 }
 
 void CRenderer::ToggleAlphaDisabled(bool Enable)
 {
-    if (Enable) mOptions |= ERenderOption::NoAlpha;
-    else        mOptions &= ~ERenderOption::NoAlpha;
+    mOptions.AssignFlag(ERenderOption::NoAlpha, Enable);
 }
 
 void CRenderer::SetBloom(EBloomMode BloomMode)
 {
     mBloomMode = BloomMode;
 
-    if (BloomMode != EBloomMode::NoBloom)
-        mOptions |= ERenderOption::EnableBloom;
-    else
-        mOptions &= ~ERenderOption::EnableBloom;
+    const auto HasBloom = BloomMode != EBloomMode::NoBloom;
+    mOptions.AssignFlag(ERenderOption::EnableBloom, HasBloom);
 }
 
 void CRenderer::SetClearColor(const CColor& rkClear)
