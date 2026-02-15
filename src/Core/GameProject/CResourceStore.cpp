@@ -129,7 +129,7 @@ bool CResourceStore::SerializeDatabaseCache(IArchive& rArc)
 bool CResourceStore::LoadDatabaseCache()
 {
     ASSERT(!mDatabasePath.IsEmpty());
-    TString Path = DatabasePath();
+    const TString Path = DatabasePath();
 
     if (!mpDatabaseRoot)
         mpDatabaseRoot = new CVirtualDirectory(this);
@@ -165,7 +165,7 @@ bool CResourceStore::LoadDatabaseCache()
 
 bool CResourceStore::SaveDatabaseCache()
 {
-    TString Path = DatabasePath();
+    const TString Path = DatabasePath();
     NLog::Debug("Saving database cache...");
 
     CBasicBinaryWriter Writer(Path, FOURCC('CACH'), 0, mGame);
@@ -344,7 +344,7 @@ bool CResourceStore::BuildFromDirectory(bool ShouldGenerateCacheFile)
     ASSERT(mResourceEntries.empty());
 
     // Get list of resources
-    TString ResDir = ResourcesDir();
+    const TString ResDir = ResourcesDir();
     TStringList ResourceList;
     FileUtil::GetDirectoryContents(ResDir, ResourceList);
 
@@ -355,13 +355,13 @@ bool CResourceStore::BuildFromDirectory(bool ShouldGenerateCacheFile)
         if (FileUtil::IsFile(Path) && Path.EndsWith(".rsmeta"))
         {
             // Determine resource name
-            TString DirPath = RelPath.GetFileDirectory();
-            TString CookedFilename = RelPath.GetFileName(false); // This call removes the .rsmeta extension
-            TString ResName = CookedFilename.GetFileName(false); // This call removes the cooked extension
+            const TString DirPath = RelPath.GetFileDirectory();
+            const TString CookedFilename = RelPath.GetFileName(false); // This call removes the .rsmeta extension
+            const TString ResName = CookedFilename.GetFileName(false); // This call removes the cooked extension
             ASSERT(IsValidResourcePath(DirPath, ResName));
 
             // Determine resource type
-            TString CookedExtension = CookedFilename.GetFileExtension();
+            const TString CookedExtension = CookedFilename.GetFileExtension();
             CResTypeInfo* pTypeInfo = CResTypeInfo::TypeForCookedExtension(Game(), CFourCC(CookedExtension));
 
             if (!pTypeInfo)
@@ -492,8 +492,8 @@ CResource* CResourceStore::LoadResource(const CAssetID& rkID, EResourceType Type
         }
         else
         {
-            CResTypeInfo *pExpectedType = CResTypeInfo::FindTypeInfo(Type);
-            CResTypeInfo *pGotType = pRes->TypeInfo();
+            const CResTypeInfo* pExpectedType = CResTypeInfo::FindTypeInfo(Type);
+            const CResTypeInfo* pGotType = pRes->TypeInfo();
             ASSERT(pExpectedType && pGotType);
 
             NLog::Error("Resource with ID \"{}\" requested with the wrong type; expected {} asset, got {} asset",
@@ -519,11 +519,11 @@ CResource* CResourceStore::LoadResource(const TString& rkPath)
         {
             if (Ext.Length() == 4)
             {
-                ASSERT( Ext.CaseInsensitiveCompare(pEntry->CookedExtension().ToString()) );
+                ASSERT(Ext.CaseInsensitiveCompare(pEntry->CookedExtension().ToString()));
             }
             else
             {
-                ASSERT( rkPath.EndsWith(pEntry->RawExtension()) );
+                ASSERT(rkPath.EndsWith(pEntry->RawExtension()));
             }
         }
 
@@ -635,14 +635,14 @@ void CResourceStore::ImportNamesFromPakContentsTxt(const TString& rkTxtPath, boo
         if (IDStart == 1)
             continue;
 
-        uint64_t IDEnd = Line.IndexOf(" \t", IDStart);
-        uint64_t PathStart = IDEnd + 1;
-        uint64_t PathEnd = Line.Size() - 5;
+        const uint64_t IDEnd = Line.IndexOf(" \t", IDStart);
+        const uint64_t PathStart = IDEnd + 1;
+        const uint64_t PathEnd = Line.Size() - 5;
 
-        TString IDStr = Line.SubString(IDStart, IDEnd - IDStart);
+        const TString IDStr = Line.SubString(IDStart, IDEnd - IDStart);
         TString Path = Line.SubString(PathStart, PathEnd - PathStart);
 
-        CAssetID ID = CAssetID::FromString(IDStr);
+        const CAssetID ID = CAssetID::FromString(IDStr);
         CResourceEntry *pEntry = FindEntry(ID);
 
         // Only process this entry if the ID exists
@@ -672,7 +672,7 @@ void CResourceStore::ImportNamesFromPakContentsTxt(const TString& rkTxtPath, boo
             continue;
 
         TString Dir = path.GetFileDirectory();
-        TString Name = path.GetFileName(false);
+        const TString Name = path.GetFileName(false);
         if (Dir.IsEmpty())
             Dir = entry->DirectoryPath();
 

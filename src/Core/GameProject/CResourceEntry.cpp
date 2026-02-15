@@ -98,7 +98,7 @@ bool CResourceEntry::LoadMetadata()
 {
     ASSERT(!mMetadataDirty);
 
-    TString Path = MetadataFilePath();
+    const TString Path = MetadataFilePath();
     CBinaryReader MetaFile(Path, FOURCC('META'));
 
     if (MetaFile.IsValid())
@@ -117,12 +117,12 @@ bool CResourceEntry::LoadMetadata()
 bool CResourceEntry::SaveMetadata(bool ForceSave /*= false*/)
 {
     // Make sure we aren't saving a deleted resource
-    ASSERT( !HasFlag(EResEntryFlag::MarkedForDeletion) );
+    ASSERT(!HasFlag(EResEntryFlag::MarkedForDeletion));
 
     if (mMetadataDirty || ForceSave)
     {
-        TString Path = MetadataFilePath();
-        TString Dir = Path.GetFileDirectory();
+        const TString Path = MetadataFilePath();
+        const TString Dir = Path.GetFileDirectory();
         FileUtil::MakeDirectory(Dir);
 
         CBinaryWriter MetaFile(Path, FOURCC('META'), 0, Game());
@@ -178,8 +178,7 @@ void CResourceEntry::UpdateDependencies()
         return;
     }
 
-    bool WasLoaded = IsLoaded();
-
+    const bool WasLoaded = IsLoaded();
     if (!mpResource)
         Load();
 
@@ -219,9 +218,9 @@ TString CResourceEntry::RawExtension() const
 
 TString CResourceEntry::CookedAssetPath(bool Relative) const
 {
-    TString Ext = CookedExtension().ToString();
-    TString Path = mpDirectory ? mpDirectory->FullPath() : "";
-    TString Name = mName + "." + Ext;
+    const TString Ext = CookedExtension().ToString();
+    const TString Path = mpDirectory ? mpDirectory->FullPath() : "";
+    const TString Name = mName + "." + Ext;
     return Relative ? Path + Name : mpStore->ResourcesDir() + Path + Name;
 }
 
@@ -241,7 +240,9 @@ bool CResourceEntry::IsInDirectory(CVirtualDirectory *pDir) const
 
     while (pParentDir)
     {
-        if (pParentDir == pDir) return true;
+        if (pParentDir == pDir)
+            return true;
+
         pParentDir = pParentDir->Parent();
     }
 
@@ -266,9 +267,15 @@ bool CResourceEntry::NeedsRecook() const
     // Assets that do not have a raw version can't be recooked since they will always just be saved cooked to begin with.
     // We will recook any asset where the raw version has been updated but not recooked yet. eREF_NeedsRecook can also be
     // toggled to arbitrarily flag any asset for recook.
-    if (!HasRawVersion()) return false;
-    if (!HasCookedVersion()) return true;
-    if (HasFlag(EResEntryFlag::NeedsRecook)) return true;
+    if (!HasRawVersion())
+        return false;
+
+    if (!HasCookedVersion())
+        return true;
+
+    if (HasFlag(EResEntryFlag::NeedsRecook))
+        return true;
+
     return (FileUtil::LastModifiedTime(CookedAssetPath()) < FileUtil::LastModifiedTime(RawAssetPath()));
 }
 
@@ -289,11 +296,12 @@ bool CResourceEntry::Save(bool SkipCacheSave /*= false*/, bool FlagForRecook /*=
         ShouldCollectGarbage = !IsLoaded();
 
         Load();
-        if (!mpResource) return false;
+        if (!mpResource)
+            return false;
 
         // Note: We call Serialize directly for resources to avoid having a redundant resource root node in the output file.
-        TString Path = RawAssetPath();
-        TString Dir = Path.GetFileDirectory();
+        const TString Path = RawAssetPath();
+        const TString Dir = Path.GetFileDirectory();
         FileUtil::MakeDirectory(Dir);
 
         TString SerialName = mpTypeInfo->TypeName();
@@ -313,11 +321,9 @@ bool CResourceEntry::Save(bool SkipCacheSave /*= false*/, bool FlagForRecook /*=
             SetFlag(EResEntryFlag::NeedsRecook);
         }
     }
-
-    // This resource type doesn't have a raw format; save cooked instead
-    else
+    else // This resource type doesn't have a raw format; save cooked instead
     {
-        bool CookSuccess = Cook();
+        const bool CookSuccess = Cook();
 
         if (!CookSuccess)
         {
@@ -355,10 +361,11 @@ bool CResourceEntry::Save(bool SkipCacheSave /*= false*/, bool FlagForRecook /*=
 bool CResourceEntry::Cook()
 {
     Load();
-    if (!mpResource) return false;
+    if (!mpResource)
+        return false;
 
-    TString Path = CookedAssetPath();
-    TString Dir = Path.GetFileDirectory();
+    const TString Path = CookedAssetPath();
+    const TString Dir = Path.GetFileDirectory();
     FileUtil::MakeDirectory(Dir);
 
     // Attempt to open output cooked file
@@ -369,7 +376,7 @@ bool CResourceEntry::Cook()
         return false;
     }
 
-    bool Success = CResourceCooker::CookResource(this, File);
+    const bool Success = CResourceCooker::CookResource(this, File);
 
     if (Success)
     {
@@ -407,7 +414,6 @@ CResource* CResourceEntry::Load()
                 NLog::Error("Failed to load raw resource; falling back on cooked. Raw path: {}", RawAssetPath());
                 mpResource.reset();
             }
-
             else
             {
                 mpResource->Serialize(Reader);
@@ -492,16 +498,17 @@ bool CResourceEntry::CanMoveTo(const TString& rkDir, const TString& rkName)
 bool CResourceEntry::MoveAndRename(const TString& rkDir, const TString& rkName, bool IsAutoGenDir /*= false*/, bool IsAutoGenName /*= false*/)
 {
     // Make sure we are not moving a deleted resource.
-    ASSERT( !IsMarkedForDeletion() );
+    ASSERT(!IsMarkedForDeletion());
 
-    if (!CanMoveTo(rkDir, rkName)) return false;
+    if (!CanMoveTo(rkDir, rkName))
+        return false;
 
     // Store old paths
     CVirtualDirectory *pOldDir = mpDirectory;
-    TString OldName = mName;
-    TString OldCookedPath = CookedAssetPath();
-    TString OldRawPath = RawAssetPath();
-    TString OldMetaPath = MetadataFilePath();
+    const TString OldName = mName;
+    const TString OldCookedPath = CookedAssetPath();
+    const TString OldRawPath = RawAssetPath();
+    const TString OldMetaPath = MetadataFilePath();
 
     // Set new directory and name
     bool DirAlreadyExisted = true;
@@ -513,16 +520,17 @@ bool CResourceEntry::MoveAndRename(const TString& rkDir, const TString& rkName, 
         DirAlreadyExisted = false;
     }
 
-    if (pNewDir == mpDirectory && rkName == mName) return false;
+    if (pNewDir == mpDirectory && rkName == mName)
+        return false;
 
     // Check if we can legally move to this spot
     ASSERT(pNewDir->FindChildResource(rkName, ResourceType()) == nullptr); // this check should be guaranteed to pass due to CanMoveTo() having already checked it
 
     mpDirectory = pNewDir;
     mName = rkName;
-    TString NewCookedPath = CookedAssetPath();
-    TString NewRawPath = RawAssetPath();
-    TString NewMetaPath = MetadataFilePath();
+    const TString NewCookedPath = CookedAssetPath();
+    const TString NewRawPath = RawAssetPath();
+    const TString NewMetaPath = MetadataFilePath();
 
     NLog::Debug("MOVING RESOURCE: {} --> {}",
                 FileUtil::MakeRelative(OldCookedPath, mpStore->ResourcesDir()),
@@ -585,11 +593,11 @@ bool CResourceEntry::MoveAndRename(const TString& rkDir, const TString& rkName, 
     }
     else
     {
-        bool HasCooked = FileUtil::Exists(NewCookedPath);
-        bool HasRaw = FileUtil::Exists(NewRawPath);
+        const bool HasCooked = FileUtil::Exists(NewCookedPath);
+        const bool HasRaw = FileUtil::Exists(NewRawPath);
 
-        TString BadFileType = HasCooked ? "cooked"      : (HasRaw ? "raw"      : "metadata");
-        TString BadFilePath = HasCooked ? NewCookedPath : (HasRaw ? NewRawPath : NewMetaPath);
+        const TString BadFileType = HasCooked ? "cooked"      : (HasRaw ? "raw"      : "metadata");
+        const TString BadFilePath = HasCooked ? NewCookedPath : (HasRaw ? NewRawPath : NewMetaPath);
 
         MoveFailReason = fmt::format("File already exists at {} asset destination ({})",
                                      BadFileType, BadFilePath);
@@ -666,21 +674,21 @@ void CResourceEntry::MarkDeleted(bool InDeleted)
             const auto NameEnd = mName.IndexOf('|');
             ASSERT(NameEnd != -1);
 
-            TString DirPath = mName.ChopFront(NameEnd + 1);
+            const TString DirPath = mName.ChopFront(NameEnd + 1);
             mName = mName.ChopBack(mName.Size() - NameEnd);
             mpDirectory = mpStore->GetVirtualDirectory(DirPath, true);
             ASSERT(mpDirectory != nullptr);
             mpDirectory->AddChild("", this);
         }
 
-        TString CookedPath = CookedAssetPath();
-        TString RawPath = RawAssetPath();
-        TString MetaPath = MetadataFilePath();
+        const TString CookedPath = CookedAssetPath();
+        const TString RawPath = RawAssetPath();
+        const TString MetaPath = MetadataFilePath();
 
-        TString PathBase = mpStore->DeletedResourcePath() + mID.ToString() + ".";
-        TString DelCookedPath = PathBase + CookedExtension().ToString();
-        TString DelRawPath = DelCookedPath + ".rsraw";
-        TString DelMetaPath = DelCookedPath + ".rsmeta";
+        const TString PathBase = mpStore->DeletedResourcePath() + mID.ToString() + ".";
+        const TString DelCookedPath = PathBase + CookedExtension().ToString();
+        const TString DelRawPath = DelCookedPath + ".rsraw";
+        const TString DelMetaPath = DelCookedPath + ".rsmeta";
 
         // If we are deleting...
         if (InDeleted)
