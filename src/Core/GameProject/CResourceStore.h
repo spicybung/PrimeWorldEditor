@@ -31,7 +31,7 @@ class CResourceStore
 
     CGameProject *mpProj = nullptr;
     EGame mGame{EGame::Prime};
-    CVirtualDirectory *mpDatabaseRoot = nullptr;
+    std::unique_ptr<CVirtualDirectory> mpDatabaseRoot;
     std::map<CAssetID, std::unique_ptr<CResourceEntry>> mResourceEntries;
     std::map<CAssetID, CResourceEntry*> mLoadedResources;
     bool mDatabaseCacheDirty = false;
@@ -86,7 +86,7 @@ public:
     bool DatabasePathExists() const          { return mDatabasePathExists; }
     TString ResourcesDir() const             { return IsEditorStore() ? TString(DatabaseRootPath()) : DatabaseRootPath() + "Resources/"; }
     TString DatabasePath() const             { return DatabaseRootPath() + "ResourceDatabaseCache.bin"; }
-    CVirtualDirectory* RootDirectory() const { return mpDatabaseRoot; }
+    CVirtualDirectory* RootDirectory() const { return mpDatabaseRoot.get(); }
     uint32_t NumTotalResources() const       { return mResourceEntries.size(); }
     uint32_t NumLoadedResources() const      { return mLoadedResources.size(); }
     bool IsCacheDirty() const                { return mDatabaseCacheDirty; }

@@ -22,7 +22,7 @@ CResourceStore *gpEditorStore = nullptr;
 // Constructor for editor store
 CResourceStore::CResourceStore(const TString& rkDatabasePath)
 {
-    mpDatabaseRoot = new CVirtualDirectory(this);
+    mpDatabaseRoot = std::make_unique<CVirtualDirectory>(this);
     mDatabasePath = FileUtil::MakeAbsolute(rkDatabasePath.GetFileDirectory());
     if ((mDatabasePathExists = FileUtil::IsDirectory(mDatabasePath)))
         LoadDatabaseCache();
@@ -107,7 +107,7 @@ bool CResourceStore::SerializeDatabaseCache(IArchive& rArc)
     TStringList EmptyDirectories;
 
     if (!rArc.IsReader())
-        RecursiveGetListOfEmptyDirectories(mpDatabaseRoot, EmptyDirectories);
+        RecursiveGetListOfEmptyDirectories(mpDatabaseRoot.get(), EmptyDirectories);
 
     rArc << SerialParameter("EmptyDirectories", EmptyDirectories);
 
@@ -132,7 +132,7 @@ bool CResourceStore::LoadDatabaseCache()
     const TString Path = DatabasePath();
 
     if (!mpDatabaseRoot)
-        mpDatabaseRoot = new CVirtualDirectory(this);
+        mpDatabaseRoot = std::make_unique<CVirtualDirectory>(this);
 
     // Load the resource database
     CBasicBinaryReader Reader(Path, FOURCC('CACH'));
@@ -198,7 +198,7 @@ void CResourceStore::SetProject(CGameProject *pProj)
         return;
 
     mDatabasePath = mpProj->ProjectRoot();
-    mpDatabaseRoot = new CVirtualDirectory(this);
+    mpDatabaseRoot = std::make_unique<CVirtualDirectory>(this);
     mGame = mpProj->Game();
 
     // Clear deleted files from previous runs
@@ -242,8 +242,7 @@ void CResourceStore::CloseProject()
         FileUtil::ClearDirectory(DeletedPath);
     }
 
-    delete mpDatabaseRoot;
-    mpDatabaseRoot = nullptr;
+    mpDatabaseRoot.reset();
     mpProj = nullptr;
     mGame = EGame::Invalid;
 }
@@ -251,7 +250,7 @@ void CResourceStore::CloseProject()
 CVirtualDirectory* CResourceStore::GetVirtualDirectory(const TString& rkPath, bool AllowCreate)
 {
     if (rkPath.IsEmpty())
-        return mpDatabaseRoot;
+        return mpDatabaseRoot.get();
 
     if (mpDatabaseRoot)
         return mpDatabaseRoot->FindChildDirectory(rkPath, AllowCreate);
@@ -333,9 +332,7 @@ void CResourceStore::ClearDatabase()
     // Clear out existing resource entries and directories
     mResourceEntries.clear();
 
-    delete mpDatabaseRoot;
-    mpDatabaseRoot = new CVirtualDirectory(this);
-
+    mpDatabaseRoot = std::make_unique<CVirtualDirectory>(this);
     mDatabaseCacheDirty = true;
 }
 
