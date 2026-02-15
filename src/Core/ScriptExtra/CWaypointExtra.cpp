@@ -187,7 +187,7 @@ void CWaypointExtra::Draw(FRenderOptions /*Options*/, int ComponentIndex, ERende
     CDrawUtil::DrawLine(mpParent->AABox().Center(), mLinks[ComponentIndex].pWaypoint->AABox().Center(), mColor);
 }
 
-CColor CWaypointExtra::TevColor()
+CColor CWaypointExtra::TevColor() const
 {
     return mGame < EGame::DKCReturns ? CColor::White() : mColor;
 }

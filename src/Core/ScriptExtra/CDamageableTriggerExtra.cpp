@@ -205,9 +205,9 @@ void CDamageableTriggerExtra::PropertyModified(IProperty* pProperty)
     }
 }
 
-bool CDamageableTriggerExtra::ShouldDrawNormalAssets()
+bool CDamageableTriggerExtra::ShouldDrawNormalAssets() const
 {
-    return (mRenderSide == ERenderSide::NoRender);
+    return mRenderSide == ERenderSide::NoRender;
 }
 
 void CDamageableTriggerExtra::AddToRenderer(CRenderer *pRenderer, const SViewInfo& rkViewInfo)

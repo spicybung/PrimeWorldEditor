@@ -26,7 +26,7 @@ class CSpacePirateExtra : public CScriptExtra
 
 public:
     explicit CSpacePirateExtra(CScriptObject *pInstance, CScene *pScene, CScriptNode *pParent = nullptr);
-    CColor TevColor() override;
+    CColor TevColor() const override;
 };
 
 #endif // CSPACEPIRATEEXTRA_H

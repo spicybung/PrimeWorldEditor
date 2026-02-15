@@ -18,7 +18,7 @@ CSpacePirateExtra::CSpacePirateExtra(CScriptObject* pInstance, CScene* pScene, C
     }
 }
 
-CColor CSpacePirateExtra::TevColor()
+CColor CSpacePirateExtra::TevColor() const
 {
     // Priority: Plasma -> Ice -> Power -> Wave
     if (mPlasmaVulnerability.IsValid() && mPlasmaVulnerability.Get() == EVulnerabilityTypeMP1::Normal)

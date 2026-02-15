@@ -40,7 +40,7 @@ public:
     ERenderSide TransformRenderSide(ERenderSide Side) const;
     void OnTransformed() override;
     void PropertyModified(IProperty* pProperty) override;
-    bool ShouldDrawNormalAssets() override;
+    bool ShouldDrawNormalAssets() const override;
     void AddToRenderer(CRenderer* pRenderer, const SViewInfo& rkViewInfo) override;
     void Draw(FRenderOptions Options, int ComponentIndex, ERenderCommand Command, const SViewInfo& rkViewInfo) override;
     void DrawSelection() override;

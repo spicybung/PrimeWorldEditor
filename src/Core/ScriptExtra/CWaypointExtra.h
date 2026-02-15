@@ -35,7 +35,7 @@ public:
     void LinksModified() override;
     void AddToRenderer(CRenderer *pRenderer, const SViewInfo& rkViewInfo) override;
     void Draw(FRenderOptions Options, int ComponentIndex, ERenderCommand Command, const SViewInfo& rkViewInfo) override;
-    CColor TevColor() override;
+    CColor TevColor() const override;
 };
 
 #endif // CWAYPOINTEXTRA_H

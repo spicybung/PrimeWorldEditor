@@ -44,9 +44,9 @@ public:
     void PropertyModified(IProperty* /*pProperty*/) override {}
     virtual void DisplayAssetChanged(CResource* /*pNewDisplayAsset*/) {}
     virtual void LinksModified() {}
-    virtual bool ShouldDrawNormalAssets() { return true; }
-    virtual bool ShouldDrawVolume() { return true; }
-    virtual CColor TevColor() { return CColor::White(); }
+    virtual bool ShouldDrawNormalAssets() const { return true; }
+    virtual bool ShouldDrawVolume() const { return true; }
+    virtual CColor TevColor() const { return CColor::White(); }
     virtual void ModifyTintColor(CColor& /*Color*/) {}
 
     // Create Script Extra
