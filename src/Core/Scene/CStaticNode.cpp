@@ -43,11 +43,7 @@ void CStaticNode::AddToRenderer(CRenderer *pRenderer, const SViewInfo& rkViewInf
     if (!rkViewInfo.ViewFrustum.BoxInFrustum(AABox()))
         return;
 
-    if (!mpModel->IsTransparent())
-    {
-        pRenderer->AddMesh(this, -1, AABox(), false, ERenderCommand::DrawMesh);
-    }
-    else
+    if (mpModel->IsTransparent())
     {
         const size_t NumSurfaces = mpModel->GetSurfaceCount();
         for (uint32_t iSurf = 0; iSurf < NumSurfaces; iSurf++)
@@ -57,6 +53,10 @@ void CStaticNode::AddToRenderer(CRenderer *pRenderer, const SViewInfo& rkViewInf
             if (rkViewInfo.ViewFrustum.BoxInFrustum(TransformedBox))
                 pRenderer->AddMesh(this, iSurf, TransformedBox, true, ERenderCommand::DrawMesh);
         }
+    }
+    else
+    {
+        pRenderer->AddMesh(this, -1, AABox(), false, ERenderCommand::DrawMesh);
     }
 
     if (mSelected && !rkViewInfo.GameMode)
