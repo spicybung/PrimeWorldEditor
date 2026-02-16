@@ -334,7 +334,6 @@ void CScriptNode::RayAABoxIntersectTest(CRayCollisionTester& rTester, const SVie
                 rTester.AddNode(this, 0, distance);
         }
     }
-
     else
     {
         // Because the billboard rotates a lot, expand the AABox on the X/Y axes to cover any possible orientation
