@@ -30,9 +30,7 @@ void CScriptExtra::Draw(FRenderOptions /*Options*/, int /*ComponentIndex*/, ERen
 
 SRayIntersection CScriptExtra::RayNodeIntersectTest(const CRay&, uint32_t, const SViewInfo&)
 {
-    SRayIntersection out;
-    out.Hit = false;
-    return out;
+    return {};
 }
 
 CScriptExtra* CScriptExtra::CreateExtra(CScriptNode *pNode)

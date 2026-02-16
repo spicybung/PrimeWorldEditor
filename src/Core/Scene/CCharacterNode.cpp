@@ -103,18 +103,18 @@ SRayIntersection CCharacterNode::RayNodeIntersectTest(const CRay& rkRay, uint32_
 
             if (index != -1)
             {
-                SRayIntersection Intersect;
-                Intersect.Hit = true;
-                Intersect.ComponentIndex = index;
-                Intersect.Distance = distance;
-                Intersect.HitPoint = rkRay.PointOnRay(distance);
-                Intersect.pNode = this;
-                return Intersect;
+                return {
+                    .Hit = true,
+                    .Distance = distance,
+                    .HitPoint = rkRay.PointOnRay(distance),
+                    .pNode = this,
+                    .ComponentIndex = uint32_t(index),
+                };
             }
         }
     }
 
-    return SRayIntersection();
+    return {};
 }
 
 CVector3f CCharacterNode::BonePosition(uint32_t BoneID)

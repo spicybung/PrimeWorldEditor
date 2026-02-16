@@ -296,5 +296,11 @@ SRayIntersection CDamageableTriggerExtra::RayNodeIntersectTest(const CRay& rkRay
 {
     // The bounding box and all other tests already passed in RayAABoxIntersectTest, so we
     // already know that we have a positive.
-    return SRayIntersection(true, mCachedRayDistance, rkRay.PointOnRay(mCachedRayDistance), mpParent, UINT32_MAX);
+    return SRayIntersection{
+        .Hit = true,
+        .Distance = mCachedRayDistance,
+        .HitPoint = rkRay.PointOnRay(mCachedRayDistance),
+        .pNode = mpParent,
+        .ComponentIndex = UINT32_MAX,
+    };
 }

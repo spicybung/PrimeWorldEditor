@@ -9,7 +9,6 @@ class CRootNode : public CSceneNode
 public:
     explicit CRootNode(CScene *pScene, uint32_t NodeID, CSceneNode *pParent = nullptr)
         : CSceneNode(pScene, NodeID, pParent) {}
-    ~CRootNode() override = default;
 
     ENodeType NodeType() const override
     {
@@ -18,9 +17,9 @@ public:
 
     void RayAABoxIntersectTest(CRayCollisionTester&, const SViewInfo&) override {}
 
-    SRayIntersection RayNodeIntersectTest(const CRay &, uint32_t, const SViewInfo&) override
+    SRayIntersection RayNodeIntersectTest(const CRay&, uint32_t, const SViewInfo&) override
     {
-        return SRayIntersection();
+        return {};
     }
 };
 

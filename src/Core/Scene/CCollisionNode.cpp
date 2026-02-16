@@ -129,9 +129,7 @@ void CCollisionNode::RayAABoxIntersectTest(CRayCollisionTester& /*rTester*/, con
 SRayIntersection CCollisionNode::RayNodeIntersectTest(const CRay& /*rkRay*/, uint32_t /*AssetID*/, const SViewInfo& /*rkViewInfo*/)
 {
     // todo
-    SRayIntersection Result;
-    Result.Hit = false;
-    return Result;
+    return {};
 }
 
 void CCollisionNode::SetCollision(CCollisionMeshGroup *pCollision)
