@@ -22,7 +22,7 @@ void CRenderBucket::CSubBucket::Add(const SRenderablePtr& rkPtr)
 void CRenderBucket::CSubBucket::Sort(const CCamera* pkCamera, bool DebugVisualization)
 {
     std::stable_sort(mRenderables.begin(), mRenderables.end(),
-                     [&, pkCamera](const auto& rkLeft, const auto& rkRight) {
+                     [pkCamera](const auto& rkLeft, const auto& rkRight) {
                          const CVector3f& CamPos = pkCamera->Position();
                          const CVector3f& CamDir = pkCamera->Direction();
 
