@@ -153,9 +153,9 @@ CStructProperty* CLight::GetProperties() const
     if (!pProperties)
     {
         pProperties = (CStructProperty*) IProperty::CreateIntrinsic(EPropertyType::Struct,
-                                                                          EGame::Prime,
-                                                                          0,
-                                                                          "Light");
+                                                                    EGame::Prime,
+                                                                    0,
+                                                                    "Light");
 
         //@todo it would be really cool if the property could detect all possible values automatically from TEnumReflection
         CChoiceProperty* pLightType = (CChoiceProperty*) IProperty::CreateIntrinsic(EPropertyType::Choice,
@@ -168,24 +168,24 @@ CStructProperty* CLight::GetProperties() const
         pLightType->AddValue("Custom", (uint32_t) ELightType::Custom);
 
         IProperty::CreateIntrinsic(EPropertyType::Color,
-                                      pProperties,
-                                      MEMBER_OFFSET(CLight, mColor),
-                                      "Color");
+                                   pProperties,
+                                   MEMBER_OFFSET(CLight, mColor),
+                                   "Color");
 
         IProperty::CreateIntrinsic(EPropertyType::Vector,
-                                      pProperties,
-                                      MEMBER_OFFSET(CLight, mPosition),
-                                      "Position");
+                                   pProperties,
+                                   MEMBER_OFFSET(CLight, mPosition),
+                                   "Position");
 
         IProperty::CreateIntrinsic(EPropertyType::Vector,
-                                      pProperties,
-                                      MEMBER_OFFSET(CLight, mDirection),
-                                      "Direction");
+                                   pProperties,
+                                   MEMBER_OFFSET(CLight, mDirection),
+                                   "Direction");
 
         IProperty::CreateIntrinsic(EPropertyType::Float,
-                                      pProperties,
-                                      MEMBER_OFFSET(CLight, mSpotCutoff),
-                                      "SpotCutoff");
+                                   pProperties,
+                                   MEMBER_OFFSET(CLight, mSpotCutoff),
+                                   "SpotCutoff");
     }
 
     return pProperties;
