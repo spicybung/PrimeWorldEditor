@@ -67,6 +67,13 @@ void CModelNode::Draw(FRenderOptions Options, int ComponentIndex, ERenderCommand
     if (!mpModel)
         return;
 
+    if (Command == ERenderCommand::DrawSelection)
+    {
+        LoadModelMatrix();
+        mpModel->DrawWireframe(ERenderOption::None, WireframeColor());
+        return;
+    }
+
     if (mForceAlphaOn)
         Options &= ~ERenderOption::NoAlpha;
 
@@ -121,15 +128,6 @@ void CModelNode::Draw(FRenderOptions Options, int ComponentIndex, ERenderCommand
         Options |= ERenderOption::NoMaterialSetup;
         DrawModelParts(mpModel, Options, 0, Command);
     }
-}
-
-void CModelNode::DrawSelection()
-{
-    if (!mpModel)
-        return;
-
-    LoadModelMatrix();
-    mpModel->DrawWireframe(ERenderOption::None, WireframeColor());
 }
 
 void CModelNode::RayAABoxIntersectTest(CRayCollisionTester& rTester, const SViewInfo& /*rkViewInfo*/)

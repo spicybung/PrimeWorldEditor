@@ -22,6 +22,12 @@ CScriptExtra::CScriptExtra(CScriptObject* pInstance, CScene* pScene, CScriptNode
 
 CScriptExtra::~CScriptExtra() = default;
 
+void CScriptExtra::Draw(FRenderOptions /*Options*/, int /*ComponentIndex*/, ERenderCommand Command, const SViewInfo& /*rkViewInfo*/)
+{
+    if (Command == ERenderCommand::DrawSelection)
+        CSceneNode::DrawSelection();
+}
+
 SRayIntersection CScriptExtra::RayNodeIntersectTest(const CRay&, uint32_t, const SViewInfo&)
 {
     SRayIntersection out;

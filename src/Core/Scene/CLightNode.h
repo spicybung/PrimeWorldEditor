@@ -16,7 +16,6 @@ public:
     ENodeType NodeType() const override;
     void AddToRenderer(CRenderer* pRenderer, const SViewInfo& ViewInfo) override;
     void Draw(FRenderOptions Options, int ComponentIndex, ERenderCommand Command, const SViewInfo& ViewInfo) override;
-    void DrawSelection() override;
     void RayAABoxIntersectTest(CRayCollisionTester& Tester, const SViewInfo& ViewInfo) override;
     SRayIntersection RayNodeIntersectTest(const CRay& Ray, uint32_t AssetID, const SViewInfo& ViewInfo) override;
     CStructRef GetProperties() const override;

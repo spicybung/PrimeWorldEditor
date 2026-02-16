@@ -53,7 +53,6 @@ public:
     void OnTransformed() override;
     void AddToRenderer(CRenderer* pRenderer, const SViewInfo& rkViewInfo) override;
     void Draw(FRenderOptions Options, int ComponentIndex, ERenderCommand Command, const SViewInfo& rkViewInfo) override;
-    void DrawSelection() override;
     void RayAABoxIntersectTest(CRayCollisionTester& rTester, const SViewInfo& rkViewInfo) override;
     SRayIntersection RayNodeIntersectTest(const CRay& rkRay, uint32_t AssetID, const SViewInfo& rkViewInfo) override;
     bool AllowsRotate() const override;
@@ -89,6 +88,9 @@ public:
 protected:
     void SetDisplayAsset(CResource *pRes);
     void CalculateTransform(CTransform4f& rOut) const override;
+
+private:
+    void DrawSelection();
 };
 
 #endif // CSCRIPTNODE_H

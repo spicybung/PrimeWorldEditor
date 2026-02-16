@@ -34,6 +34,7 @@ public:
     EGame Game() const               { return mGame; }
 
     // Default implementations for CSceneNode
+    void Draw(FRenderOptions Options, int ComponentIndex, ERenderCommand Command, const SViewInfo& rkViewInfo) override;
     ENodeType NodeType() const override { return ENodeType::ScriptExtra; }
     void RayAABoxIntersectTest(CRayCollisionTester& /*rTester*/, const SViewInfo& /*rkViewInfo*/) override {}
     SRayIntersection RayNodeIntersectTest(const CRay& /*rkRay*/, uint32_t /*AssetID*/, const SViewInfo& /*rkViewInfo*/) override;

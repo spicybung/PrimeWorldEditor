@@ -29,11 +29,17 @@ CSceneNode::~CSceneNode()
     DeleteChildren();
 }
 
-// ************ VIRTUAL ************
 void CSceneNode::DrawSelection()
 {
-    // Default implementation for virtual function
+    // Default implementation
     CDrawUtil::DrawWireCube(AABox(), CColor::White());
+}
+
+// ************ VIRTUAL ************
+void CSceneNode::Draw(FRenderOptions /*Options*/, int /*ComponentIndex*/, ERenderCommand Command, const SViewInfo& /*rkViewInfo*/)
+{
+    if (Command == ERenderCommand::DrawSelection)
+        CSceneNode::DrawSelection();
 }
 
 void CSceneNode::RayAABoxIntersectTest(CRayCollisionTester& rTester, const SViewInfo& /*rkViewInfo*/)

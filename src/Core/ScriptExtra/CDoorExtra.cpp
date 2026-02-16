@@ -81,6 +81,12 @@ void CDoorExtra::AddToRenderer(CRenderer *pRenderer, const SViewInfo& rkViewInfo
 
 void CDoorExtra::Draw(FRenderOptions Options, int /*ComponentIndex*/, ERenderCommand Command, const SViewInfo& rkViewInfo)
 {
+    if (Command == ERenderCommand::DrawSelection)
+    {
+        CDoorExtra::DrawSelection();
+        return;
+    }
+
     LoadModelMatrix();
     mpParent->LoadLights(rkViewInfo);
 

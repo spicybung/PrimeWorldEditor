@@ -52,6 +52,12 @@ void CCharacterNode::AddToRenderer(CRenderer *pRenderer, const SViewInfo& rkView
 
 void CCharacterNode::Draw(FRenderOptions Options, int ComponentIndex, ERenderCommand Command, const SViewInfo& rkViewInfo)
 {
+    if (Command == ERenderCommand::DrawSelection)
+    {
+        CSceneNode::DrawSelection();
+        return;
+    }
+
     CSkeleton *pSkel = mpCharacter->Character(mActiveCharSet)->pSkeleton;
 
     // Draw skeleton

@@ -34,6 +34,7 @@ private:
 public:
     explicit CDamageableTriggerExtra(CScriptObject *pInstance, CScene *pScene, CScriptNode *pParent = nullptr);
     ~CDamageableTriggerExtra() override;
+
     void CreateMaterial();
     void UpdatePlaneTransform();
     ERenderSide RenderSideForDirection(const CVector3f& rkDir) const;
@@ -43,9 +44,11 @@ public:
     bool ShouldDrawNormalAssets() const override;
     void AddToRenderer(CRenderer* pRenderer, const SViewInfo& rkViewInfo) override;
     void Draw(FRenderOptions Options, int ComponentIndex, ERenderCommand Command, const SViewInfo& rkViewInfo) override;
-    void DrawSelection() override;
     void RayAABoxIntersectTest(CRayCollisionTester& rTester, const SViewInfo& rkViewInfo) override;
     SRayIntersection RayNodeIntersectTest(const CRay& rkRay, uint32_t ComponentIndex, const SViewInfo& rkViewInfo) override;
+
+private:
+    void DrawSelection();
 };
 
 #endif // CDAMAGEABLETRIGGEREXTRA_H

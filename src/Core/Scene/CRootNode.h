@@ -22,8 +22,6 @@ public:
     {
         return SRayIntersection();
     }
-
-    void DrawSelection() override {}
 };
 
 #endif // CROOTNODE_H

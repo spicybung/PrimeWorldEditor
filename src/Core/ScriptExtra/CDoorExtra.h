@@ -15,12 +15,15 @@ class CDoorExtra : public CScriptExtra
 
 public:
     explicit CDoorExtra(CScriptObject* pInstance, CScene* pScene, CScriptNode* pParent = nullptr);
+
     void PropertyModified(IProperty* pProperty) override;
     void AddToRenderer(CRenderer* pRenderer, const SViewInfo& rkViewInfo) override;
     void Draw(FRenderOptions Options, int ComponentIndex, ERenderCommand Command, const SViewInfo& rkViewInfo) override;
-    void DrawSelection() override;
     void RayAABoxIntersectTest(CRayCollisionTester& rTester, const SViewInfo& rkViewInfo) override;
     SRayIntersection RayNodeIntersectTest(const CRay& rkRay, uint32_t AssetID, const SViewInfo& rkViewInfo) override;
+
+private:
+    void DrawSelection();
 };
 
 #endif // CDOOREXTRA_H

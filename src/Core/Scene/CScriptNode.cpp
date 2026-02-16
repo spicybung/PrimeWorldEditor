@@ -173,6 +173,12 @@ void CScriptNode::AddToRenderer(CRenderer* pRenderer, const SViewInfo& rkViewInf
 
 void CScriptNode::Draw(FRenderOptions Options, int /*ComponentIndex*/, ERenderCommand Command, const SViewInfo& rkViewInfo)
 {
+    if (Command == ERenderCommand::DrawSelection)
+    {
+        CScriptNode::DrawSelection();
+        return;
+    }
+
     if (mpInstance == nullptr)
         return;
 

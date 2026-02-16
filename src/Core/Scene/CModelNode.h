@@ -23,7 +23,6 @@ public:
     void PostLoad() override;
     void AddToRenderer(CRenderer* pRenderer, const SViewInfo& rkViewInfo) override;
     void Draw(FRenderOptions Options, int ComponentIndex, ERenderCommand Command, const SViewInfo& rkViewInfo) override;
-    void DrawSelection() override;
     void RayAABoxIntersectTest(CRayCollisionTester& Tester, const SViewInfo& rkViewInfo) override;
     SRayIntersection RayNodeIntersectTest(const CRay& Ray, uint32_t AssetID, const SViewInfo& rkViewInfo) override;
     CColor TintColor(const SViewInfo& rkViewInfo) const override;

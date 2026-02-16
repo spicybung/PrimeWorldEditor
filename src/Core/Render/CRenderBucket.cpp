@@ -65,13 +65,7 @@ void CRenderBucket::CSubBucket::Draw(const SViewInfo& rkViewInfo)
     const FRenderOptions Options = rkViewInfo.pRenderer->RenderOptions();
 
     for (const auto& ptr : mRenderables)
-    {
-        // todo: DrawSelection probably shouldn't be a separate function anymore.
-        if (ptr.Command == ERenderCommand::DrawSelection)
-            ptr.pRenderable->DrawSelection();
-        else
-            ptr.pRenderable->Draw(Options, ptr.ComponentIndex, ptr.Command, rkViewInfo);
-    }
+        ptr.pRenderable->Draw(Options, ptr.ComponentIndex, ptr.Command, rkViewInfo);
 }
 
 // ************ CRenderBucket ************

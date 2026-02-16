@@ -176,8 +176,14 @@ void CWaypointExtra::AddToRenderer(CRenderer *pRenderer, const SViewInfo& rkView
     }
 }
 
-void CWaypointExtra::Draw(FRenderOptions /*Options*/, int ComponentIndex, ERenderCommand /*Command*/, const SViewInfo& /*rkViewInfo*/)
+void CWaypointExtra::Draw(FRenderOptions /*Options*/, int ComponentIndex, ERenderCommand Command, const SViewInfo& /*rkViewInfo*/)
 {
+    if (Command == ERenderCommand::DrawSelection)
+    {
+        CScriptExtra::DrawSelection();
+        return;
+    }
+
     glBlendFunc(GL_ONE, GL_ZERO);
     glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
     glDepthMask(GL_TRUE);

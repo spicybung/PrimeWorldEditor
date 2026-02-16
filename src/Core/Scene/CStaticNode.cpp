@@ -63,13 +63,20 @@ void CStaticNode::AddToRenderer(CRenderer *pRenderer, const SViewInfo& rkViewInf
         pRenderer->AddMesh(this, -1, AABox(), false, ERenderCommand::DrawSelection);
 }
 
-void CStaticNode::Draw(FRenderOptions Options, int ComponentIndex, ERenderCommand /*Command*/, const SViewInfo& rkViewInfo)
+void CStaticNode::Draw(FRenderOptions Options, int ComponentIndex, ERenderCommand Command, const SViewInfo& rkViewInfo)
 {
     if (!mpModel)
         return;
 
-    bool IsLightingEnabled = CGraphics::sLightMode == CGraphics::ELightingMode::World || rkViewInfo.GameMode;
-    bool UseWhiteAmbient   = mpModel->GetMaterial()->Options().HasFlag(EMaterialOption::DrawWhiteAmbientDKCR);
+    if (Command == ERenderCommand::DrawSelection)
+    {
+        LoadModelMatrix();
+        mpModel->DrawWireframe(ERenderOption::None, WireframeColor());
+        return;
+    }
+
+    const bool IsLightingEnabled = CGraphics::sLightMode == CGraphics::ELightingMode::World || rkViewInfo.GameMode;
+    const bool UseWhiteAmbient   = mpModel->GetMaterial()->Options().HasFlag(EMaterialOption::DrawWhiteAmbientDKCR);
 
     if (IsLightingEnabled)
     {
@@ -87,7 +94,7 @@ void CStaticNode::Draw(FRenderOptions Options, int ComponentIndex, ERenderComman
         CGraphics::sVertexBlock.COLOR0_Mat = CColor::White();
     }
 
-    float Mul = CGraphics::sWorldLightMultiplier;
+    const float Mul = CGraphics::sWorldLightMultiplier;
     CGraphics::sPixelBlock.SetAllTevColors(CColor(Mul,Mul,Mul));
     CGraphics::sPixelBlock.TintColor = TintColor(rkViewInfo);
     LoadModelMatrix();
@@ -96,15 +103,6 @@ void CStaticNode::Draw(FRenderOptions Options, int ComponentIndex, ERenderComman
         mpModel->Draw(Options);
     else
         mpModel->DrawSurface(Options, ComponentIndex);
-}
-
-void CStaticNode::DrawSelection()
-{
-    if (!mpModel)
-        return;
-
-    LoadModelMatrix();
-    mpModel->DrawWireframe(ERenderOption::None, WireframeColor());
 }
 
 void CStaticNode::RayAABoxIntersectTest(CRayCollisionTester& rTester, const SViewInfo& /*rkViewInfo*/)

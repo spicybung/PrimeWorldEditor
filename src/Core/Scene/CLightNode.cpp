@@ -47,14 +47,16 @@ void CLightNode::AddToRenderer(CRenderer *pRenderer, const SViewInfo& rkViewInfo
     }
 }
 
-void CLightNode::Draw(FRenderOptions /*Options*/, int /*ComponentIndex*/, ERenderCommand /*Command*/, const SViewInfo& rkViewInfo)
+void CLightNode::Draw(FRenderOptions /*Options*/, int /*ComponentIndex*/, ERenderCommand Command, const SViewInfo& rkViewInfo)
 {
-    CDrawUtil::DrawLightBillboard(mpLight->Type(), mpLight->Color(), mPosition, BillboardScale(), TintColor(rkViewInfo));
-}
-
-void CLightNode::DrawSelection()
-{
-    CDrawUtil::DrawWireSphere(mPosition, mpLight->GetRadius(), mpLight->Color());
+    if (Command == ERenderCommand::DrawSelection)
+    {
+        CDrawUtil::DrawWireSphere(mPosition, mpLight->GetRadius(), mpLight->Color());
+    }
+    else
+    {
+        CDrawUtil::DrawLightBillboard(mpLight->Type(), mpLight->Color(), mPosition, BillboardScale(), TintColor(rkViewInfo));
+    }
 }
 
 void CLightNode::RayAABoxIntersectTest(CRayCollisionTester& rTester, const SViewInfo& /*ViewInfo*/)

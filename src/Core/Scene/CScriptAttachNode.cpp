@@ -95,6 +95,14 @@ void CScriptAttachNode::AddToRenderer(CRenderer *pRenderer, const SViewInfo& rkV
 void CScriptAttachNode::Draw(FRenderOptions Options, int /*ComponentIndex*/, ERenderCommand Command, const SViewInfo& rkViewInfo)
 {
     LoadModelMatrix();
+
+    if (Command == ERenderCommand::DrawSelection)
+    {
+        glBlendFunc(GL_ONE, GL_ZERO);
+        Model()->DrawWireframe(ERenderOption::None, mpParent->WireframeColor());
+        return;
+    }
+
     mpParent->LoadLights(rkViewInfo);
 
     CGraphics::SetupAmbientColor();
@@ -104,13 +112,6 @@ void CScriptAttachNode::Draw(FRenderOptions Options, int /*ComponentIndex*/, ERe
     CGraphics::sPixelBlock.SetAllTevColors(CColor::White());
     CGraphics::UpdatePixelBlock();
     DrawModelParts(Model(), Options, 0, Command);
-}
-
-void CScriptAttachNode::DrawSelection()
-{
-    LoadModelMatrix();
-    glBlendFunc(GL_ONE, GL_ZERO);
-    Model()->DrawWireframe(ERenderOption::None, mpParent->WireframeColor());
 }
 
 void CScriptAttachNode::RayAABoxIntersectTest(CRayCollisionTester& rTester, const SViewInfo& /*rkViewInfo*/)

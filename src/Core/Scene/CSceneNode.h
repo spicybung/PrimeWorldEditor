@@ -105,11 +105,12 @@ protected:
 public:
     explicit CSceneNode(CScene *pScene, uint32_t NodeID, CSceneNode *pParent = nullptr);
     ~CSceneNode() override;
+
     virtual ENodeType NodeType() const = 0;
     virtual void PostLoad() {}
     virtual void OnTransformed() {}
     void AddToRenderer(CRenderer* /*pRenderer*/, const SViewInfo& /*rkViewInfo*/) override {}
-    void DrawSelection() override;
+    void Draw(FRenderOptions Options, int ComponentIndex, ERenderCommand Command, const SViewInfo& rkViewInfo) override;
     virtual void RayAABoxIntersectTest(CRayCollisionTester& rTester, const SViewInfo& rkViewInfo);
     virtual SRayIntersection RayNodeIntersectTest(const CRay& rkRay, uint32_t AssetID, const SViewInfo& rkViewInfo) = 0;
     virtual bool AllowsTranslate() const { return true; }
@@ -141,12 +142,7 @@ public:
     void Scale(const CVector3f& rkScale);
     void Scale(const CVector3f& rkScale, const CVector3f& rkPivot);
     const CTransform4f& Transform() const;
-protected:
-    void MarkTransformChanged() const;
-    void ForceRecalculateTransform() const;
-    virtual void CalculateTransform(CTransform4f& rOut) const;
 
-public:
     CVector3f AbsolutePosition() const;
     CQuaternion AbsoluteRotation() const;
     CVector3f AbsoluteScale() const;
@@ -183,6 +179,12 @@ public:
     // Static
     static int NumNodes() { return smNumNodes; }
     static CColor skSelectionTint;
+
+protected:
+    void DrawSelection();
+    void MarkTransformChanged() const;
+    void ForceRecalculateTransform() const;
+    virtual void CalculateTransform(CTransform4f& rOut) const;
 };
 
 #endif // CSCENENODE_H
