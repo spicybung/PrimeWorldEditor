@@ -6,6 +6,7 @@
 #include <Common/Math/MathUtil.h>
 
 #include <algorithm>
+#include <memory>
 #include <vector>
 
 struct SScriptArray
@@ -28,7 +29,7 @@ class CArrayProperty : public TTypedProperty<uint32_t, EPropertyType::Array>
      *  value and we respond by updating the allocated space, handling item destruction
      *  and construction, etc.
      */
-    IProperty* mpItemArchetype = nullptr;
+    std::unique_ptr<IProperty> mpItemArchetype;
 
     /** Internal functions */
     SScriptArray& _GetInternalArray(void* pData)
@@ -57,8 +58,6 @@ protected:
     {}
 
 public:
-    ~CArrayProperty() override { delete mpItemArchetype; }
-
     uint32_t DataSize() const override
     {
         return sizeof(SScriptArray);
@@ -147,7 +146,7 @@ public:
     {
         TTypedProperty::InitFromArchetype(pOther);
         auto* pOtherArray = static_cast<CArrayProperty*>(pOther);
-        mpItemArchetype = IProperty::CreateCopy(pOtherArray->mpItemArchetype);
+        mpItemArchetype.reset(IProperty::CreateCopy(pOtherArray->mpItemArchetype.get()));
     }
 
     void PostInitialize() override
@@ -219,7 +218,7 @@ public:
     }
 
     /** Accessors */
-    IProperty* ItemArchetype() const { return mpItemArchetype; }
+    IProperty* ItemArchetype() const { return mpItemArchetype.get(); }
 };
 
 #endif // CARRAYPROPERTY_H
