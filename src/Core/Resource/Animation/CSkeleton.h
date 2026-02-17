@@ -36,7 +36,7 @@ class CSkeleton : public CResource
 public:
     explicit CSkeleton(CResourceEntry *pEntry = nullptr);
     ~CSkeleton() override;
-    void UpdateTransform(CBoneTransformData& rData, CAnimation *pAnim, float Time, bool AnchorRoot);
+    void UpdateTransform(CBoneTransformData& rData, const CAnimation* pAnim, float Time, bool AnchorRoot);
     CBone* BoneByID(uint32_t BoneID) const;
     CBone* BoneByName(std::string_view name) const;
     uint32_t MaxBoneID() const;
@@ -66,7 +66,7 @@ class CBone
 
 public:
     explicit CBone(CSkeleton *pSkel);
-    void UpdateTransform(CBoneTransformData& rData, const SBoneTransformInfo& rkParentTransform, CAnimation *pAnim, float Time, bool AnchorRoot);
+    void UpdateTransform(CBoneTransformData& rData, const SBoneTransformInfo& rkParentTransform, const CAnimation* pAnim, float Time, bool AnchorRoot);
     CVector3f TransformedPosition(const CBoneTransformData& rkData) const;
     CQuaternion TransformedRotation(const CBoneTransformData& rkData) const;
     bool IsRoot() const;

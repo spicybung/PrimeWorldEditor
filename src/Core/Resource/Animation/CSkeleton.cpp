@@ -14,7 +14,7 @@ CBone::CBone(CSkeleton *pSkel)
 {
 }
 
-void CBone::UpdateTransform(CBoneTransformData& rData, const SBoneTransformInfo& rkParentTransform, CAnimation *pAnim, float Time, bool AnchorRoot)
+void CBone::UpdateTransform(CBoneTransformData& rData, const SBoneTransformInfo& rkParentTransform, const CAnimation* pAnim, float Time, bool AnchorRoot)
 {
     // Get transform data
     SBoneTransformInfo TransformInfo;
@@ -103,7 +103,7 @@ uint32_t CSkeleton::MaxBoneID() const
     return (*iter)->ID();
 }
 
-void CSkeleton::UpdateTransform(CBoneTransformData& rData, CAnimation *pAnim, float Time, bool AnchorRoot)
+void CSkeleton::UpdateTransform(CBoneTransformData& rData, const CAnimation* pAnim, float Time, bool AnchorRoot)
 {
     ASSERT(rData.NumTrackedBones() >= MaxBoneID());
     mpRootBone->UpdateTransform(rData, SBoneTransformInfo(), pAnim, Time, AnchorRoot);
