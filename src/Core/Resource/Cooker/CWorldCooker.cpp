@@ -181,6 +181,7 @@ bool CWorldCooker::CookMLVL(CWorld *pWorld, IOutputStream& rMLVL)
     {
         // Create sorted list of audio groups (sort by group ID)
         std::vector<CAudioGroup*> SortedAudioGroups;
+        SortedAudioGroups.reserve(AudioGroups.size());
 
         for (const auto AudioGroup : AudioGroups)
         {
