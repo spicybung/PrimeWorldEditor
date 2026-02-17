@@ -4,8 +4,8 @@
 #include "Core/Resource/CMaterial.h"
 #include "Core/Resource/CTexture.h"
 
-#include <algorithm>
 #include <memory>
+#include <set>
 #include <vector>
 
 class CMaterialSet
@@ -16,9 +16,6 @@ class CMaterialSet
     std::vector<std::unique_ptr<CMaterial>> mMaterials;
 
 public:
-    CMaterialSet() = default;
-    ~CMaterialSet() = default;
-
     std::unique_ptr<CMaterialSet> Clone() const
     {
         auto pOut = std::make_unique<CMaterialSet>();
@@ -45,28 +42,6 @@ public:
             return Ret->GetBloomVersion();
 
         return Ret;
-    }
-
-    CMaterial* MaterialByName(const TString& rkName) const
-    {
-        const auto iter = std::ranges::find_if(mMaterials,
-                                               [&rkName](const auto& entry) { return entry->Name() == rkName; });
-
-        if (iter == mMaterials.cend())
-            return nullptr;
-
-        return iter->get();
-    }
-
-    uint32_t MaterialIndexByName(const TString& rkName) const
-    {
-        for (uint32_t i = 0; i < mMaterials.size(); i++)
-        {
-            if (mMaterials[i]->Name() == rkName)
-                return i;
-        }
-
-        return UINT32_MAX;
     }
 
     void GetUsedTextureIDs(std::set<CAssetID>& rOut) const
