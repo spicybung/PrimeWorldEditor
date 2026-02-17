@@ -47,7 +47,7 @@ class CGameArea : public CResource
     std::vector<SSectionNumber> mSectionNumbers;
 
     // Geometry
-    CMaterialSet *mpMaterialSet = nullptr;
+    std::unique_ptr<CMaterialSet> mpMaterialSet;
     std::vector<std::unique_ptr<CModel>> mWorldModels; // TerrainModels is the original version of each model; this is currently mainly used in the POI map editor
     std::vector<std::unique_ptr<CStaticModel>> mStaticWorldModels; // StaticTerrainModels is the merged terrain for faster rendering in the world editor
     // Script
@@ -92,7 +92,7 @@ public:
     // Accessors
     uint32_t WorldIndex() const                                  { return mWorldIndex; }
     const CTransform4f& Transform() const                        { return mTransform; }
-    CMaterialSet* Materials() const                              { return mpMaterialSet; }
+    CMaterialSet* Materials() const                              { return mpMaterialSet.get(); }
 
     auto TerrainModels() const                                   { return std::views::transform(mWorldModels, [](const auto& entry) { return entry.get(); }); }
     auto StaticModels() const                                    { return std::views::transform(mStaticWorldModels, [](const auto& entry)  { return entry.get(); }); }

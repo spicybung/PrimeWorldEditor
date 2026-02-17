@@ -108,10 +108,7 @@ void CGameArea::ClearTerrain()
 {
     mWorldModels.clear();
     mStaticWorldModels.clear();
-
-    if (mpMaterialSet)
-        delete mpMaterialSet;
-
+    mpMaterialSet.reset();
     mVertexCount = 0;
     mTriangleCount = 0;
     mTerrainMerged = false;

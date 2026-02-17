@@ -57,7 +57,7 @@ void CAreaLoader::ReadGeometryPrime()
     mpSectionMgr->ToSection(mGeometryBlockNum);
 
     // Materials
-    mpArea->mpMaterialSet = CMaterialLoader::LoadMaterialSet(*mpMREA, mVersion);
+    mpArea->mpMaterialSet.reset(CMaterialLoader::LoadMaterialSet(*mpMREA, mVersion));
     mpSectionMgr->ToNextSection();
 
     // Geometry
@@ -358,7 +358,7 @@ void CAreaLoader::ReadGeometryCorruption()
     mpSectionMgr->ToSection(mGeometryBlockNum);
 
     // Materials
-    mpArea->mpMaterialSet = CMaterialLoader::LoadMaterialSet(*mpMREA, mVersion);
+    mpArea->mpMaterialSet.reset(CMaterialLoader::LoadMaterialSet(*mpMREA, mVersion));
     mpSectionMgr->ToNextSection();
 
     // Geometry
