@@ -363,10 +363,7 @@ void CPackage::CompareOriginalAssetList(const std::list<CAssetID>& rkNewList)
     // Debug - take the newly generated rkNewList and compare it with the asset list
     // from the original pak, and print info about any extra or missing resources
     // Build a set out of the generated list
-    std::set<CAssetID> NewListSet;
-
-    for (const auto& id : rkNewList)
-        NewListSet.insert(id);
+    const std::set<CAssetID> NewListSet(rkNewList.begin(), rkNewList.end());
 
     // Read the original pak
     const TString CookedPath = CookedPackagePath(false);
