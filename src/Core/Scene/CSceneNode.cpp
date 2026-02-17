@@ -128,13 +128,10 @@ void CSceneNode::BuildLightList(CGameArea *pArea)
         Index = 0;
 
     struct SLightEntry {
-        CLight* pLight;
-        float Distance;
+        CLight* pLight{};
+        float Distance{};
 
-        SLightEntry(CLight* pLight_, float Distance_)
-            : pLight(pLight_), Distance(Distance_) {}
-
-        bool operator<(const SLightEntry& rkOther) const {
+        bool operator<(const SLightEntry& rkOther) const noexcept {
             return Distance < rkOther.Distance;
         }
     };
