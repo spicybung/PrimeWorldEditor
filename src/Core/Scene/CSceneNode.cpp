@@ -9,8 +9,7 @@
 
 #include <algorithm>
 
-uint32_t CSceneNode::smNumNodes = 0;
-CColor CSceneNode::skSelectionTint = CColor::Integral(39, 154, 167);
+constexpr CColor skSelectionTint = CColor::Integral(39, 154, 167);
 
 CSceneNode::CSceneNode(CScene *pScene, uint32_t NodeID, CSceneNode *pParent)
     : _mID(NodeID)

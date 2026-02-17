@@ -82,7 +82,8 @@ private:
     uint32_t _mID;
 
 protected:
-    static uint32_t smNumNodes;
+    static inline uint32_t smNumNodes = 0;
+
     TString mName;
     CSceneNode *mpParent;
     CScene *mpScene;
@@ -178,7 +179,6 @@ public:
 
     // Static
     static int NumNodes() { return smNumNodes; }
-    static CColor skSelectionTint;
 
 protected:
     void DrawSelection();
