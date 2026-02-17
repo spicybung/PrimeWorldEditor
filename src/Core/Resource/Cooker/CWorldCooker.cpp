@@ -189,7 +189,7 @@ bool CWorldCooker::CookMLVL(CWorld *pWorld, IOutputStream& rMLVL)
             SortedAudioGroups.push_back(pGroup);
         }
 
-        std::sort(SortedAudioGroups.begin(), SortedAudioGroups.end(), [](const auto* pLeft, const auto* pRight) {
+        std::ranges::sort(SortedAudioGroups, [](const auto* pLeft, const auto* pRight) {
             return pLeft->GroupID() < pRight->GroupID();
         });
 
