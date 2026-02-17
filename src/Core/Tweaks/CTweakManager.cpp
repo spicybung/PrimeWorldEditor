@@ -25,12 +25,12 @@ void CTweakManager::LoadTweaks()
     // MP1 - Load all tweak assets into memory
     if (mpProject->Game() <= EGame::Prime)
     {
-        for (const auto& It : MakeTypedResourceView(EResourceType::Tweaks, mpProject->ResourceStore()))
+        for (const auto& entry : mpProject->ResourceStore()->MakeTypedResourceView(EResourceType::Tweaks))
         {
-            if (auto* pTweaks = static_cast<CTweakData*>(It->Load()))
+            if (auto* tweaks = static_cast<CTweakData*>(entry->Load()))
             {
-                pTweaks->Lock();
-                mTweakObjects.push_back(pTweaks);
+                tweaks->Lock();
+                mTweakObjects.push_back(tweaks);
             }
         }
     }

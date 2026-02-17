@@ -128,7 +128,7 @@ void CAssetNameMap::CopyFromStore(CResourceStore *pStore)
     // Do a first pass to remove old paths from used set to prevent false positives from eg. if two resources switch places
     ASSERT(CAssetID::GameIDLength(pStore->Game()) == mIDLength);
 
-    for (const auto& It : MakeResourceView(pStore))
+    for (const auto& It : pStore->MakeResourceView())
     {
         if (It->IsCategorized() || It->IsNamed())
         {
@@ -145,7 +145,7 @@ void CAssetNameMap::CopyFromStore(CResourceStore *pStore)
     }
 
     // Do a second pass to add the new paths to the map
-    for (const auto& It : MakeResourceView(pStore))
+    for (const auto& It : pStore->MakeResourceView())
     {
         if (It->IsCategorized() || It->IsNamed())
         {

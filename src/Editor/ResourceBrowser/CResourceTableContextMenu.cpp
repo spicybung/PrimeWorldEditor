@@ -175,10 +175,10 @@ void CResourceTableContextMenu::ShowReferencers()
 
     QList<CResourceEntry*> EntryList;
 
-    for (const auto& Iter : MakeResourceView(mpClickedEntry->ResourceStore()))
+    for (const auto& entry : mpClickedEntry->ResourceStore()->MakeResourceView())
     {
-        if (Iter->Dependencies()->HasDependency(mpClickedEntry->ID()))
-            EntryList.push_back(Iter.get());
+        if (entry->Dependencies()->HasDependency(mpClickedEntry->ID()))
+            EntryList.push_back(entry.get());
     }
 
     if (!mpModel->IsDisplayingUserEntryList())

@@ -116,13 +116,4 @@ extern bool gTemplatesWritable;
 extern CResourceStore *gpResourceStore;
 extern CResourceStore *gpEditorStore;
 
-inline auto MakeResourceView(CResourceStore* store = gpResourceStore)
-{
-    return store->MakeResourceView();
-}
-inline auto MakeTypedResourceView(EResourceType Type, CResourceStore* store = gpResourceStore)
-{
-    return store->MakeTypedResourceView(Type);
-}
-
 #endif // CRESOURCESTORE_H

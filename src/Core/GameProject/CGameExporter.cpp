@@ -571,7 +571,7 @@ void CGameExporter::ExportResourceEditorData()
         // todo: we're wasting a ton of time loading the same resources over and over because most resources automatically
         // load all their dependencies and then we just clear it out from memory even though we'll need it again later. we
         // should really be doing this by dependency order instead of by ID order.
-        for (const auto& It : MakeResourceView(mpStore))
+        for (const auto& It : mpStore->MakeResourceView())
         {
             if (mpProgress->ShouldCancel())
                 break;

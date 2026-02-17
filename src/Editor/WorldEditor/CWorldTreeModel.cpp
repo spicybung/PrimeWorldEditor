@@ -319,10 +319,10 @@ void CWorldTreeModel::OnProjectChanged(CGameProject *pProj)
             pInfo = &mWorldList.front();
             pInfo->WorldName = QStringLiteral("FrontEnd");
 
-            for (const auto& It : MakeTypedResourceView(EResourceType::World))
+            for (const auto& world : pProj->ResourceStore()->MakeTypedResourceView(EResourceType::World))
             {
-                if (!UsedWorlds.contains(It->ID()))
-                    pInfo->Areas.push_back(It.get());
+                if (!UsedWorlds.contains(world->ID()))
+                    pInfo->Areas.push_back(world.get());
             }
 
             // Sort FrontEnd world

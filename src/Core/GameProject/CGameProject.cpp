@@ -282,7 +282,7 @@ std::unique_ptr<CGameProject> CGameProject::LoadProject(const TString& rkProjPat
         CResourceStore* pOldStore = gpResourceStore;
         gpResourceStore = pProj->mpResourceStore.get();
 
-        for (const auto& It : MakeResourceView())
+        for (const auto& It : pProj->mpResourceStore->MakeResourceView())
         {
             if (It->TypeInfo()->CanBeSerialized() && !It->HasRawVersion())
             {
@@ -291,7 +291,7 @@ std::unique_ptr<CGameProject> CGameProject::LoadProject(const TString& rkProjPat
                 // Touch the cooked file to update its last modified time.
                 // This prevents PWE from erroneously thinking the cooked file is outdated
                 // (due to the raw file we just made having a more recent last modified time)
-                FileUtil::UpdateLastModifiedTime( It->CookedAssetPath() );
+                FileUtil::UpdateLastModifiedTime(It->CookedAssetPath());
             }
         }
 

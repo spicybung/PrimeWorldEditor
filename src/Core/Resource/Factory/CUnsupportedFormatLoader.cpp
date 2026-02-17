@@ -454,7 +454,7 @@ std::unique_ptr<CMapArea> CUnsupportedFormatLoader::LoadMAPA(IInputStream& /*rMA
     CAssetID MapWorldID;
     size_t WorldIndex = SIZE_MAX;
 
-    for (const auto& It : MakeTypedResourceView(EResourceType::MapWorld))
+    for (const auto& It : pEntry->ResourceStore()->MakeTypedResourceView(EResourceType::MapWorld))
     {
         auto *pGroup = static_cast<CDependencyGroup*>(It->Load());
 
@@ -475,7 +475,7 @@ std::unique_ptr<CMapArea> CUnsupportedFormatLoader::LoadMAPA(IInputStream& /*rMA
     // Find a world that contains this MapWorld
     if (WorldIndex != SIZE_MAX)
     {
-        for (const auto& It : MakeTypedResourceView(EResourceType::World))
+        for (const auto& It : pEntry->ResourceStore()->MakeTypedResourceView(EResourceType::World))
         {
             auto *pWorld = static_cast<CWorld*>(It->Load());
             auto *pMapWorld = static_cast<CDependencyGroup*>(pWorld->MapWorld());

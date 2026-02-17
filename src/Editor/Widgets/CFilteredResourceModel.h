@@ -23,11 +23,11 @@ public:
     {
         const CResTypeFilter& rkFilter = pSelector->TypeFilter();
 
-        for (const auto& It : MakeResourceView())
+        for (const auto& entry : pSelector->Entry()->ResourceStore()->MakeResourceView())
         {
-            if (rkFilter.Accepts(It.get()))
+            if (rkFilter.Accepts(entry.get()))
             {
-                mEntries.push_back(It.get());
+                mEntries.push_back(entry.get());
             }
         }
 

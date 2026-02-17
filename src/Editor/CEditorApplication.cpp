@@ -147,16 +147,16 @@ void CEditorApplication::EditResource(CResourceEntry *pEntry)
         {
         case EResourceType::Area:
             // We can't open an area on its own. Find a world that contains this area.
-            for (const auto& It : MakeTypedResourceView(EResourceType::World))
+            for (const auto& entry : pEntry->ResourceStore()->MakeTypedResourceView(EResourceType::World))
             {
-                if (It->Dependencies()->HasDependency(pEntry->ID()))
+                if (entry->Dependencies()->HasDependency(pEntry->ID()))
                 {
-                    auto* pWorld = static_cast<CWorld*>(It->Load());
-                    const auto AreaIdx = pWorld->AreaIndex(pEntry->ID());
+                    auto* world = static_cast<CWorld*>(entry->Load());
+                    const auto areaIdx = world->AreaIndex(pEntry->ID());
 
-                    if (AreaIdx != UINT32_MAX)
+                    if (areaIdx != UINT32_MAX)
                     {
-                        mpWorldEditor->SetArea(pWorld, AreaIdx);
+                        mpWorldEditor->SetArea(world, areaIdx);
                         break;
                     }
                 }

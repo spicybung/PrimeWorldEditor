@@ -98,7 +98,7 @@ bool ValidateCooker(EResourceType ResourceType, bool DumpInvalidFileContents)
     uint32_t NumValid = 0, NumInvalid = 0;
 
     // Iterate through all resources
-    for (const auto& It : MakeResourceView(pStore))
+    for (const auto& It : pStore->MakeResourceView())
     {
         if (It->ResourceType() != ResourceType || !It->HasCookedVersion())
             continue;

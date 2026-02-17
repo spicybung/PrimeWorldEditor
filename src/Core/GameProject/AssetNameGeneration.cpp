@@ -103,7 +103,7 @@ void GenerateAssetNames(CGameProject *pProj)
     // Revert all auto-generated asset names back to default to prevent name conflicts resulting in inconsistent results.
     NLog::Debug("Reverting auto-generated names");
 
-    for (auto& resource : MakeResourceView())
+    for (auto& resource : pProj->ResourceStore()->MakeResourceView())
     {
         const bool HasCustomDir = !resource->HasFlag(EResEntryFlag::AutoResDir);
         const bool HasCustomName = !resource->HasFlag(EResEntryFlag::AutoResName);
@@ -139,7 +139,7 @@ void GenerateAssetNames(CGameProject *pProj)
     NLog::Debug("Processing worlds");
     const TString kWorldsRoot = "Worlds/";
 
-    for (const auto& It : MakeTypedResourceView(EResourceType::World, pStore))
+    for (const auto& It : pStore->MakeTypedResourceView(EResourceType::World))
     {
         // Set world name
         TResPtr<CWorld> pWorld = It->Load();
@@ -405,7 +405,7 @@ void GenerateAssetNames(CGameProject *pProj)
     // Generate Model Lightmap names
     NLog::Debug("Processing model lightmaps");
 
-    for (const auto& It : MakeTypedResourceView(EResourceType::Model, pStore))
+    for (const auto& It : pStore->MakeTypedResourceView(EResourceType::Model))
     {
         CModel *pModel = (CModel*) It->Load();
         size_t LightmapNum = 0;
@@ -448,7 +448,7 @@ void GenerateAssetNames(CGameProject *pProj)
     NLog::Debug("Processing audio groups");
     const TString kAudioGrpDir = "Audio/";
 
-    for (const auto& It : MakeTypedResourceView(EResourceType::AudioGroup, pStore))
+    for (const auto& It : pStore->MakeTypedResourceView(EResourceType::AudioGroup))
     {
         auto* pGroup = static_cast<CAudioGroup*>(It->Load());
         const TString& GroupName = pGroup->GroupName();
@@ -461,7 +461,7 @@ void GenerateAssetNames(CGameProject *pProj)
     NLog::Debug("Processing audio macros");
     const TString kSfxDir = "Audio/Uncategorized/";
 
-    for (const auto& It : MakeTypedResourceView(EResourceType::AudioMacro, pStore))
+    for (const auto& It : pStore->MakeTypedResourceView(EResourceType::AudioMacro))
     {
         const auto* pMacro = static_cast<CAudioMacro*>(It->Load());
         const TString& MacroName = pMacro->MacroName();
@@ -488,8 +488,8 @@ void GenerateAssetNames(CGameProject *pProj)
     // Generate animation format names
     // Hacky syntax because animsets are under eAnimSet in MP1/2 and eCharacter in MP3/DKCR
     NLog::Debug("Processing animation data");
-    auto View = pProj->Game() <= EGame::Echoes ? MakeTypedResourceView(EResourceType::AnimSet, pStore) :
-                                                 MakeTypedResourceView(EResourceType::Character, pStore);
+    auto View = pProj->Game() <= EGame::Echoes ? pStore->MakeTypedResourceView(EResourceType::AnimSet) :
+                                                 pStore->MakeTypedResourceView(EResourceType::Character);
     for (const auto& It : View)
     {
         TString SetDir = It->DirectoryPath();
@@ -573,7 +573,7 @@ void GenerateAssetNames(CGameProject *pProj)
     NLog::Debug("Processing strings");
     const TString kStringsDir = "Strings/Uncategorized/";
 
-    for (const auto& It : MakeTypedResourceView(EResourceType::StringTable, pStore))
+    for (const auto& It : pStore->MakeTypedResourceView(EResourceType::StringTable))
     {
         if (It->IsNamed())
             continue;
@@ -600,7 +600,7 @@ void GenerateAssetNames(CGameProject *pProj)
 #if PROCESS_SCANS
     // Generate scan names
     NLog::Debug("Processing scans");
-    for (const auto& It : MakeTypedResourceView(EResourceType::Scan, pStore))
+    for (const auto& It : pStore->MakeTypedResourceView(EResourceType::Scan))
     {
         if (It->IsNamed())
             continue;
@@ -637,7 +637,7 @@ void GenerateAssetNames(CGameProject *pProj)
 #if PROCESS_FONTS
     // Generate font names
     NLog::Debug("Processing fonts");
-    for (const auto& It : MakeTypedResourceView(EResourceType::Font, pStore))
+    for (const auto& It : pStore->MakeTypedResourceView(EResourceType::Font))
     {
         if (auto* pFont = static_cast<CFont*>(It->Load()))
         {

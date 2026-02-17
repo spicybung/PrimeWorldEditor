@@ -25,10 +25,10 @@ void CAudioManager::LoadAssets()
     mSfxIdMap.clear();
 
     // Load/sort all audio groups
-    for (const auto& It : MakeTypedResourceView(EResourceType::AudioGroup, mpProject->ResourceStore()))
+    for (const auto& entry : mpProject->ResourceStore()->MakeTypedResourceView(EResourceType::AudioGroup))
     {
-        if (auto* pGroup = static_cast<CAudioGroup*>(It->Load()))
-            mAudioGroups.emplace_back(pGroup);
+        if (auto* group = static_cast<CAudioGroup*>(entry->Load()))
+            mAudioGroups.emplace_back(group);
     }
 
     std::sort(mAudioGroups.begin(), mAudioGroups.end(), [](const CAudioGroup *pLeft, const CAudioGroup *pRight) {

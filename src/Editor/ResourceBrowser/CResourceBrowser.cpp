@@ -997,7 +997,7 @@ void CResourceBrowser::ImportAssetNameMap()
 
     SetActiveDirectory(nullptr);
 
-    for (const auto& It : MakeResourceView(mpStore))
+    for (const auto& It : mpStore->MakeResourceView())
     {
         TString Dir, Name;
         bool AutoDir, AutoName;
