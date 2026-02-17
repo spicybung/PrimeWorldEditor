@@ -39,8 +39,7 @@ public:
     
     bool HasDependency(const CAssetID& rkID) const
     {
-        return std::ranges::any_of(mDependencies,
-                                   [&rkID](const auto& entry) { return entry == rkID; });
+        return std::ranges::contains(mDependencies, rkID);
     }
 
     std::unique_ptr<CDependencyTree> BuildDependencyTree() override
