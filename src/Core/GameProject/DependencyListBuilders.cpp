@@ -364,7 +364,7 @@ void CPackageDependencyListBuilder::FindUniversalAreaAssets()
         if (res.Type != CFourCC("MLVL"))
             continue;
 
-        auto* pUniverseWorld = gpResourceStore->LoadResource<CWorld>(res.ID);
+        auto* pUniverseWorld = mpStore->LoadResource<CWorld>(res.ID);
         if (!pUniverseWorld)
             continue;
 
