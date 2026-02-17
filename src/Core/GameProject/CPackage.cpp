@@ -194,7 +194,7 @@ void CPackage::Cook(IProgressNotifier *pProgress)
         // Initialize entry, recook assets if needed
         const uint32_t AssetOffset = Pak.Tell();
         const CAssetID ID = *Iter;
-        CResourceEntry *pEntry = gpResourceStore->FindEntry(ID);
+        CResourceEntry* pEntry = mpProject->ResourceStore()->FindEntry(ID);
         ASSERT(pEntry != nullptr);
 
         if (pEntry->NeedsRecook())
@@ -430,7 +430,7 @@ void CPackage::CompareOriginalAssetList(const std::list<CAssetID>& rkNewList)
     {
         if (!NewListSet.contains(ID))
         {
-            const CResourceEntry *pEntry = gpResourceStore->FindEntry(ID);
+            const CResourceEntry* pEntry = mpProject->ResourceStore()->FindEntry(ID);
             const TString Extension = (pEntry != nullptr ? "." + pEntry->CookedExtension() : "");
             NLog::Warn("Missing resource: {}{}", ID.ToString(), Extension);
         }
@@ -441,7 +441,7 @@ void CPackage::CompareOriginalAssetList(const std::list<CAssetID>& rkNewList)
     {
         if (!OldListSet.contains(ID))
         {
-            const CResourceEntry *pEntry = gpResourceStore->FindEntry(ID);
+            const CResourceEntry *pEntry = mpProject->ResourceStore()->FindEntry(ID);
             const TString Extension = (pEntry != nullptr ? "." + pEntry->CookedExtension() : "");
             NLog::Warn("Extra resource: {}{}", ID.ToString(), Extension);
         }
