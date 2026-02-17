@@ -12,8 +12,7 @@ CPoiToWorld::~CPoiToWorld() = default;
 void CPoiToWorld::AddPoi(CInstanceID PoiID)
 {
     // Check if this POI already exists
-    const auto it = mPoiLookupMap.find(PoiID);
-    if (it != mPoiLookupMap.end())
+    if (mPoiLookupMap.contains(PoiID))
         return;
 
     auto pMap = std::make_unique<SPoiMap>();
@@ -30,8 +29,7 @@ void CPoiToWorld::AddPoiMeshMap(CInstanceID PoiID, uint32_t ModelID)
     SPoiMap *pMap = mPoiLookupMap[PoiID];
 
     // Check whether this model ID is already mapped to this POI
-    const auto AlreadyMapped = std::ranges::any_of(pMap->ModelIDs, [&](const auto& id) { return id == ModelID; });
-    if (AlreadyMapped)
+    if (std::ranges::contains(pMap->ModelIDs, ModelID))
         return;
 
     // We didn't return, so this is a new mapping
