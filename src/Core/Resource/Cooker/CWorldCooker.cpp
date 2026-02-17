@@ -183,7 +183,7 @@ bool CWorldCooker::CookMLVL(CWorld *pWorld, IOutputStream& rMLVL)
         std::vector<CAudioGroup*> SortedAudioGroups;
         SortedAudioGroups.reserve(AudioGroups.size());
 
-        for (const auto AudioGroup : AudioGroups)
+        for (const auto& AudioGroup : AudioGroups)
         {
             CAudioGroup *pGroup = gpResourceStore->LoadResource<CAudioGroup>(AudioGroup);
             ASSERT(pGroup);
