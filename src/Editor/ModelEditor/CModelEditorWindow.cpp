@@ -256,7 +256,7 @@ void CModelEditorWindow::SetActiveMaterial(int MatIndex)
     for (size_t iKonst = 0; auto* picker : {ui->KonstColorPickerA, ui->KonstColorPickerB,
                                             ui->KonstColorPickerC, ui->KonstColorPickerD})
     {
-        const auto KColor = mpCurrentMat->Konst(iKonst);
+        const auto& KColor = mpCurrentMat->Konst(iKonst);
         const auto Color = QColor(KColor.R * 255, KColor.G * 255, KColor.B * 255, KColor.A * 255);
 
         picker->SetColor(Color);
