@@ -9,7 +9,7 @@
 #include <Common/Math/CTransform4f.h>
 
 // ************ STATIC MEMBER INITIALIZATION ************
-uint32_t CRenderer::sNumRenderers = 0;
+static uint32_t sNumRenderers = 0;
 
 // ************ INITIALIZATION ************
 CRenderer::CRenderer()

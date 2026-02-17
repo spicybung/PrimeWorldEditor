@@ -69,9 +69,6 @@ class CRenderer
     CRenderBucket mForegroundBucket;
     CRenderBucket mUIBucket;
 
-    // Static Members
-    static uint32_t sNumRenderers;
-
 public:
     // Initialization
     CRenderer();
