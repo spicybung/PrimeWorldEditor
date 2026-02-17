@@ -144,10 +144,6 @@ SRayIntersection CScriptAttachNode::RayNodeIntersectTest(const CRay& rkRay, uint
         const CVector3f WorldHitPoint = Transform() * HitPoint;
         Out.Distance = rkRay.Origin().Distance(WorldHitPoint);
     }
-    else
-    {
-        Out.Hit = false;
-    }
 
     return Out;
 }

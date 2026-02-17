@@ -79,13 +79,9 @@ SRayIntersection CLightNode::RayNodeIntersectTest(const CRay& rkRay, uint32_t As
     Out.pNode = this;
     Out.ComponentIndex = AssetID;
 
-    CTexture *pBillboard = CDrawUtil::GetLightTexture(mpLight->Type());
-
+    CTexture* pBillboard = CDrawUtil::GetLightTexture(mpLight->Type());
     if (!pBillboard)
-    {
-        Out.Hit = false;
         return Out;
-    }
 
     // Step 1: check whether the ray intersects with the plane the billboard is on
     const CPlane BillboardPlane(-rkViewInfo.pCamera->Direction(), mPosition);
@@ -113,25 +109,13 @@ SRayIntersection CLightNode::RayNodeIntersectTest(const CRay& rkRay, uint32_t As
             TexCoord.X = -TexCoord.X + 1.f;
             const float TexelAlpha = pBillboard->ReadTexelAlpha(TexCoord);
 
-            if (TexelAlpha < 0.25f)
-            {
-                Out.Hit = false;
-            }
-            else
+            if (TexelAlpha >= 0.25f)
             {
                 // It's opaque... we have a hit!
                 Out.Hit = true;
                 Out.Distance = distance;
             }
         }
-        else
-        {
-            Out.Hit = false;
-        }
-    }
-    else
-    {
-        Out.Hit = false;
     }
 
     return Out;

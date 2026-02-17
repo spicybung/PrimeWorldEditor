@@ -381,10 +381,6 @@ SRayIntersection CScriptNode::RayNodeIntersectTest(const CRay& rkRay, uint32_t A
             const CVector3f WorldHitPoint = Transform() * HitPoint;
             Out.Distance = Math::Distance(rkRay.Origin(), WorldHitPoint);
         }
-        else
-        {
-            Out.Hit = false;
-        }
     }
     // Billboard test
     // todo: come up with a better way to share this code between CScriptNode and CLightNode
@@ -416,25 +412,13 @@ SRayIntersection CScriptNode::RayNodeIntersectTest(const CRay& rkRay, uint32_t A
                 TexCoord.X = -TexCoord.X + 1.f;
                 const float TexelAlpha = ActiveBillboard()->ReadTexelAlpha(TexCoord);
 
-                if (TexelAlpha < 0.25f)
-                {
-                    Out.Hit = false;
-                }
-                else
+                if (TexelAlpha >= 0.25f)
                 {
                     // It's opaque... we have a hit!
                     Out.Hit = true;
                     Out.Distance = distance;
                 }
             }
-            else
-            {
-                Out.Hit = false;
-            }
-        }
-        else
-        {
-            Out.Hit = false;
         }
     }
 
