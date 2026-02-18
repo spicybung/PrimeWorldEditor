@@ -152,7 +152,7 @@ void CWorldInfoSidebar::OnWorldTreeDoubleClicked(const QModelIndex& Index)
 
         if (gpResourceStore->IsResourceRegistered(AreaAssetID))
         {
-            gpEdApp->WorldEditor()->SetArea(pWorld, AreaIndex);
+            Editor()->SetArea(pWorld, AreaIndex);
         }
         else
         {
