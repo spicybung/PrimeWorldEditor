@@ -16,9 +16,9 @@
 
 struct CPropertyModel::SProperty
 {
-    IProperty* pProperty;
+    IProperty* pProperty{};
     QModelIndex Index;
-    int ParentID;
+    int ParentID{};
     std::vector<int> ChildIDs;
 };
 
