@@ -21,7 +21,7 @@ struct SSurface
 
     struct SPrimitive
     {
-        EPrimitiveType Type;
+        EPrimitiveType Type{};
         std::vector<CVertex> Vertices;
     };
     std::vector<SPrimitive> Primitives;
