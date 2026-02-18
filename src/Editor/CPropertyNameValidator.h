@@ -26,7 +26,7 @@ public slots:
     void SetProperty(IProperty* pProp);
 
     /** Set the type name override */
-    void SetTypeNameOverride(const QString& kNewTypeName);
+    void SetTypeNameOverride(QString kNewTypeName);
 };
 
 #endif // CPROPERTYNAMEVALIDATOR_H

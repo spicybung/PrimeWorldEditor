@@ -14,9 +14,9 @@ void CPropertyNameValidator::SetProperty(IProperty* pProp)
 }
 
 /** Set the type name override */
-void CPropertyNameValidator::SetTypeNameOverride(const QString& kNewTypeName)
+void CPropertyNameValidator::SetTypeNameOverride(QString kNewTypeName)
 {
-    mTypeNameOverride = kNewTypeName;
+    mTypeNameOverride = std::move(kNewTypeName);
     emit changed();
 }
 

@@ -171,7 +171,7 @@ void CTemplateEditDialog::RefreshTypeNameOverride()
     if (mpUI->OverrideTypeNameCheckBox->isChecked())
     {
         QString OverrideName = mpUI->TypenameLineEdit->text();
-        mpValidator->SetTypeNameOverride(OverrideName);
+        mpValidator->SetTypeNameOverride(std::move(OverrideName));
     }
     else
     {
