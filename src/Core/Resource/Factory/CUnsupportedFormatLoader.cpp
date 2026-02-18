@@ -12,7 +12,7 @@
 
 #include <list>
 
-static void PerformCheating(IInputStream& rFile, EGame Game, std::list<CAssetID>& rAssetList)
+static void PerformCheating(IInputStream& rFile, EGame Game, std::list<CAssetID>& rAssetList, const CResourceStore* resourceStore)
 {
     // Analyze file contents and check every sequence of 4/8 bytes for asset IDs
     std::vector<uint8_t> Data(rFile.Size() - rFile.Tell());
@@ -42,7 +42,7 @@ static void PerformCheating(IInputStream& rFile, EGame Game, std::list<CAssetID>
                  (uint64_t{Data[iByte + 7]} << 0);
         }
 
-        if (gpResourceStore->IsResourceRegistered(ID))
+        if (resourceStore->IsResourceRegistered(ID))
             rAssetList.push_back(ID);
     }
 }
@@ -66,7 +66,7 @@ std::unique_ptr<CAudioMacro> CUnsupportedFormatLoader::LoadCAUD(IInputStream& rC
     if (Game == EGame::DKCReturns)
     {
         std::list<CAssetID> AssetList;
-        PerformCheating(rCAUD, pEntry->Game(), AssetList);
+        PerformCheating(rCAUD, pEntry->Game(), AssetList, pEntry->ResourceStore());
 
         for (const auto& asset : AssetList)
             pMacro->mSamples.push_back(asset);
@@ -90,7 +90,7 @@ std::unique_ptr<CAudioMacro> CUnsupportedFormatLoader::LoadCAUD(IInputStream& rC
         const auto SampleDataEnd = rCAUD.Tell() + SampleDataSize;
 
         const CAssetID SampleID(rCAUD, Game);
-        ASSERT(gpResourceStore->IsResourceRegistered(SampleID) == true);
+        ASSERT(pEntry->ResourceStore()->IsResourceRegistered(SampleID) == true);
         pMacro->mSamples.push_back(SampleID);
 
         rCAUD.Seek(SampleDataEnd, SEEK_SET);
@@ -120,7 +120,7 @@ std::unique_ptr<CDependencyGroup> CUnsupportedFormatLoader::LoadDUMB(IInputStrea
     auto pGroup = std::make_unique<CDependencyGroup>(pEntry);
 
     std::list<CAssetID> DepList;
-    PerformCheating(rDUMB, pEntry->Game(), DepList);
+    PerformCheating(rDUMB, pEntry->Game(), DepList, pEntry->ResourceStore());
 
     for (const auto& dep : DepList)
         pGroup->AddDependency(dep);
@@ -352,7 +352,7 @@ std::unique_ptr<CDependencyGroup> CUnsupportedFormatLoader::LoadFSMC(IInputStrea
     auto pGroup = std::make_unique<CDependencyGroup>(pEntry);
 
     std::list<CAssetID> AssetList;
-    PerformCheating(rFSMC, pEntry->Game(), AssetList);
+    PerformCheating(rFSMC, pEntry->Game(), AssetList, pEntry->ResourceStore());
 
     for (const auto& asset : AssetList)
         pGroup->AddDependency(asset);
