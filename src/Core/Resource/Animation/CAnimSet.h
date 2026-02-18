@@ -150,7 +150,7 @@ public:
                 anim.pMetaAnim->GetUniquePrimitives(PrimitiveSet);
             }
 
-            if (auto* pAnimData = gpResourceStore->LoadResource<CSourceAnimData>(rkChar.AnimDataID))
+            if (auto* pAnimData = Entry()->ResourceStore()->LoadResource<CSourceAnimData>(rkChar.AnimDataID))
                 pAnimData->AddTransitionDependencies(pTree.get());
 
             for (const auto& prim : PrimitiveSet)
