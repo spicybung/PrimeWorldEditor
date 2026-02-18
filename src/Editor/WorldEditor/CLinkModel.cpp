@@ -56,9 +56,7 @@ QVariant CLinkModel::data(const QModelIndex& rkIndex, int Role) const
             }
             else
             {
-                QString StrID = QString::number(TargetID.Value(), 16).toUpper();
-                while (StrID.length() < 8)
-                    StrID = QLatin1Char{'0'} + StrID;
+                const auto StrID = QString::number(TargetID.Value(), 16).toUpper().rightJustified(8, QLatin1Char{'0'});
                 return tr("External: %1").arg(StrID);
             }
         }
