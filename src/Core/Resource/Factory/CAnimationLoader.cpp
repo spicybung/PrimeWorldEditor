@@ -202,7 +202,7 @@ void CAnimationLoader::ReadUncompressedANIM()
 
     if (mGame == EGame::Prime)
     {
-        mpAnim->mpEventData = gpResourceStore->LoadResource<CAnimEventData>(CAssetID(mpInput->ReadU32()));
+        mpAnim->mpEventData = mpAnim->Entry()->ResourceStore()->LoadResource<CAnimEventData>(CAssetID(mpInput->ReadU32()));
     }
 }
 
@@ -218,7 +218,7 @@ void CAnimationLoader::ReadCompressedANIM()
     // The Echoes demo has some ANIMs that use MP1's format, but don't have the EVNT reference.
     if (mpAnim->Game() <= EGame::Prime)
     {
-        mpAnim->mpEventData = gpResourceStore->LoadResource<CAnimEventData>(CAssetID(mpInput->ReadU32()));
+        mpAnim->mpEventData = mpAnim->Entry()->ResourceStore()->LoadResource<CAnimEventData>(CAssetID(mpInput->ReadU32()));
     }
 
     mpInput->Seek(mGame <= EGame::Prime ? 4 : 2, SEEK_CUR); // Skip unknowns
