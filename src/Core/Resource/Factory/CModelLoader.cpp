@@ -121,7 +121,7 @@ void CModelLoader::LoadSurfaceOffsets(IInputStream& rModel)
 
 SSurface* CModelLoader::LoadSurface(IInputStream& rModel)
 {
-    SSurface *pSurf = new SSurface;
+    auto* pSurf = new SSurface();
 
     // Surface header
     if (mVersion  < EGame::DKCReturns)
@@ -138,14 +138,16 @@ SSurface* CModelLoader::LoadSurface(IInputStream& rModel)
 
     while (Flag != 0 && (rModel.Tell() < NextSurface))
     {
-        SSurface::SPrimitive Prim;
-        Prim.Type = EPrimitiveType(Flag & 0xF8);
         const auto VertexCount = rModel.ReadU16();
 
-        for (uint16_t iVtx = 0; iVtx < VertexCount; iVtx++)
+        SSurface::SPrimitive Prim;
+        Prim.Type = EPrimitiveType(Flag & 0xF8);
+        Prim.Vertices.reserve(VertexCount);
+
+        for (uint32_t iVtx = 0; iVtx < VertexCount; iVtx++)
         {
+            const FVertexDescription VtxDesc = pMat->VtxDesc();
             CVertex Vtx;
-            FVertexDescription VtxDesc = pMat->VtxDesc();
 
             for (uint32_t iMtxAttr = 0; iMtxAttr < 8; iMtxAttr++)
             {
@@ -232,7 +234,7 @@ SSurface* CModelLoader::LoadSurface(IInputStream& rModel)
                 break;
         }
 
-        pSurf->Primitives.push_back(Prim);
+        pSurf->Primitives.push_back(std::move(Prim));
         Flag = rModel.ReadU8();
     } // Primitive table end
 
