@@ -82,8 +82,10 @@ void WDraggableSpinBox::mouseMoveEvent(QMouseEvent*)
 
 void WDraggableSpinBox::wheelEvent(QWheelEvent *pEvent)
 {
-    if (!hasFocus()) pEvent->ignore();
-    else QDoubleSpinBox::wheelEvent(pEvent);
+    if (!hasFocus())
+        pEvent->ignore();
+    else
+        QDoubleSpinBox::wheelEvent(pEvent);
 }
 
 bool WDraggableSpinBox::eventFilter(QObject *, QEvent *pEvent)
