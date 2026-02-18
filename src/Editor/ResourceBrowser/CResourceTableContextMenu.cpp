@@ -231,24 +231,30 @@ void CResourceTableContextMenu::Delete()
 
 void CResourceTableContextMenu::CopyName()
 {
+    auto* const clipboard = QGuiApplication::clipboard();
+
     if (mpClickedEntry)
-        gpEdApp->clipboard()->setText( TO_QSTRING(mpClickedEntry->Name()) );
+        clipboard->setText(TO_QSTRING(mpClickedEntry->Name()));
     else
-        gpEdApp->clipboard()->setText( TO_QSTRING(mpClickedDirectory->Name()) );
+        clipboard->setText(TO_QSTRING(mpClickedDirectory->Name()));
 }
 
 void CResourceTableContextMenu::CopyPath()
 {
+    auto* const clipboard = QGuiApplication::clipboard();
+
     if (mpClickedEntry)
-        gpEdApp->clipboard()->setText( TO_QSTRING(mpClickedEntry->CookedAssetPath(true)) );
+        clipboard->setText(TO_QSTRING(mpClickedEntry->CookedAssetPath(true)));
     else
-        gpEdApp->clipboard()->setText( TO_QSTRING(mpClickedDirectory->FullPath()) );
+        clipboard->setText(TO_QSTRING(mpClickedDirectory->FullPath()));
 }
 
 void CResourceTableContextMenu::CopyID()
 {
+    auto* const clipboard = QGuiApplication::clipboard();
+
     ASSERT(mpClickedEntry);
-    gpEdApp->clipboard()->setText( TO_QSTRING(mpClickedEntry->ID().ToString()) );
+    clipboard->setText(TO_QSTRING(mpClickedEntry->ID().ToString()));
 }
 
 
@@ -256,7 +262,7 @@ void CResourceTableContextMenu::CopyID()
 void CResourceTableContextMenu::CreateSCAN()
 {
     // Create a SCAN asset to go along with a selected STRG asset
-    ASSERT( mpClickedEntry && mpClickedEntry->ResourceType() == EResourceType::StringTable );
+    ASSERT(mpClickedEntry && mpClickedEntry->ResourceType() == EResourceType::StringTable);
 
     CResourceEntry* pNewEntry = mpBrowser->CreateNewResource(EResourceType::Scan,
                                                              mpClickedEntry->Name(),
