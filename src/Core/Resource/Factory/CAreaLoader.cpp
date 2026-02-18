@@ -617,7 +617,7 @@ void CAreaLoader::ReadEGMC()
 {
     mpSectionMgr->ToSection(mEGMCBlockNum);
     const CAssetID EGMC(*mpMREA, mVersion);
-    mpArea->mpPoiToWorldMap = gpResourceStore->LoadResource(EGMC, EResourceType::StaticGeometryMap);
+    mpArea->mpPoiToWorldMap = mpArea->Entry()->ResourceStore()->LoadResource(EGMC, EResourceType::StaticGeometryMap);
 }
 
 void CAreaLoader::SetUpObjects(CScriptLayer *pGenLayer)
