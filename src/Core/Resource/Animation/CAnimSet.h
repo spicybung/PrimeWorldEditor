@@ -21,9 +21,9 @@
 // Animation structures
 struct SAdditiveAnim
 {
-    uint32_t AnimID;
-    float FadeInTime;
-    float FadeOutTime;
+    uint32_t AnimID{};
+    float FadeInTime{};
+    float FadeOutTime{};
 };
 
 struct SAnimation
@@ -34,15 +34,15 @@ struct SAnimation
 
 struct STransition
 {
-    uint32_t ID;
-    uint32_t AnimIdA;
-    uint32_t AnimIdB;
+    uint32_t ID{};
+    uint32_t AnimIdA{};
+    uint32_t AnimIdB{};
     std::unique_ptr<IMetaTransition> pMetaTrans;
 };
 
 struct SHalfTransition
 {
-    uint32_t AnimID;
+    uint32_t AnimID{};
     std::unique_ptr<IMetaTransition> pMetaTrans;
 };
 
@@ -57,14 +57,14 @@ enum class EOverlayType
 
 struct SOverlayModel
 {
-    EOverlayType Type;
+    EOverlayType Type{};
     CAssetID ModelID;
     CAssetID SkinID;
 };
 
 struct SSetCharacter
 {
-    uint32_t ID;
+    uint32_t ID{};
     TString Name;
     TResPtr<CModel> pModel;
     TResPtr<CSkin> pSkin;
