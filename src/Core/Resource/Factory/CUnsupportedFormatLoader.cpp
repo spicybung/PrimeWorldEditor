@@ -18,28 +18,28 @@ static void PerformCheating(IInputStream& rFile, EGame Game, std::list<CAssetID>
     std::vector<uint8_t> Data(rFile.Size() - rFile.Tell());
     rFile.ReadBytes(Data.data(), Data.size());
 
-    const uint32_t MaxIndex = (Game <= EGame::Echoes ? Data.size() - 3 : Data.size() - 7);
+    const size_t MaxIndex = (Game <= EGame::Echoes ? Data.size() - 3 : Data.size() - 7);
     CAssetID ID;
 
-    for (uint32_t iByte = 0; iByte < MaxIndex; iByte++)
+    for (size_t iByte = 0; iByte < MaxIndex; iByte++)
     {
         if (Game <= EGame::Echoes)
         {
-            ID = (Data[iByte + 0] << 24) |
-                 (Data[iByte + 1] << 16) |
-                 (Data[iByte + 2] << 8) |
-                 (Data[iByte + 3] << 0);
+            ID = (uint32_t{Data[iByte + 0]} << 24) |
+                 (uint32_t{Data[iByte + 1]} << 16) |
+                 (uint32_t{Data[iByte + 2]} << 8) |
+                 (uint32_t{Data[iByte + 3]} << 0);
         }
         else
         {
-            ID = (static_cast<uint64_t>(Data[iByte + 0]) << 56) |
-                 (static_cast<uint64_t>(Data[iByte + 1]) << 48) |
-                 (static_cast<uint64_t>(Data[iByte + 2]) << 40) |
-                 (static_cast<uint64_t>(Data[iByte + 3]) << 32) |
-                 (static_cast<uint64_t>(Data[iByte + 4]) << 24) |
-                 (static_cast<uint64_t>(Data[iByte + 5]) << 16) |
-                 (static_cast<uint64_t>(Data[iByte + 6]) << 8) |
-                 (static_cast<uint64_t>(Data[iByte + 7]) << 0);
+            ID = (uint64_t{Data[iByte + 0]} << 56) |
+                 (uint64_t{Data[iByte + 1]} << 48) |
+                 (uint64_t{Data[iByte + 2]} << 40) |
+                 (uint64_t{Data[iByte + 3]} << 32) |
+                 (uint64_t{Data[iByte + 4]} << 24) |
+                 (uint64_t{Data[iByte + 5]} << 16) |
+                 (uint64_t{Data[iByte + 6]} << 8) |
+                 (uint64_t{Data[iByte + 7]} << 0);
         }
 
         if (gpResourceStore->IsResourceRegistered(ID))
