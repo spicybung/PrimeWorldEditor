@@ -51,8 +51,8 @@ QVariant CLinkModel::data(const QModelIndex& rkIndex, int Role) const
 
             if (pTarget)
             {
-                const QString ObjType = tr("[%1] ").arg(UICommon::ToQString(pTarget->Template()->Name()));
-                return ObjType + UICommon::ToQString(pTarget->InstanceName());
+                return tr("[%1] %2").arg(UICommon::ToQString(pTarget->Template()->Name()))
+                                    .arg(UICommon::ToQString(pTarget->InstanceName()));
             }
             else
             {
