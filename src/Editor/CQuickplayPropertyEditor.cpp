@@ -97,43 +97,19 @@ void CQuickplayPropertyEditor::OnDolphinPathChanged(const QString& kNewPath)
 
 void CQuickplayPropertyEditor::OnBootToAreaToggled(bool Enabled)
 {
-    if (Enabled)
-    {
-        mParameters.Features.SetFlag(EQuickplayFeature::JumpToArea);
-    }
-    else
-    {
-        mParameters.Features.ClearFlag(EQuickplayFeature::JumpToArea);
-    }
-
+    mParameters.Features.AssignFlag(EQuickplayFeature::JumpToArea, Enabled);
     NDolphinIntegration::SaveQuickplayParameters(mParameters);
 }
 
 void CQuickplayPropertyEditor::OnSpawnAtCameraLocationToggled(bool Enabled)
 {
-    if (Enabled)
-    {
-        mParameters.Features.SetFlag(EQuickplayFeature::SetSpawnPosition);
-    }
-    else
-    {
-        mParameters.Features.ClearFlag(EQuickplayFeature::SetSpawnPosition);
-    }
-
+    mParameters.Features.AssignFlag(EQuickplayFeature::SetSpawnPosition, Enabled);
     NDolphinIntegration::SaveQuickplayParameters(mParameters);
 }
 
 void CQuickplayPropertyEditor::OnGiveAllItemsToggled(bool Enabled)
 {
-    if (Enabled)
-    {
-        mParameters.Features.SetFlag(EQuickplayFeature::GiveAllItems);
-    }
-    else
-    {
-        mParameters.Features.ClearFlag(EQuickplayFeature::GiveAllItems);
-    }
-
+    mParameters.Features.AssignFlag(EQuickplayFeature::GiveAllItems, Enabled);
     NDolphinIntegration::SaveQuickplayParameters(mParameters);
 }
 
