@@ -198,10 +198,10 @@ void CResourceSelector::mouseMoveEvent(QMouseEvent *pEvent)
 {
     if (mIsDragging)
     {
-        if ( (pEvent->pos() - mDragStartPosition).manhattanLength() >= gpEdApp->startDragDistance() )
+        if ((pEvent->pos() - mDragStartPosition).manhattanLength() >= QApplication::startDragDistance())
         {
-            QDrag *pDrag = new QDrag(this);
-            CResourceMimeData *pMimeData = new CResourceMimeData(mpResEntry);
+            auto* pDrag = new QDrag(this);
+            auto* pMimeData = new CResourceMimeData(mpResEntry);
             pDrag->setMimeData(pMimeData);
             pDrag->exec(Qt::CopyAction);
         }
