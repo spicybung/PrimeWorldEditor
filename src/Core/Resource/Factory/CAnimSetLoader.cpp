@@ -11,13 +11,15 @@ CAnimSetLoader::CAnimSetLoader() = default;
 
 void CAnimSetLoader::LoadCorruptionCHAR(IInputStream& rCHAR)
 {
+    auto* const resourceStore = pSet->Entry()->ResourceStore();
+
     SSetCharacter& rChar = pSet->mCharacters.emplace_back();
 
     // Character Header
     rChar.ID = rCHAR.ReadU8();
     rChar.Name = rCHAR.ReadString();
-    rChar.pModel = gpResourceStore->LoadResource<CModel>(CAssetID(rCHAR.ReadU64()));
-    rChar.pSkin = gpResourceStore->LoadResource<CSkin>(CAssetID(rCHAR.ReadU64()));
+    rChar.pModel = resourceStore->LoadResource<CModel>(CAssetID(rCHAR.ReadU64()));
+    rChar.pSkin = resourceStore->LoadResource<CSkin>(CAssetID(rCHAR.ReadU64()));
 
     const auto NumOverlays = rCHAR.ReadU32();
 
@@ -31,7 +33,7 @@ void CAnimSetLoader::LoadCorruptionCHAR(IInputStream& rCHAR)
         });
     }
 
-    rChar.pSkeleton = gpResourceStore->LoadResource<CSkeleton>(CAssetID(rCHAR.ReadU64()));
+    rChar.pSkeleton = resourceStore->LoadResource<CSkeleton>(CAssetID(rCHAR.ReadU64()));
     rChar.AnimDataID = CAssetID(rCHAR, EIDLength::k64Bit);
 
     // PAS Database
@@ -101,6 +103,8 @@ void CAnimSetLoader::LoadCorruptionCHAR(IInputStream& rCHAR)
 
 void CAnimSetLoader::LoadReturnsCHAR(IInputStream& rCHAR)
 {
+    auto* const resourceStore = pSet->Entry()->ResourceStore();
+
     rCHAR.Skip(0x14);
     const auto Flag = rCHAR.ReadU8();
     rCHAR.Skip(1);
@@ -110,7 +114,7 @@ void CAnimSetLoader::LoadReturnsCHAR(IInputStream& rCHAR)
     // Character Header
     rChar.ID = 0;
     rChar.Name = rCHAR.ReadString();
-    rChar.pSkeleton = gpResourceStore->LoadResource<CSkeleton>(CAssetID(rCHAR.ReadU64()));
+    rChar.pSkeleton = resourceStore->LoadResource<CSkeleton>(CAssetID(rCHAR.ReadU64()));
     rChar.CollisionPrimitivesID = CAssetID(rCHAR.ReadU64());
 
     const auto NumModels = rCHAR.ReadU32();
@@ -124,8 +128,8 @@ void CAnimSetLoader::LoadReturnsCHAR(IInputStream& rCHAR)
 
         if (ModelIdx == 0)
         {
-            rChar.pModel = gpResourceStore->LoadResource<CModel>(ModelID);
-            rChar.pSkin = gpResourceStore->LoadResource<CSkin>(SkinID);
+            rChar.pModel = resourceStore->LoadResource<CModel>(ModelID);
+            rChar.pSkin = resourceStore->LoadResource<CSkin>(SkinID);
         }
         else
         {
@@ -418,7 +422,7 @@ void CAnimSetLoader::ProcessPrimitives()
 
     if (mGame == EGame::CorruptionProto || mGame == EGame::Corruption)
     {
-        CSourceAnimData *pAnimData = gpResourceStore->LoadResource<CSourceAnimData>( pSet->mCharacters[0].AnimDataID );
+        auto* pAnimData = pSet->Entry()->ResourceStore()->LoadResource<CSourceAnimData>(pSet->mCharacters[0].AnimDataID);
 
         if (pAnimData != nullptr)
             pAnimData->GetUniquePrimitives(UniquePrimitives);
@@ -520,6 +524,7 @@ std::unique_ptr<CAnimSet> CAnimSetLoader::LoadANCS(IInputStream& rANCS, CResourc
         return nullptr;
     }
 
+    auto* const resourceStore = pEntry->ResourceStore();
     auto ptr = std::make_unique<CAnimSet>(pEntry);
 
     CAnimSetLoader Loader;
@@ -540,9 +545,9 @@ std::unique_ptr<CAnimSet> CAnimSetLoader::LoadANCS(IInputStream& rANCS, CResourc
             Loader.mGame = (CharVersion == 0xA) ? EGame::Echoes : EGame::Prime;
         }
         pChar->Name = rANCS.ReadString();
-        pChar->pModel = gpResourceStore->LoadResource<CModel>(rANCS.ReadU32());
-        pChar->pSkin = gpResourceStore->LoadResource<CSkin>(rANCS.ReadU32());
-        pChar->pSkeleton = gpResourceStore->LoadResource<CSkeleton>(rANCS.ReadU32());
+        pChar->pModel = resourceStore->LoadResource<CModel>(rANCS.ReadU32());
+        pChar->pSkin = resourceStore->LoadResource<CSkin>(rANCS.ReadU32());
+        pChar->pSkeleton = resourceStore->LoadResource<CSkeleton>(rANCS.ReadU32());
         if (pChar->pModel != nullptr)
             pChar->pModel->SetSkin(pChar->pSkin);
 
