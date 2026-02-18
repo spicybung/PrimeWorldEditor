@@ -82,12 +82,12 @@ struct SMP3IntermediateMaterial
         CFourCC mPassType;
         TResPtr<CTexture> mpTexture = nullptr;
         FPassSettings mSettings;
-        uint32_t mUvSrc;
+        uint32_t mUvSrc{};
         EUVAnimUVSource mUvSource = EUVAnimUVSource::UV;
         EUVAnimMatrixConfig mMtxConfig = EUVAnimMatrixConfig::NoMtxNoPost;
         EUVAnimMode mAnimMode = EUVAnimMode::NoUVAnim;
-        EUVConvolutedModeBType mAnimConvolutedModeBType;
-        std::array<float, 8> mAnimParams;
+        EUVConvolutedModeBType mAnimConvolutedModeBType{};
+        std::array<float, 8> mAnimParams{};
 
         char GetSwapAlphaComp() const
         {
