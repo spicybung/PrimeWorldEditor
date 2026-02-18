@@ -28,21 +28,21 @@ static SResDelegateGeometryInfo GetGeometryInfo(const SDelegateFontInfo& rkFontI
     SResDelegateGeometryInfo Info;
 
     // Calculate inner rect
-    int Margin = rkFontInfo.Margin;
+    const int Margin = rkFontInfo.Margin;
     Info.InnerRect = rkOption.rect.adjusted(Margin, Margin, -Margin, -Margin);
 
     // Calculate icon
-    int IdealIconSize = CResourceBrowserDelegate::skIconSize;
-    int IconSize = std::min(IdealIconSize, Info.InnerRect.height());
-    int IconX = Info.InnerRect.left() + ((IdealIconSize - IconSize) / 2);
-    int IconY = Info.InnerRect.top() + ((Info.InnerRect.height() - IconSize) / 2);
+    const int IdealIconSize = CResourceBrowserDelegate::skIconSize;
+    const int IconSize = std::min(IdealIconSize, Info.InnerRect.height());
+    const int IconX = Info.InnerRect.left() + ((IdealIconSize - IconSize) / 2);
+    const int IconY = Info.InnerRect.top() + ((Info.InnerRect.height() - IconSize) / 2);
     Info.IconRect = QRect(IconX, IconY, IconSize, IconSize);
 
     // Calculate name string
-    int NameX = Info.InnerRect.left() + IdealIconSize + (rkFontInfo.Spacing * 2);
+    const int NameX = Info.InnerRect.left() + IdealIconSize + (rkFontInfo.Spacing * 2);
     int NameY = Info.InnerRect.top();
-    int NameSizeX = Info.InnerRect.right() - NameX;
-    int NameSizeY = rkFontInfo.NameFontMetrics.height();
+    const int NameSizeX = Info.InnerRect.right() - NameX;
+    const int NameSizeY = rkFontInfo.NameFontMetrics.height();
 
     // Adjust Y for directories to center it in the rect
     if (IsDirectory)
@@ -55,10 +55,10 @@ static SResDelegateGeometryInfo GetGeometryInfo(const SDelegateFontInfo& rkFontI
     // Calculate info string
     if (!IsDirectory)
     {
-        int InfoX = NameX;
-        int InfoY = NameY + NameSizeY + rkFontInfo.Spacing;
-        int InfoSizeX = NameSizeX;
-        int InfoSizeY = rkFontInfo.InfoFontMetrics.height();
+        const int InfoX = NameX;
+        const int InfoY = NameY + NameSizeY + rkFontInfo.Spacing;
+        const int InfoSizeX = NameSizeX;
+        const int InfoSizeY = rkFontInfo.InfoFontMetrics.height();
         Info.InfoStringRect = QRect(InfoX, InfoY, InfoSizeX, InfoSizeY);
     }
 
@@ -69,34 +69,34 @@ static SResDelegateGeometryInfo GetGeometryInfo(const SDelegateFontInfo& rkFontI
 QSize CResourceBrowserDelegate::sizeHint(const QStyleOptionViewItem& rkOption, const QModelIndex&) const
 {
     // Get string info
-    SDelegateFontInfo Info = GetFontInfo(rkOption);
+    const SDelegateFontInfo Info = GetFontInfo(rkOption);
 
     // Calculate height
-    int Height = (Info.Margin * 2) + Info.NameFontMetrics.height() + Info.Spacing + Info.InfoFontMetrics.height();
+    const int Height = (Info.Margin * 2) + Info.NameFontMetrics.height() + Info.Spacing + Info.InfoFontMetrics.height();
     return QSize(0, Height);
 }
 
 void CResourceBrowserDelegate::paint(QPainter *pPainter, const QStyleOptionViewItem& rkOption, const QModelIndex& rkIndex) const
 {
     // Get resource entry
-    CResourceEntry *pEntry = GetIndexEntry(rkIndex);
+    const CResourceEntry* pEntry = GetIndexEntry(rkIndex);
 
     // Initialize
-    SDelegateFontInfo FontInfo = GetFontInfo(rkOption);
-    SResDelegateGeometryInfo GeomInfo = GetGeometryInfo(FontInfo, rkOption, pEntry == nullptr);
+    const SDelegateFontInfo FontInfo = GetFontInfo(rkOption);
+    const SResDelegateGeometryInfo GeomInfo = GetGeometryInfo(FontInfo, rkOption, pEntry == nullptr);
 
     // Draw icon
-    QVariant IconVariant = rkIndex.model()->data(rkIndex, Qt::DecorationRole);
+    const QVariant IconVariant = rkIndex.model()->data(rkIndex, Qt::DecorationRole);
 
     if (IconVariant.isValid())
     {
-        QIcon Icon = IconVariant.value<QIcon>();
+        const auto Icon = IconVariant.value<QIcon>();
         Icon.paint(pPainter, GeomInfo.IconRect);
     }
 
     // Draw resource name
-    QString ResName = rkIndex.model()->data(rkIndex, Qt::DisplayRole).toString();
-    QString ElidedName = FontInfo.NameFontMetrics.elidedText(ResName, Qt::ElideRight, GeomInfo.NameStringRect.width());
+    const QString ResName = rkIndex.model()->data(rkIndex, Qt::DisplayRole).toString();
+    const QString ElidedName = FontInfo.NameFontMetrics.elidedText(ResName, Qt::ElideRight, GeomInfo.NameStringRect.width());
 
     pPainter->setFont(FontInfo.NameFont);
     pPainter->setPen(FontInfo.NamePen);
@@ -110,7 +110,7 @@ void CResourceBrowserDelegate::paint(QPainter *pPainter, const QStyleOptionViewI
         if (mDisplayAssetIDs)
             ResInfo.prepend(TO_QSTRING(pEntry->ID().ToString()) + QStringLiteral(" | "));
 
-        QString ElidedResInfo = FontInfo.InfoFontMetrics.elidedText(ResInfo, Qt::ElideRight, GeomInfo.InfoStringRect.width());
+        const QString ElidedResInfo = FontInfo.InfoFontMetrics.elidedText(ResInfo, Qt::ElideRight, GeomInfo.InfoStringRect.width());
 
         pPainter->setFont(FontInfo.InfoFont);
         pPainter->setPen(FontInfo.InfoPen);
@@ -123,23 +123,21 @@ QWidget* CResourceBrowserDelegate::createEditor(QWidget *pParent, const QStyleOp
 {
     bool IsDirectory = (GetIndexDirectory(rkIndex) != nullptr);
 
-    QLineEdit *pLineEdit = new QLineEdit(pParent);
-    pLineEdit->setValidator( new CFileNameValidator(IsDirectory, pLineEdit) );
+    auto* pLineEdit = new QLineEdit(pParent);
+    pLineEdit->setValidator(new CFileNameValidator(IsDirectory, pLineEdit));
 
     // Set the max length to 150. Limit should be 255 but FileUtil::MoveFile doesn't
     // seem to want to work with filenames that long. Not sure why.
-    constexpr int MaxLength = 150;
-    pLineEdit->setMaxLength(MaxLength);
+    pLineEdit->setMaxLength(150);
 
     return pLineEdit;
 }
 
 void CResourceBrowserDelegate::setEditorData(QWidget *pEditor, const QModelIndex& rkIndex) const
 {
-    QLineEdit *pLineEdit = static_cast<QLineEdit*>(pEditor);
-    CResourceEntry *pEntry = GetIndexEntry(rkIndex);
+    auto* pLineEdit = static_cast<QLineEdit*>(pEditor);
 
-    if (pEntry)
+    if (const auto* pEntry = GetIndexEntry(rkIndex))
         pLineEdit->setText(TO_QSTRING(pEntry->Name()));
     else
         pLineEdit->setText(TO_QSTRING(GetIndexDirectory(rkIndex)->Name()));
@@ -147,55 +145,53 @@ void CResourceBrowserDelegate::setEditorData(QWidget *pEditor, const QModelIndex
 
 void CResourceBrowserDelegate::setModelData(QWidget *pEditor, QAbstractItemModel *, const QModelIndex& rkIndex) const
 {
-    QLineEdit *pLineEdit = static_cast<QLineEdit*>(pEditor);
+    auto* pLineEdit = static_cast<QLineEdit*>(pEditor);
     QString NewName = pLineEdit->text();
     pLineEdit->validator()->fixup(NewName);
 
     if (!NewName.isEmpty())
     {
-        CResourceEntry *pEntry = GetIndexEntry(rkIndex);
-
-        if (pEntry)
+        if (auto* pEntry = GetIndexEntry(rkIndex))
             gpEdApp->ResourceBrowser()->RenameResource(pEntry, TO_TSTRING(NewName));
         else
-            gpEdApp->ResourceBrowser()->RenameDirectory( GetIndexDirectory(rkIndex), TO_TSTRING(NewName) );
+            gpEdApp->ResourceBrowser()->RenameDirectory(GetIndexDirectory(rkIndex), TO_TSTRING(NewName));
     }
 }
 
 void CResourceBrowserDelegate::updateEditorGeometry(QWidget *pEditor, const QStyleOptionViewItem& rkOption, const QModelIndex& rkIndex) const
 {
     // Check if this is a directory
-    bool IsDir = GetIndexEntry(rkIndex) == nullptr;
+    const bool IsDir = GetIndexEntry(rkIndex) == nullptr;
 
     // Get rect
-    SDelegateFontInfo FontInfo = GetFontInfo(rkOption);
-    SResDelegateGeometryInfo GeomInfo = GetGeometryInfo(FontInfo, rkOption, IsDir);
+    const SDelegateFontInfo FontInfo = GetFontInfo(rkOption);
+    const SResDelegateGeometryInfo GeomInfo = GetGeometryInfo(FontInfo, rkOption, IsDir);
 
     // Set geometry; make it a little bit better than the name string rect to give the user more space
-    QRect WidgetRect = GeomInfo.NameStringRect.adjusted(-3, -3, 3, 3);
+    const QRect WidgetRect = GeomInfo.NameStringRect.adjusted(-3, -3, 3, 3);
     pEditor->setGeometry(WidgetRect);
 }
 
 CResourceEntry* CResourceBrowserDelegate::GetIndexEntry(const QModelIndex& rkIndex) const
 {
-    const CResourceProxyModel *pkProxy = qobject_cast<const CResourceProxyModel*>(rkIndex.model());
+    const auto* pkProxy = qobject_cast<const CResourceProxyModel*>(rkIndex.model());
     ASSERT(pkProxy != nullptr);
 
-    const CResourceTableModel *pkModel = qobject_cast<const CResourceTableModel*>(pkProxy->sourceModel());
+    const auto* pkModel = qobject_cast<const CResourceTableModel*>(pkProxy->sourceModel());
     ASSERT(pkModel != nullptr);
 
-    QModelIndex SourceIndex = pkProxy->mapToSource(rkIndex);
+    const auto SourceIndex = pkProxy->mapToSource(rkIndex);
     return pkModel->IndexEntry(SourceIndex);
 }
 
 CVirtualDirectory* CResourceBrowserDelegate::GetIndexDirectory(const QModelIndex& rkIndex) const
 {
-    const CResourceProxyModel *pkProxy = qobject_cast<const CResourceProxyModel*>(rkIndex.model());
+    const auto* pkProxy = qobject_cast<const CResourceProxyModel*>(rkIndex.model());
     ASSERT(pkProxy != nullptr);
 
-    const CResourceTableModel *pkModel = qobject_cast<const CResourceTableModel*>(pkProxy->sourceModel());
+    const auto* pkModel = qobject_cast<const CResourceTableModel*>(pkProxy->sourceModel());
     ASSERT(pkModel != nullptr);
 
-    QModelIndex SourceIndex = pkProxy->mapToSource(rkIndex);
+    const auto SourceIndex = pkProxy->mapToSource(rkIndex);
     return pkModel->IndexDirectory(SourceIndex);
 }
