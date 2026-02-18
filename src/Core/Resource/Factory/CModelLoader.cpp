@@ -297,7 +297,7 @@ SSurface* CModelLoader::LoadAssimpMesh(const aiMesh *pkMesh, CMaterialSet *pSet)
     CMaterial *pMat = pSet->MaterialByIndex(pkMesh->mMaterialIndex, false);
     FVertexDescription Desc = pMat->VtxDesc();
 
-    if (Desc == static_cast<FVertexDescription>(EVertexAttribute::None))
+    if (Desc == EVertexAttribute::None)
     {
         if (pkMesh->HasPositions())
             Desc |= EVertexAttribute::Position;
@@ -305,7 +305,7 @@ SSurface* CModelLoader::LoadAssimpMesh(const aiMesh *pkMesh, CMaterialSet *pSet)
             Desc |= EVertexAttribute::Normal;
 
         for (size_t iUV = 0; iUV < pkMesh->GetNumUVChannels(); iUV++)
-            Desc |= EVertexAttribute(EVertexAttribute::Tex0 << iUV);
+            Desc |= EVertexAttribute::Tex0 << iUV;
 
         pMat->SetVertexDescription(Desc);
 
@@ -319,7 +319,7 @@ SSurface* CModelLoader::LoadAssimpMesh(const aiMesh *pkMesh, CMaterialSet *pSet)
     }
 
     // Create surface
-    SSurface *pSurf = new SSurface();
+    auto* pSurf = new SSurface();
     pSurf->MaterialID = pkMesh->mMaterialIndex;
 
     if (pkMesh->mNumFaces > 0)
@@ -369,7 +369,7 @@ SSurface* CModelLoader::LoadAssimpMesh(const aiMesh *pkMesh, CMaterialSet *pSet)
                 const uint32_t Index = pkMesh->mFaces[iFace].mIndices[iIndex];
 
                 // Create vertex and add it to the primitive
-                CVertex Vert;
+                CVertex& Vert = rPrim.Vertices.emplace_back();
                 Vert.ArrayPosition = Index + mNumVertices;
 
                 if (pkMesh->HasPositions())
@@ -389,8 +389,6 @@ SSurface* CModelLoader::LoadAssimpMesh(const aiMesh *pkMesh, CMaterialSet *pSet)
                     const aiVector3D AiTex = pkMesh->mTextureCoords[iTex][Index];
                     Vert.Tex[iTex] = CVector2f(AiTex.x, AiTex.y);
                 }
-
-                rPrim.Vertices.push_back(Vert);
             }
         }
 
