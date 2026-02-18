@@ -267,7 +267,7 @@ void CAreaCooker::WriteDependencies(IOutputStream& rOut)
 
     for (const auto& dependency : Dependencies)
     {
-        CResourceEntry *pEntry = gpResourceStore->FindEntry(dependency);
+        const CResourceEntry* pEntry = mpArea->Entry()->ResourceStore()->FindEntry(dependency);
         dependency.Write(rOut);
         pEntry->CookedExtension().Write(rOut);
     }

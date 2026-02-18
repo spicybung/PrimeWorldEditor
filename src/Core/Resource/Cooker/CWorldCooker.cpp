@@ -10,7 +10,9 @@ CWorldCooker::CWorldCooker() = default;
 bool CWorldCooker::CookMLVL(CWorld *pWorld, IOutputStream& rMLVL)
 {
     ASSERT(rMLVL.IsValid());
+
     const EGame Game = pWorld->Game();
+    auto* const resourceStore = pWorld->Entry()->ResourceStore();
 
     // MLVL Header
     rMLVL.WriteU32(0xDEAFBABE);
@@ -72,7 +74,7 @@ bool CWorldCooker::CookMLVL(CWorld *pWorld, IOutputStream& rMLVL)
     for (auto& rArea : pWorld->mAreas)
     {
         // Area Header
-        CResourceEntry *pAreaEntry = gpResourceStore->FindEntry(rArea.AreaResID);
+        CResourceEntry *pAreaEntry = resourceStore->FindEntry(rArea.AreaResID);
         ASSERT(pAreaEntry && pAreaEntry->ResourceType() == EResourceType::Area);
 
         const CAssetID AreaNameID = rArea.pAreaName != nullptr ? rArea.pAreaName->ID() : CAssetID::InvalidID(Game);
@@ -104,7 +106,7 @@ bool CWorldCooker::CookMLVL(CWorld *pWorld, IOutputStream& rMLVL)
 
             for (const auto& ID : Dependencies)
             {
-                CResourceEntry *pEntry = gpResourceStore->FindEntry(ID);
+                CResourceEntry *pEntry = resourceStore->FindEntry(ID);
                 ID.Write(rMLVL);
                 pEntry->CookedExtension().Write(rMLVL);
             }
@@ -185,7 +187,7 @@ bool CWorldCooker::CookMLVL(CWorld *pWorld, IOutputStream& rMLVL)
 
         for (const auto& AudioGroup : AudioGroups)
         {
-            CAudioGroup *pGroup = gpResourceStore->LoadResource<CAudioGroup>(AudioGroup);
+            CAudioGroup *pGroup = resourceStore->LoadResource<CAudioGroup>(AudioGroup);
             ASSERT(pGroup);
             SortedAudioGroups.push_back(pGroup);
         }
