@@ -193,7 +193,7 @@ void CDamageableTriggerExtra::PropertyModified(IProperty* pProperty)
         {
             if (pProperty == asset.Property())
             {
-                mpTextures[idx] = gpResourceStore->LoadResource<CTexture>(asset.Get());
+                mpTextures[idx] = mpInstance->Area()->Entry()->ResourceStore()->LoadResource<CTexture>(asset.Get());
 
                 if (mpTextures[idx] && mpTextures[idx]->Type() != EResourceType::Texture)
                     mpTextures[idx] = nullptr;

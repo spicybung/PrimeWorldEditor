@@ -27,7 +27,7 @@ void CPointOfInterestExtra::PropertyModified(IProperty* pProperty)
 {
     if (mScanProperty.Property() == pProperty)
     {
-        mpScanData = gpResourceStore->LoadResource<CScan>( mScanProperty.Get() );
+        mpScanData = mpInstance->Area()->Entry()->ResourceStore()->LoadResource<CScan>(mScanProperty.Get());
         mScanIsCritical = (mpScanData ? mpScanData->IsCriticalPropertyRef() : CBoolRef());
     }
 }

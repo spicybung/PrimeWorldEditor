@@ -35,7 +35,7 @@ void CDoorExtra::PropertyModified(IProperty* pProperty)
 {
     if (pProperty == mShieldModelProp)
     {
-        mpShieldModel = gpResourceStore->LoadResource<CModel>( mShieldModelProp.Get() );
+        mpShieldModel = mpInstance->Area()->Entry()->ResourceStore()->LoadResource<CModel>(mShieldModelProp.Get());
 
         if (mpShieldModel)
             mLocalAABox = mpShieldModel->AABox();
