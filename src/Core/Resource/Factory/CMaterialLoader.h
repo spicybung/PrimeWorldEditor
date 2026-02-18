@@ -10,6 +10,7 @@
 #include <optional>
 
 class CMaterialSet;
+class CResourceStore;
 class IInputStream;
 struct aiMaterial;
 struct aiScene;
@@ -134,11 +135,11 @@ class CMaterialLoader
     static FVertexDescription ConvertToVertexDescription(uint32_t VertexFlags);
 
     // Load Functions
-    void ReadPrimeMatSet();
+    void ReadPrimeMatSet(CResourceStore* resourceStore);
     std::unique_ptr<CMaterial> ReadPrimeMaterial();
 
-    void ReadCorruptionMatSet();
-    std::unique_ptr<CMaterial> ReadCorruptionMaterial();
+    void ReadCorruptionMatSet(CResourceStore* resourceStore);
+    std::unique_ptr<CMaterial> ReadCorruptionMaterial(CResourceStore* resourceStore);
     void SetMP3IntermediateIntoMaterialPass(CMaterialPass* pPass, const SMP3IntermediateMaterial::PASS& Intermediate);
     void SelectBestCombinerConfig(EMP3RenderConfig& OutConfig, uint8_t& OutAlpha,
                                   const SMP3IntermediateMaterial& Material, bool Bloom);
@@ -197,7 +198,7 @@ class CMaterialLoader
 
     // Static
 public:
-    static CMaterialSet* LoadMaterialSet(IInputStream& rMat, EGame Version);
+    static CMaterialSet* LoadMaterialSet(IInputStream& rMat, EGame Version, CResourceStore* resourceStore);
     static CMaterialSet* ImportAssimpMaterials(const aiScene *pScene, EGame TargetVersion);
 };
 

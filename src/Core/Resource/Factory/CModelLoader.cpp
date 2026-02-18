@@ -485,7 +485,7 @@ std::unique_ptr<CModel> CModelLoader::LoadCMDL(IInputStream& rCMDL, CResourceEnt
     Loader.mMaterials.resize(MatSetCount);
     for (size_t iSet = 0; iSet < MatSetCount; iSet++)
     {
-        Loader.mMaterials[iSet] = CMaterialLoader::LoadMaterialSet(rCMDL, Loader.mVersion);
+        Loader.mMaterials[iSet] = CMaterialLoader::LoadMaterialSet(rCMDL, Loader.mVersion, pEntry->ResourceStore());
 
         if (Loader.mVersion < EGame::CorruptionProto)
             Loader.mpSectionMgr->ToNextSection();

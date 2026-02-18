@@ -40,7 +40,7 @@ FVertexDescription CMaterialLoader::ConvertToVertexDescription(uint32_t VertexFl
     return Desc;
 }
 
-void CMaterialLoader::ReadPrimeMatSet()
+void CMaterialLoader::ReadPrimeMatSet(CResourceStore* resourceStore)
 {
     // Textures
     const auto NumTextures = mpFile->ReadU32();
@@ -49,7 +49,7 @@ void CMaterialLoader::ReadPrimeMatSet()
     for (auto& texture : mTextures)
     {
         const auto TextureID = mpFile->ReadU32();
-        texture = gpResourceStore->LoadResource<CTexture>(TextureID);
+        texture = resourceStore->LoadResource<CTexture>(TextureID);
     }
 
     // Materials
@@ -253,7 +253,7 @@ std::unique_ptr<CMaterial> CMaterialLoader::ReadPrimeMaterial()
     return pMat;
 }
 
-void CMaterialLoader::ReadCorruptionMatSet()
+void CMaterialLoader::ReadCorruptionMatSet(CResourceStore* resourceStore)
 {
     const auto NumMats = mpFile->ReadU32();
     mpSet->mMaterials.resize(NumMats);
@@ -262,7 +262,7 @@ void CMaterialLoader::ReadCorruptionMatSet()
     {
         const auto Size = mpFile->ReadU32();
         const auto Next = mpFile->Tell() + Size;
-        material = ReadCorruptionMaterial();
+        material = ReadCorruptionMaterial(resourceStore);
         material->mVersion = mVersion;
         material->mName = fmt::format("Material #{}", idx + 1);
         mpFile->Seek(Next, SEEK_SET);
@@ -330,7 +330,7 @@ static ECLR ClrFourCCToEnum(CFourCC fcc)
     return ECLR::CLR;
 }
 
-std::unique_ptr<CMaterial> CMaterialLoader::ReadCorruptionMaterial()
+std::unique_ptr<CMaterial> CMaterialLoader::ReadCorruptionMaterial(CResourceStore* resourceStore)
 {
     // Flags
     const FMP3MaterialOptions MP3Options(mpFile->ReadS32());
@@ -379,7 +379,7 @@ std::unique_ptr<CMaterial> CMaterialLoader::ReadCorruptionMaterial()
 
             const auto TextureID = mpFile->ReadU64();
             if (TextureID != UINT64_MAX)
-                Pass.mpTexture = gpResourceStore->LoadResource<CTexture>(TextureID);
+                Pass.mpTexture = resourceStore->LoadResource<CTexture>(TextureID);
 
             Pass.mUvSrc = mpFile->ReadU32();
 
@@ -1579,7 +1579,7 @@ std::unique_ptr<CMaterial> CMaterialLoader::LoadAssimpMaterial(const aiMaterial 
 }
 
 // ************ STATIC ************
-CMaterialSet* CMaterialLoader::LoadMaterialSet(IInputStream& rMat, EGame Version)
+CMaterialSet* CMaterialLoader::LoadMaterialSet(IInputStream& rMat, EGame Version, CResourceStore* resourceStore)
 {
     CMaterialLoader Loader;
     Loader.mpSet = new CMaterialSet();
@@ -1587,9 +1587,9 @@ CMaterialSet* CMaterialLoader::LoadMaterialSet(IInputStream& rMat, EGame Version
     Loader.mVersion = Version;
 
     if ((Version >= EGame::PrimeDemo) && (Version <= EGame::Echoes))
-        Loader.ReadPrimeMatSet();
+        Loader.ReadPrimeMatSet(resourceStore);
     else
-        Loader.ReadCorruptionMatSet();
+        Loader.ReadCorruptionMatSet(resourceStore);
 
     return Loader.mpSet;
 }
