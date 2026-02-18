@@ -140,14 +140,14 @@ SSurface* CModelLoader::LoadSurface(IInputStream& rModel)
     {
         const auto VertexCount = rModel.ReadU16();
 
-        SSurface::SPrimitive Prim;
+        SSurface::SPrimitive& Prim = pSurf->Primitives.emplace_back();
         Prim.Type = EPrimitiveType(Flag & 0xF8);
         Prim.Vertices.reserve(VertexCount);
 
         for (uint32_t iVtx = 0; iVtx < VertexCount; iVtx++)
         {
             const FVertexDescription VtxDesc = pMat->VtxDesc();
-            CVertex Vtx;
+            CVertex& Vtx = Prim.Vertices.emplace_back();
 
             for (uint32_t iMtxAttr = 0; iMtxAttr < 8; iMtxAttr++)
             {
@@ -214,8 +214,6 @@ SSurface* CModelLoader::LoadSurface(IInputStream& rModel)
                     }
                 }
             }
-
-            Prim.Vertices.push_back(Vtx);
         } // Vertex array end
 
         // Update vertex/triangle count
@@ -234,7 +232,6 @@ SSurface* CModelLoader::LoadSurface(IInputStream& rModel)
                 break;
         }
 
-        pSurf->Primitives.push_back(std::move(Prim));
         Flag = rModel.ReadU8();
     } // Primitive table end
 
