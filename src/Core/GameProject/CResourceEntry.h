@@ -110,9 +110,6 @@ public:
     const TString& Name() const              { return mName; }
     const TString& UppercaseName() const     { return mCachedUppercaseName; }
     EResourceType ResourceType() const;
-
-protected:
-    CResource* InternalLoad(IInputStream& rInput);
 };
 
 #endif // CRESOURCEENTRY_H
