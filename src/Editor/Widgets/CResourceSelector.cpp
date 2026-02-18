@@ -156,20 +156,20 @@ void CResourceSelector::SetResource(CResource *pRes)
 }
 
 // ************ INTERFACE ************
-bool CResourceSelector::eventFilter(QObject *pWatched, QEvent *pEvent)
+bool CResourceSelector::eventFilter(QObject* pWatched, QEvent* pEvent)
 {
     if (pWatched == mpResNameButton)
     {
         if (pEvent->type() == QEvent::MouseButtonPress)
         {
-            QMouseEvent *pMouseEvent = static_cast<QMouseEvent*>(pEvent);
+            auto* pMouseEvent = static_cast<QMouseEvent*>(pEvent);
             mousePressEvent(pMouseEvent);
             return false;
         }
 
         else if (pEvent->type() == QEvent::MouseButtonDblClick)
         {
-            QMouseEvent *pMouseEvent = static_cast<QMouseEvent*>(pEvent);
+            auto* pMouseEvent = static_cast<QMouseEvent*>(pEvent);
 
             if (pMouseEvent->button() == Qt::LeftButton)
             {
@@ -217,16 +217,16 @@ void CResourceSelector::mouseReleaseEvent(QMouseEvent *pEvent)
 }
 
 // ************ DROP *************
-void CResourceSelector::dragEnterEvent(QDragEnterEvent *pEvent)
+void CResourceSelector::dragEnterEvent(QDragEnterEvent* pEvent)
 {
     // Check whether the mime data is a valid format
     if (mIsEditable && (pEvent->possibleActions() & Qt::CopyAction))
     {
-        const CResourceMimeData *pkData = qobject_cast<const CResourceMimeData*>(pEvent->mimeData());
+        const auto* pkData = qobject_cast<const CResourceMimeData*>(pEvent->mimeData());
 
         if (pkData && pkData->Directories().isEmpty() && pkData->Resources().size() == 1)
         {
-            CResourceEntry *pEntry = pkData->Resources().front();
+            CResourceEntry* pEntry = pkData->Resources().front();
 
             if (!pEntry || mTypeFilter.Accepts(pEntry))
                 pEvent->acceptProposedAction();
@@ -234,11 +234,11 @@ void CResourceSelector::dragEnterEvent(QDragEnterEvent *pEvent)
     }
 }
 
-void CResourceSelector::dropEvent(QDropEvent *pEvent)
+void CResourceSelector::dropEvent(QDropEvent* pEvent)
 {
     // Set the new resource
-    const CResourceMimeData *pkMimeData = qobject_cast<const CResourceMimeData*>(pEvent->mimeData());
-    CResourceEntry *pEntry = pkMimeData->Resources().front();
+    const auto* pkMimeData = qobject_cast<const CResourceMimeData*>(pEvent->mimeData());
+    CResourceEntry* pEntry = pkMimeData->Resources().front();
     SetResource(pEntry);
 }
 
