@@ -54,14 +54,14 @@ void WDraggableSpinBox::mouseMoveEvent(QMouseEvent*)
 {
     if (mBeingDragged)
     {
-        QPoint CursorPos = QCursor::pos();
+        const QPoint CursorPos = QCursor::pos();
 
         // Update value
-        double DragAmount = (singleStep() / 10.0) * (mLastY - CursorPos.y());
+        const double DragAmount = (singleStep() / 10.0) * (mLastY - CursorPos.y());
         setValue(value() + DragAmount);
 
         // Wrap cursor
-        int ScreenHeight = QApplication::primaryScreen()->geometry().height();
+        const int ScreenHeight = QApplication::screenAt(CursorPos)->geometry().height();
 
         if (CursorPos.y() == ScreenHeight - 1)
             QCursor::setPos(CursorPos.x(), 1);
