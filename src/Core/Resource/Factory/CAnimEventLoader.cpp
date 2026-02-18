@@ -94,14 +94,13 @@ void CAnimEventLoader::LoadSoundEvent(IInputStream& rEVNT)
 
         if (SoundID != 0xFFFF)
         {
-            const SSoundInfo SoundInfo = gpResourceStore->Project()->AudioManager()->GetSoundInfo(SoundID);
+            const SSoundInfo SoundInfo = mResourceStore->Project()->AudioManager()->GetSoundInfo(SoundID);
 
             if (SoundInfo.pAudioGroup)
                 mpEventData->AddEvent(CharIndex, SoundInfo.pAudioGroup->ID());
         }
     }
-    // Metroid Prime 3
-    else
+    else // Metroid Prime 3
     {
         const CAssetID SoundID(rEVNT, mGame);
         mpEventData->AddEvent(CharIndex, SoundID);
@@ -136,30 +135,33 @@ std::unique_ptr<CAnimEventData> CAnimEventLoader::LoadEVNT(IInputStream& rEVNT, 
     CAnimEventLoader Loader;
     Loader.mpEventData = ptr.get();
     Loader.mGame = EGame::Prime;
+    Loader.mResourceStore = pEntry->ResourceStore();
     Loader.LoadEvents(rEVNT);
 
     return ptr;
 }
 
-std::unique_ptr<CAnimEventData> CAnimEventLoader::LoadAnimSetEvents(IInputStream& rANCS)
+std::unique_ptr<CAnimEventData> CAnimEventLoader::LoadAnimSetEvents(IInputStream& rANCS, CResourceStore* resourceStore)
 {
     auto ptr = std::make_unique<CAnimEventData>();
 
     CAnimEventLoader Loader;
     Loader.mpEventData = ptr.get();
     Loader.mGame = EGame::Echoes;
+    Loader.mResourceStore = resourceStore;
     Loader.LoadEvents(rANCS);
 
     return ptr;
 }
 
-std::unique_ptr<CAnimEventData> CAnimEventLoader::LoadCorruptionCharacterEventSet(IInputStream& rCHAR)
+std::unique_ptr<CAnimEventData> CAnimEventLoader::LoadCorruptionCharacterEventSet(IInputStream& rCHAR, CResourceStore* resourceStore)
 {
     auto ptr = std::make_unique<CAnimEventData>();
 
     CAnimEventLoader Loader;
     Loader.mpEventData = ptr.get();
     Loader.mGame = EGame::Corruption;
+    Loader.mResourceStore = resourceStore;
 
     // Read event set header
     rCHAR.Skip(0x4); // Skip animation ID
