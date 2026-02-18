@@ -260,13 +260,13 @@ void CResourceSelector::EditAsset()
 
 void CResourceSelector::CopyName()
 {
-    gpEdApp->clipboard()->setText(mpResNameButton->text());
+    QGuiApplication::clipboard()->setText(mpResNameButton->text());
 }
 
 void CResourceSelector::CopyPath()
 {
-    QString Text = (mpResEntry ? TO_QSTRING(mpResEntry->CookedAssetPath(true)) : QString());
-    gpEdApp->clipboard()->setText(Text);
+    const QString Text = (mpResEntry ? TO_QSTRING(mpResEntry->CookedAssetPath(true)) : QString());
+    QGuiApplication::clipboard()->setText(Text);
 }
 
 void CResourceSelector::Select()
