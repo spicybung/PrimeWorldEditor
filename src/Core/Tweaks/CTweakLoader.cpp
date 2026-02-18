@@ -43,7 +43,7 @@ std::unique_ptr<CTweakData> CTweakLoader::LoadCTWK(IInputStream& CTWK, CResource
 
     // Load tweak data
     auto pTweakData = std::make_unique<CTweakData>(pTweakTemplate, pEntry->ID().ToU32(), pEntry);
-    CScriptLoader::LoadStructData(CTWK, pTweakData->TweakData());
+    CScriptLoader::LoadStructData(CTWK, pTweakData->TweakData(), pEntry->ResourceStore());
 
     // Verify
     if (!CTWK.EoF() && CTWK.PeekS16() != -1)
@@ -55,7 +55,7 @@ std::unique_ptr<CTweakData> CTweakLoader::LoadCTWK(IInputStream& CTWK, CResource
     return pTweakData;
 }
 
-void CTweakLoader::LoadNTWK(IInputStream& NTWK, EGame Game, std::vector<CTweakData*>& OutTweaks)
+void CTweakLoader::LoadNTWK(IInputStream& NTWK, EGame Game, std::vector<CTweakData*>& OutTweaks, CResourceStore* resourceStore)
 {
     // Validate file. NTWK basically embeds a bunch of tweak objects using the script layers
     // format, so it has the same version byte that script layers have.
@@ -127,7 +127,7 @@ void CTweakLoader::LoadNTWK(IInputStream& NTWK, EGame Game, std::vector<CTweakDa
         // Load tweak data
         NTWK.Skip(0xC);
         auto* pTweakData = new CTweakData(pTweakTemplate, TweakID);
-        CScriptLoader::LoadStructData(NTWK, pTweakData->TweakData());
+        CScriptLoader::LoadStructData(NTWK, pTweakData->TweakData(), resourceStore);
         OutTweaks.push_back(pTweakData);
 
         NTWK.GoTo(NextTweak);

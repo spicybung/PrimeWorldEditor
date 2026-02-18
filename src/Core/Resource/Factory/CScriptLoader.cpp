@@ -150,9 +150,9 @@ void CScriptLoader::ReadProperty(IProperty *pProp, uint32_t Size, IInputStream& 
 #if VALIDATE_PROPERTY_VALUES
         const CAssetID ID(pAsset->ValueRef(pData));
 
-        if (ID.IsValid() && gpResourceStore)
+        if (ID.IsValid())
         {
-            CResourceEntry *pEntry = gpResourceStore->FindEntry(ID);
+            CResourceEntry *pEntry = mResourceStore->FindEntry(ID);
 
             if (pEntry)
             {
@@ -478,6 +478,7 @@ std::unique_ptr<CScriptLayer> CScriptLoader::LoadLayer(IInputStream& rSCLY, CGam
     Loader.mVersion = Version;
     Loader.mpGameTemplate = NGameList::GetGameTemplate(Version);
     Loader.mpArea = pArea;
+    Loader.mResourceStore = pArea->Entry()->ResourceStore();
 
     if (!Loader.mpGameTemplate)
     {
@@ -501,6 +502,7 @@ CScriptObject* CScriptLoader::LoadInstance(IInputStream& rSCLY, CGameArea *pArea
     Loader.mpGameTemplate = NGameList::GetGameTemplate(Version);
     Loader.mpArea = pArea;
     Loader.mpLayer = pLayer;
+    Loader.mResourceStore = pArea->Entry()->ResourceStore();
 
     if (!Loader.mpGameTemplate)
     {
@@ -514,7 +516,7 @@ CScriptObject* CScriptLoader::LoadInstance(IInputStream& rSCLY, CGameArea *pArea
         return Loader.LoadObjectMP2(rSCLY);
 }
 
-void CScriptLoader::LoadStructData(IInputStream& rInput, CStructRef InStruct)
+void CScriptLoader::LoadStructData(IInputStream& rInput, CStructRef InStruct, CResourceStore* resourceStore)
 {
     if (!rInput.IsValid())
         return;
@@ -525,6 +527,7 @@ void CScriptLoader::LoadStructData(IInputStream& rInput, CStructRef InStruct)
     Loader.mpArea = nullptr;
     Loader.mpLayer = nullptr;
     Loader.mpCurrentData = InStruct.DataPointer();
+    Loader.mResourceStore = resourceStore;
 
     if (Loader.mVersion <= EGame::Prime)
         Loader.LoadStructMP1(rInput, InStruct.Property());

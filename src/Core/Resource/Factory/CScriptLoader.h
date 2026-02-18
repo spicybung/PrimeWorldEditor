@@ -9,6 +9,7 @@
 
 class CGameArea;
 class CGameTemplate;
+class CResourceStore;
 class CScriptLayer;
 class CScriptObject;
 class CStructProperty;
@@ -22,6 +23,7 @@ class CScriptLoader
     CScriptLayer* mpLayer = nullptr;
     CGameArea* mpArea = nullptr;
     CGameTemplate *mpGameTemplate = nullptr;
+    CResourceStore* mResourceStore = nullptr;
 
     // Current data pointer
     void* mpCurrentData = nullptr;
@@ -40,7 +42,7 @@ class CScriptLoader
 public:
     static std::unique_ptr<CScriptLayer> LoadLayer(IInputStream& rSCLY, CGameArea *pArea, EGame Version);
     static CScriptObject* LoadInstance(IInputStream& rSCLY, CGameArea *pArea, CScriptLayer *pLayer, EGame Version, bool ForceReturnsFormat);
-    static void LoadStructData(IInputStream& rInput, CStructRef InStruct);
+    static void LoadStructData(IInputStream& rInput, CStructRef InStruct, CResourceStore* resourceStore);
 };
 
 #endif // CSCRIPTLOADER_H

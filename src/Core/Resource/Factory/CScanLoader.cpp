@@ -25,7 +25,7 @@ std::unique_ptr<CScan> CScanLoader::LoadScanMP1(IInputStream& SCAN, CResourceEnt
     // So, it's simplest to use the script loader to load the MP1 SCAN format as well... that enables
     // us to just create one class for all SCAN assets that works for every game.
     mpScan = ptr.get();
-    CScriptLoader::LoadStructData(SCAN, mpScan->ScanData());
+    CScriptLoader::LoadStructData(SCAN, mpScan->ScanData(), pEntry->ResourceStore());
 
     return ptr;
 }
@@ -48,7 +48,7 @@ std::unique_ptr<CScan> CScanLoader::LoadScanMP2(IInputStream& SCAN, CResourceEnt
     // object, we will skip past the script object/layer header and just load the properties directly.
     SCAN.Skip(0x17);
     mpScan = ptr.get();
-    CScriptLoader::LoadStructData(SCAN, mpScan->ScanData());
+    CScriptLoader::LoadStructData(SCAN, mpScan->ScanData(), pEntry->ResourceStore());
     return ptr;
 }
 

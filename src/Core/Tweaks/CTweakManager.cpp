@@ -59,7 +59,7 @@ void CTweakManager::LoadTweaks()
         if (FileUtil::Exists(mStandardFilePath))
         {
             CFileInStream StandardNTWK(mStandardFilePath, std::endian::big);
-            CTweakLoader::LoadNTWK(StandardNTWK, mpProject->Game(), mTweakObjects);
+            CTweakLoader::LoadNTWK(StandardNTWK, mpProject->Game(), mTweakObjects, mpProject->ResourceStore());
         }
     }
 }
