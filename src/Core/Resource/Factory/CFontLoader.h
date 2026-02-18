@@ -16,7 +16,7 @@ class CFontLoader
     EGame mVersion{};
 
     CFontLoader();
-    void LoadFont(IInputStream& rFONT);
+    void LoadFontImpl(IInputStream& rFONT);
 
 public:
     static std::unique_ptr<CFont> LoadFONT(IInputStream& rFONT, CResourceEntry *pEntry);

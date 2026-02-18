@@ -5,18 +5,21 @@
 
 CFontLoader::CFontLoader() = default;
 
-void CFontLoader::LoadFont(IInputStream& rFONT)
+void CFontLoader::LoadFontImpl(IInputStream& rFONT)
 {
     // If I seek past a value without reading it, then it's because I don't know what it is
     mpFont->mUnknown = rFONT.ReadU32();
     mpFont->mLineHeight = rFONT.ReadU32();
     mpFont->mVerticalOffset = rFONT.ReadU32();
     mpFont->mLineMargin = rFONT.ReadU32();
-    if (mVersion > EGame::PrimeDemo) rFONT.Seek(0x4, SEEK_CUR);
+
+    if (mVersion > EGame::PrimeDemo)
+        rFONT.Seek(0x4, SEEK_CUR);
+
     rFONT.Seek(0x2, SEEK_CUR);
     mpFont->mDefaultSize = rFONT.ReadU32();
     mpFont->mFontName = rFONT.ReadString();
-    mpFont->mpFontTexture = gpResourceStore->LoadResource(CAssetID(rFONT, mVersion), EResourceType::Texture);
+    mpFont->mpFontTexture = mpFont->Entry()->ResourceStore()->LoadResource(CAssetID(rFONT, mVersion), EResourceType::Texture);
     mpFont->mTextureFormat = rFONT.ReadU32();
     const auto NumGlyphs = rFONT.ReadU32();
     mpFont->mGlyphs.reserve(NumGlyphs);
@@ -97,7 +100,7 @@ std::unique_ptr<CFont> CFontLoader::LoadFONT(IInputStream& rFONT, CResourceEntry
     CFontLoader Loader;
     Loader.mpFont = ptr.get();
     Loader.mVersion = Version;
-    Loader.LoadFont(rFONT);
+    Loader.LoadFontImpl(rFONT);
 
     return ptr;
 }
