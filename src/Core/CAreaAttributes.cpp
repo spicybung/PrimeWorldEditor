@@ -39,5 +39,8 @@ bool CAreaAttributes::IsSkyEnabled() const
 
 CModel* CAreaAttributes::SkyModel() const
 {
-    return mOverrideSky.IsValid() ? gpResourceStore->LoadResource<CModel>(mOverrideSky.Get()) : nullptr;
+    if (!mOverrideSky.IsValid())
+        return nullptr;
+
+    return mpObject->Area()->Entry()->ResourceStore()->LoadResource<CModel>(mOverrideSky.Get());
 }
