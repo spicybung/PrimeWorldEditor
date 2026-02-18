@@ -342,7 +342,6 @@ void CSceneViewport::ContextMenu(QContextMenuEvent *pEvent)
     mRayIntersection = SceneRayCast(CastRay());
 
     // Set up actions
-    TString NodeName;
     const bool HasHoverNode = (mpHoverNode && (mpHoverNode->NodeType() != ENodeType::Static) && (mpHoverNode->NodeType() != ENodeType::Model));
     const bool HasSelection = mpEditor->HasSelection();
     const bool IsScriptNode = (mpHoverNode && mpHoverNode->NodeType() == ENodeType::Script);
@@ -373,9 +372,10 @@ void CSceneViewport::ContextMenu(QContextMenuEvent *pEvent)
             mpToggleSelectAction->setText(tr("Select %1").arg(TO_QSTRING(Name)));
     }
 
+    TString NodeName;
     if (IsScriptNode)
     {
-        CScriptNode *pScript = static_cast<CScriptNode*>(mpHoverNode);
+        const auto* pScript = static_cast<CScriptNode*>(mpHoverNode);
         NodeName = pScript->Instance()->InstanceName();
         mpHideHoverTypeAction->setText(tr("Hide all %1 objects").arg(TO_QSTRING(pScript->Template()->Name())));
         mpHideHoverLayerAction->setText(tr("Hide layer %1").arg(TO_QSTRING(pScript->Instance()->Layer()->Name())));
