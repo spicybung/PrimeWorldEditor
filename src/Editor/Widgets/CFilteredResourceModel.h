@@ -23,7 +23,7 @@ public:
     {
         const CResTypeFilter& rkFilter = pSelector->TypeFilter();
 
-        for (const auto& entry : pSelector->Entry()->ResourceStore()->MakeResourceView())
+        for (const auto& entry : gpResourceStore->MakeResourceView())
         {
             if (rkFilter.Accepts(entry.get()))
             {
