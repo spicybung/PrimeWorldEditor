@@ -274,7 +274,7 @@ void CSceneViewport::FindConnectedObjects(CInstanceID InstanceID, bool SearchOut
 // ************ PROTECTED SLOTS ************
 void CSceneViewport::CheckUserInput()
 {
-    bool MouseActive = (underMouse() && !IsMouseInputActive());
+    const bool MouseActive = (underMouse() && !IsMouseInputActive());
 
     if (!MouseActive || mViewInfo.GameMode)
     {
@@ -284,17 +284,15 @@ void CSceneViewport::CheckUserInput()
 
     if (MouseActive)
     {
-        CRay Ray = CastRay();
-
         if (!mViewInfo.GameMode)
-            CheckGizmoInput(Ray);
+            CheckGizmoInput(CastRay());
 
         if (!mpEditor->Gizmo()->IsTransforming())
-            mRayIntersection = SceneRayCast(Ray);
+            mRayIntersection = SceneRayCast(CastRay());
     }
     else
     {
-        mRayIntersection = SRayIntersection();
+        mRayIntersection = {};
     }
 
     QMouseEvent Event = CreateMouseEvent();
