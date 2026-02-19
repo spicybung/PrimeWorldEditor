@@ -591,7 +591,7 @@ void CModelEditorWindow::UpdateMaterial(const CResourceEntry* Entry)
     TResPtr<CTexture> pTex;
     if (Entry)
     {
-        pTex = gpResourceStore->LoadResource(Entry->ID());
+        pTex = Entry->ResourceStore()->LoadResource(Entry->ID());
         if (pTex->Type() != EResourceType::Texture)
             pTex = nullptr;
     }
@@ -775,9 +775,8 @@ void CModelEditorWindow::Import()
         return;
     }
 
-    CModel *pModel = nullptr;
-    CMaterialSet *pSet = CMaterialLoader::ImportAssimpMaterials(pScene, EGame::Prime);
-    pModel = CModelLoader::ImportAssimpNode(pScene->mRootNode, pScene, *pSet);
+    auto* pSet = CMaterialLoader::ImportAssimpMaterials(pScene, EGame::Prime);
+    auto* pModel = CModelLoader::ImportAssimpNode(pScene->mRootNode, pScene, *pSet);
 
     SetActiveModel(pModel);
     SET_WINDOWTITLE_APPVARS(tr("%APP_FULL_NAME% - Model Editor: Untitled"));
