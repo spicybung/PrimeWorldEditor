@@ -180,27 +180,24 @@ uint32_t CAnimationParameters::Unknown(uint32_t Index) const
     }
 }
 
-void CAnimationParameters::SetResource(const CAssetID& rkID)
+void CAnimationParameters::SetResource(const CResourceEntry* entry)
 {
-    if (mCharacterID != rkID)
+    if (mCharacterID == entry->ID())
+        return;
+
+    mCharacterID = entry->ID();
+    mCharIndex = 0;
+    mAnimIndex = 0;
+    mUnknown2 = 0;
+    mUnknown3 = 0;
+
+    // Validate ID
+    if (mCharacterID.IsValid())
     {
-        mCharacterID = rkID;
-        mCharIndex = 0;
-        mAnimIndex = 0;
-        mUnknown2 = 0;
-        mUnknown3 = 0;
-
-        // Validate ID
-        if (mCharacterID.IsValid())
-        {
-            CResourceEntry *pEntry = gpResourceStore->FindEntry(rkID);
-
-            if (!pEntry)
-                NLog::Error("Invalid resource ID passed to CAnimationParameters: {}", rkID.ToString());
-            else if (pEntry->ResourceType() != EResourceType::AnimSet && pEntry->ResourceType() != EResourceType::Character)
-                NLog::Error("Resource with invalid type passed to CAnimationParameters: {}", pEntry->CookedAssetPath().GetFileName());
-        }
+        if (entry->ResourceType() != EResourceType::AnimSet && entry->ResourceType() != EResourceType::Character)
+            NLog::Error("Resource with invalid type passed to CAnimationParameters: {}", entry->CookedAssetPath().GetFileName());
     }
+
 }
 
 void CAnimationParameters::SetUnknown(uint32_t Index, uint32_t Value)

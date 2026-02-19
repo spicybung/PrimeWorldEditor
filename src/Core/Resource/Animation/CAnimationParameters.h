@@ -6,6 +6,7 @@
 #include <cstdint>
 
 class CModel;
+class CResourceEntry;
 
 class CAnimationParameters
 {
@@ -56,7 +57,7 @@ public:
     }
 
     uint32_t Unknown(uint32_t Index) const;
-    void SetResource(const CAssetID& rkID);
+    void SetResource(const CResourceEntry* entry);
     void SetUnknown(uint32_t Index, uint32_t Value);
 
     bool operator==(const CAnimationParameters&) const = default;

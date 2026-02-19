@@ -640,8 +640,8 @@ void CPropertyDelegate::SetCharacterModelData(QWidget *pEditor, const QModelInde
 
     if (Type == EPropertyType::Asset)
     {
-        CResourceEntry *pEntry = static_cast<CResourceSelector*>(pEditor)->Entry();
-        Params.SetResource(pEntry ? pEntry->ID() : CAssetID::InvalidID(gpEdApp->CurrentGame()));
+        const auto* pEntry = static_cast<CResourceSelector*>(pEditor)->Entry();
+        Params.SetResource(pEntry);
     }
     else if (Type == EPropertyType::Enum || Type == EPropertyType::Choice)
     {
