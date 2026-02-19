@@ -91,8 +91,7 @@ QVariant CVirtualDirectoryModel::data(const QModelIndex& rkIndex, int Role) cons
         }
         else
         {
-            CVirtualDirectory *pDir = IndexDirectory(rkIndex);
-            if (pDir)
+            if (const auto* pDir = IndexDirectory(rkIndex))
                 return TO_QSTRING(pDir->Name());
         }
     }
@@ -109,10 +108,9 @@ bool CVirtualDirectoryModel::setData(const QModelIndex& rkIndex, const QVariant&
 {
     if (Role == Qt::EditRole)
     {
-        QString NewName = rkValue.toString();
-        CVirtualDirectory *pDir = IndexDirectory(rkIndex);
+        const QString NewName = rkValue.toString();
 
-        if (pDir)
+        if (auto* pDir = IndexDirectory(rkIndex))
         {
             gpEdApp->ResourceBrowser()->RenameDirectory(pDir, TO_TSTRING(NewName));
             return true;
@@ -198,8 +196,8 @@ QModelIndex CVirtualDirectoryModel::GetIndexForDirectory(const CVirtualDirectory
         return QModelIndex();
 
     QList<int> Indices;
-    const CVirtualDirectory* pOriginal = pDir;
-    const CVirtualDirectory* pParent = pDir->Parent();
+    const auto* pOriginal = pDir;
+    const auto* pParent = pDir->Parent();
 
     // Get index list
     while (pParent != nullptr)
