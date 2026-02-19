@@ -203,7 +203,7 @@ CResourceEntry* CWorldTreeModel::AreaEntryForIndex(const QModelIndex& rkIndex) c
         AreaID = pWorld->AreaResourceID(AreaIndex);
     }
 
-    return gpResourceStore->FindEntry(AreaID);
+    return gpEdApp->ActiveProject()->ResourceStore()->FindEntry(AreaID);
 }
 
 const CWorldTreeModel::SWorldInfo& CWorldTreeModel::WorldInfoForIndex(const QModelIndex& rkIndex) const
@@ -297,7 +297,7 @@ void CWorldTreeModel::OnProjectChanged(CGameProject *pProj)
 
                 if (WorldID.IsValid() && !WorldName.IsEmpty())
                 {
-                    if (CResourceEntry* pEntry = gpResourceStore->FindEntry(WorldID))
+                    if (CResourceEntry* pEntry = pProj->ResourceStore()->FindEntry(WorldID))
                     {
                         QString WorldNameQ = TO_QSTRING(WorldName);
 
