@@ -150,7 +150,7 @@ void CWorldInfoSidebar::OnWorldTreeDoubleClicked(const QModelIndex& Index)
         // Validate area actually exists... DKCR has worlds that contain areas that don't exist
         const CAssetID& AreaAssetID = pWorld->AreaResourceID(AreaIndex);
 
-        if (gpResourceStore->IsResourceRegistered(AreaAssetID))
+        if (pWorld->Entry()->ResourceStore()->IsResourceRegistered(AreaAssetID))
         {
             Editor()->SetArea(pWorld, AreaIndex);
         }
