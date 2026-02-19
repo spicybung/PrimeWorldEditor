@@ -126,7 +126,7 @@ void CResourceSelector::SetTypeFilter(EGame Game, const TString& rkTypeList)
 
 void CResourceSelector::SetResource(const CAssetID& rkID)
 {
-    CResourceEntry *pNewEntry = gpResourceStore->FindEntry(rkID);
+    CResourceEntry* pNewEntry = gpEdApp->ActiveProject()->ResourceStore()->FindEntry(rkID);
 
     if (mpResEntry != pNewEntry)
     {

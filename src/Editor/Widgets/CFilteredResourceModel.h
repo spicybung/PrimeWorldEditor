@@ -4,6 +4,7 @@
 #include "CResourceSelector.h"
 #include "Editor/UICommon.h"
 
+#include <Core/GameProject/CGameProject.h>
 #include <Core/GameProject/CResourceEntry.h>
 #include <Core/GameProject/CResourceStore.h>
 #include <Core/Resource/CResTypeFilter.h>
@@ -23,7 +24,7 @@ public:
     {
         const CResTypeFilter& rkFilter = pSelector->TypeFilter();
 
-        for (const auto& entry : gpResourceStore->MakeResourceView())
+        for (const auto& entry : gpEdApp->ActiveProject()->ResourceStore()->MakeResourceView())
         {
             if (rkFilter.Accepts(entry.get()))
             {
