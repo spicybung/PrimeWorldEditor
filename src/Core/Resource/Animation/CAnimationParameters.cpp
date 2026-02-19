@@ -1,6 +1,7 @@
-#include "CAnimationParameters.h"
-#include "CAnimSet.h"
-#include "Core/GameProject/CResourceStore.h"
+#include "Core/Resource/Animation/CAnimationParameters.h"
+
+#include "Core/GameProject/CResourceEntry.h"
+#include "Core/Resource/Animation/CAnimSet.h"
 #include <Common/Log.h>
 
 CAnimationParameters::CAnimationParameters() = default;
