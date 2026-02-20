@@ -79,8 +79,8 @@ bool RunTests(int argc, char* argv[])
         const char* projectPath = ParseParameter("-project", argc, argv);
         if (!projectPath)
         {
-            GetUIRelay()->ShowMessageBox("Error", fmt::format("Missing or invalid -project path argument\n\n{}", ValidateUsageString()));
-            return true;
+            // Indicates that we'd like to manually select the project file.
+            projectPath = "";
         }
 
         const auto opened = GetUIRelay()->OpenProject(projectPath);
