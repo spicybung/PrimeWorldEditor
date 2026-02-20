@@ -11,38 +11,48 @@
 #include <Common/Math/MathUtil.h>
 
 #include <algorithm>
+#include <span>
 #include <string_view>
+
+#include <fmt/format.h>
 
 namespace NCoreTests
 {
 
 /** Checks for a parameter in the commandline stream */
-static const char* ParseParameter(const char* pkParmName, int argc, char* argv[])
+static const char* ParseParameter(std::string_view parmName, int argc, char* argv[])
 {
-    const auto kParmLen = strlen(pkParmName);
+    // Valid length needs to at minimum be greater than option and an = (e.g. -option=test)
+    // otherwise there's nothing on the right side of the '=' that we can find.
+    const auto args = std::span<char*>(argv, size_t(argc));
+    const auto minValidLength = parmName.size() + 2;
 
-    for (int i = 0; i < argc; i++)
-    {
-        if (strncmp(argv[i], pkParmName, kParmLen) == 0)
-        {
-            // Found the parameter. Make sure there is enough space in the
-            // string for the parameter value before returning it.
-            if (strlen(argv[i]) >= kParmLen + 2 &&
-                argv[i][kParmLen] == '=')
-            {
-                return &argv[i][kParmLen + 1];
-            }
-        }
-    }
+    // Find our parameter
+    const auto strIter = std::ranges::find_if(args, [&parmName](std::string_view str) { return str.contains(parmName); });
+    if (strIter == args.end())
+        return nullptr;
 
-    // Couldn't find the parameter.
-    return nullptr;
+    // See if we can extract the value
+    const auto str = std::string_view(*strIter);
+    if (str.size() < minValidLength)
+        return nullptr;
+
+    const auto valueIdx = str.find('=');
+    if (valueIdx == std::string_view::npos)
+        return nullptr;
+
+    return &str[valueIdx + 1];
 }
 
 /** Checks for the existence of a token in the commandline stream */
 static bool ParseToken(std::string_view token, int argc, char* argv[])
 {
     return std::ranges::contains(argv, argv + argc, token);
+}
+
+static std::string_view ValidateUsageString()
+{
+    return "Usage: ValidateCooker -type=<ResourceType> [-allowdump] [-project=<Project>]";
 }
 
 /** Check commandline input to see if the user is running a test */
@@ -52,17 +62,35 @@ bool RunTests(int argc, char* argv[])
     {
         // Fetch parameters
         const char* pkType = ParseParameter("-type", argc, argv);
-        EResourceType Type = TEnumReflection<EResourceType>::ConvertStringToValue(pkType);
-        bool AllowDump = ParseToken("-allowdump", argc, argv);
+        if (!pkType)
+        {
+            GetUIRelay()->ShowMessageBox("Error", fmt::format("Missing or invalid -type option\n\n{}", ValidateUsageString()));
+            return true;
+        }
 
+        const auto Type = TEnumReflection<EResourceType>::ConvertStringToValue(pkType);
+        const bool AllowDump = ParseToken("-allowdump", argc, argv);
         if (Type == EResourceType::Invalid)
         {
-            GetUIRelay()->ShowMessageBox("ValidateCooker", "Usage: ValidateCooker -type=<ResourceType> [-allowdump] [-project=<Project>]");
+            GetUIRelay()->ShowMessageBox("ValidateCooker", fmt::format("Invalid -type value: Non existing resource type\n\n{}", ValidateUsageString()));
+            return true;
         }
-        else if (GetUIRelay()->OpenProject(ParseParameter("-project", argc, argv)))
+
+        const char* projectPath = ParseParameter("-project", argc, argv);
+        if (!projectPath)
         {
-            ValidateCooker(Type, AllowDump);
+            GetUIRelay()->ShowMessageBox("Error", fmt::format("Missing or invalid -project path argument\n\n{}", ValidateUsageString()));
+            return true;
         }
+
+        const auto opened = GetUIRelay()->OpenProject(projectPath);
+        if (!opened)
+        {
+            GetUIRelay()->ShowMessageBox("Error", fmt::format("Failed to open project at path: {}", projectPath));
+            return true;
+        }
+
+        ValidateCooker(Type, AllowDump);
         return true;
     }
 
