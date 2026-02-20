@@ -17,6 +17,7 @@ class CBoolProperty;
 class CCollisionMeshGroup;
 class CGameTemplate;
 class CResource;
+class CResourceStore;
 class CScriptObject;
 class CStringProperty;
 class CStructProperty;
@@ -150,8 +151,9 @@ public:
     // Property Fetching
     EVolumeShape VolumeShape(CScriptObject *pObj);
     float VolumeScale(CScriptObject *pObj);
-    CResource* FindDisplayAsset(void* pPropertyData, uint32_t& rOutCharIndex, uint32_t& rOutAnimIndex, bool& rOutIsInGame);
-    CCollisionMeshGroup* FindCollision(void* pPropertyData);
+    CResource* FindDisplayAsset(CResourceStore* resourceStore, void* pPropertyData, uint32_t& rOutCharIndex,
+                                uint32_t& rOutAnimIndex, bool& rOutIsInGame);
+    CCollisionMeshGroup* FindCollision(CResourceStore* resourceStore, void* pPropertyData);
 
     // Accessors
     CGameTemplate* GameTemplate() const              { return mpGame; }

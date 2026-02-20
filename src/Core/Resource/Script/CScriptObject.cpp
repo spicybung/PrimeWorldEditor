@@ -75,12 +75,13 @@ void CScriptObject::CopyProperties(CScriptObject* pObject)
 
 void CScriptObject::EvaluateDisplayAsset()
 {
-    mpDisplayAsset = mpTemplate->FindDisplayAsset(PropertyData(), mActiveCharIndex, mActiveAnimIndex, mHasInGameModel);
+    mpDisplayAsset = mpTemplate->FindDisplayAsset(mpArea->Entry()->ResourceStore(), PropertyData(), mActiveCharIndex,
+                                                  mActiveAnimIndex, mHasInGameModel);
 }
 
 void CScriptObject::EvaluateCollisionModel()
 {
-    mpCollision = mpTemplate->FindCollision(PropertyData());
+    mpCollision = mpTemplate->FindCollision(mpArea->Entry()->ResourceStore(), PropertyData());
 }
 
 void CScriptObject::EvaluateVolume()

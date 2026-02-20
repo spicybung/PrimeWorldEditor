@@ -186,7 +186,8 @@ int CScriptTemplate::CheckVolumeConditions(CScriptObject *pObj, bool LogErrors)
     return -1;
 }
 
-CResource* CScriptTemplate::FindDisplayAsset(void* pPropertyData, uint32_t& rOutCharIndex, uint32_t& rOutAnimIndex, bool& rOutIsInGame)
+CResource* CScriptTemplate::FindDisplayAsset(CResourceStore* resourceStore, void* pPropertyData, uint32_t& rOutCharIndex,
+                                             uint32_t& rOutAnimIndex, bool& rOutIsInGame)
 {
     rOutCharIndex = UINT32_MAX;
     rOutAnimIndex = UINT32_MAX;
@@ -226,7 +227,7 @@ CResource* CScriptTemplate::FindDisplayAsset(void* pPropertyData, uint32_t& rOut
                 ASSERT(pProp->Type() == EPropertyType::Asset);
                 const auto* pAsset = TPropCast<CAssetProperty>(pProp);
                 const auto& ID = pAsset->ValueRef(pPropertyData);
-                if (CResourceEntry* pEntry = gpResourceStore->FindEntry(ID))
+                if (CResourceEntry* pEntry = resourceStore->FindEntry(ID))
                     pRes = pEntry->Load();
             }
         }
@@ -243,7 +244,7 @@ CResource* CScriptTemplate::FindDisplayAsset(void* pPropertyData, uint32_t& rOut
     return nullptr;
 }
 
-CCollisionMeshGroup* CScriptTemplate::FindCollision(void* pPropertyData)
+CCollisionMeshGroup* CScriptTemplate::FindCollision(CResourceStore* resourceStore, void* pPropertyData)
 {
     for (const auto& asset : mAssets)
     {
@@ -255,7 +256,7 @@ CCollisionMeshGroup* CScriptTemplate::FindCollision(void* pPropertyData)
         // File
         if (asset.AssetSource == SEditorAsset::EAssetSource::File)
         {
-            pRes = gpResourceStore->LoadResource(asset.AssetLocation);
+            pRes = resourceStore->LoadResource(asset.AssetLocation);
         }
         else // Property
         {
@@ -264,7 +265,7 @@ CCollisionMeshGroup* CScriptTemplate::FindCollision(void* pPropertyData)
             if (pProp->Type() == EPropertyType::Asset)
             {
                 const auto* pAsset = TPropCast<CAssetProperty>(pProp);
-                pRes = gpResourceStore->LoadResource(pAsset->ValueRef(pPropertyData), EResourceType::DynamicCollision);
+                pRes = resourceStore->LoadResource(pAsset->ValueRef(pPropertyData), EResourceType::DynamicCollision);
             }
         }
 
