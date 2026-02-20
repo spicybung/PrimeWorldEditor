@@ -59,7 +59,7 @@ void CSplinePathExtra::AddWaypoints()
 
             if (pNode && pNode->Instance()->ObjectTypeID() == FOURCC('WAYP')) // Waypoint
             {
-                CWaypointExtra* pWaypoint = static_cast<CWaypointExtra*>(pNode->Extra());
+                auto* pWaypoint = static_cast<CWaypointExtra*>(pNode->Extra());
                 FindAttachedWaypoints(CheckedWaypoints, pWaypoint);
             }
         }
