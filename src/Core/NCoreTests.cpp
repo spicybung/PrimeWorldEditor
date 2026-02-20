@@ -3,6 +3,7 @@
 #include "Core/IUIRelay.h"
 #include "Core/GameProject/CGameProject.h"
 #include "Core/GameProject/CResourceEntry.h"
+#include "Core/Resource/EResType.h"
 #include "Core/Resource/Cooker/CResourceCooker.h"
 #include <Common/FileUtil.h>
 #include <Common/Log.h>
@@ -55,70 +56,17 @@ static std::string_view ValidateUsageString()
     return "Usage: ValidateCooker -type=<ResourceType> [-allowdump] [-project=<Project>]";
 }
 
-/** Check commandline input to see if the user is running a test */
-bool RunTests(int argc, char* argv[])
-{
-    if (ParseToken("ValidateCooker", argc, argv))
-    {
-        // Fetch parameters
-        const char* pkType = ParseParameter("-type", argc, argv);
-        if (!pkType)
-        {
-            GetUIRelay()->ShowMessageBox("Error", fmt::format("Missing or invalid -type option\n\n{}", ValidateUsageString()));
-            return true;
-        }
-
-        const auto Type = TEnumReflection<EResourceType>::ConvertStringToValue(pkType);
-        const bool AllowDump = ParseToken("-allowdump", argc, argv);
-        if (Type == EResourceType::Invalid)
-        {
-            GetUIRelay()->ShowMessageBox("ValidateCooker", fmt::format("Invalid -type value: Non existing resource type\n\n{}", ValidateUsageString()));
-            return true;
-        }
-
-        const char* projectPath = ParseParameter("-project", argc, argv);
-        if (!projectPath)
-        {
-            // Indicates that we'd like to manually select the project file.
-            projectPath = "";
-        }
-
-        const auto opened = GetUIRelay()->OpenProject(projectPath);
-        if (!opened)
-        {
-            GetUIRelay()->ShowMessageBox("Error", fmt::format("Failed to open project at path: {}", projectPath));
-            return true;
-        }
-
-        ValidateCooker(Type, AllowDump);
-        return true;
-    }
-
-    // No test being run.
-    return false;
-}
-
 /** Validate all cooker output for the given resource type matches the original asset data */
-bool ValidateCooker(EResourceType ResourceType, bool DumpInvalidFileContents)
+static bool ValidateCooker(EResourceType ResourceType, bool DumpInvalidFileContents, const CGameProject* project)
 {
     NLog::Debug("Validating output of {} cooker...",
                 TEnumReflection<EResourceType>::ConvertValueToString(ResourceType));
 
-    // There must be a project loaded
-    const CResourceStore* pStore = gpResourceStore;
-    const CGameProject* pProject = (pStore ? pStore->Project() : nullptr);
-
-    if (!pProject)
-    {
-        NLog::Error("Cooker unit test failed; no project loaded");
-        return false;
-    }
-
-    const TString ResourcesDir = pProject->ResourcesDir(false);
+    const TString ResourcesDir = project->ResourcesDir(false);
     uint32_t NumValid = 0, NumInvalid = 0;
 
     // Iterate through all resources
-    for (const auto& resource : pStore->MakeTypedResourceView(ResourceType))
+    for (const auto& resource : project->ResourceStore()->MakeTypedResourceView(ResourceType))
     {
         if (!resource->HasCookedVersion())
             continue;
@@ -229,6 +177,51 @@ bool ValidateCooker(EResourceType ResourceType, bool DumpInvalidFileContents)
                 NumValid + NumInvalid, NumValid, NumInvalid);
 
     return TestSuccess;
+}
+
+/** Check commandline input to see if the user is running a test */
+bool RunTests(int argc, char* argv[])
+{
+    if (ParseToken("ValidateCooker", argc, argv))
+    {
+        // Fetch parameters
+        const char* pkType = ParseParameter("-type", argc, argv);
+        if (!pkType)
+        {
+            GetUIRelay()->ShowMessageBox("Error", fmt::format("Missing or invalid -type option\n\n{}",
+                                         ValidateUsageString()));
+            return true;
+        }
+
+        const auto Type = TEnumReflection<EResourceType>::ConvertStringToValue(pkType);
+        const bool AllowDump = ParseToken("-allowdump", argc, argv);
+        if (Type == EResourceType::Invalid)
+        {
+            GetUIRelay()->ShowMessageBox("ValidateCooker", fmt::format("Invalid -type value: Non existing resource type\n\n{}",
+                                         ValidateUsageString()));
+            return true;
+        }
+
+        const char* projectPath = ParseParameter("-project", argc, argv);
+        if (!projectPath)
+        {
+            // Indicates that we'd like to manually select the project file.
+            projectPath = "";
+        }
+
+        const auto [success, project] = GetUIRelay()->OpenProject(projectPath);
+        if (!success)
+        {
+            GetUIRelay()->ShowMessageBox("Error", fmt::format("Failed to open project at path: {}", projectPath));
+            return true;
+        }
+
+        ValidateCooker(Type, AllowDump, project);
+        return true;
+    }
+
+    // No test being run.
+    return false;
 }
 
 } // end namespace NCoreTests

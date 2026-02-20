@@ -45,12 +45,15 @@ public:
         return RetVal;
     }
 
-    bool OpenProject(const std::string& kPath = {}) override
+    OpenProjectResult OpenProject(const std::string& kPath = {}) override
     {
         bool RetVal;
         QMetaObject::invokeMethod(this, &CUIRelay::OpenProjectSlot, GetConnectionType(), qReturnArg(RetVal),
                                   TO_QSTRING(kPath));
-        return RetVal;
+        return {
+            .success = RetVal,
+            .project = gpEdApp->ActiveProject(),
+        };
     }
 
 private slots:
