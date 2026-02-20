@@ -19,8 +19,6 @@ struct SCollisionRenderSettings
     bool DrawBoundingHierarchy = false;
     bool TintWithSurfaceColor = true;
     bool TintUnwalkableTris = true;
-
-    SCollisionRenderSettings() = default;
 };
 
 struct SViewInfo
