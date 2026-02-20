@@ -89,13 +89,9 @@ private:
 class IMetaAnimation
 {
 public:
-    IMetaAnimation() = default;
     virtual ~IMetaAnimation() = default;
     virtual EMetaAnimType Type() const = 0;
     virtual void GetUniquePrimitives(std::set<CAnimPrimitive>& rPrimSet) const = 0;
-
-    // Static
-    static std::unique_ptr<IMetaAnimation> LoadFromStream(IInputStream& rInput, EGame Game);
 };
 
 // CMetaAnimPlay - plays an animation
