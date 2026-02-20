@@ -45,7 +45,7 @@ public:
     };
     EGameModeVisibility mGameModeVisibility{EGameModeVisibility::Untested};
 
-    explicit CScriptNode(CScene *pScene, uint32_t NodeID, CSceneNode *pParent = nullptr, CScriptObject *pObject = nullptr);
+    explicit CScriptNode(CScene *pScene, uint32_t NodeID, CSceneNode *pParent, CScriptObject *pInstance);
     ~CScriptNode() override;
 
     ENodeType NodeType() const override;
