@@ -315,8 +315,8 @@ void CScriptTemplate::RemoveObject(const CScriptObject *pObject)
 void CScriptTemplate::SortObjects()
 {
     // todo: make this function take layer names into account
-    mObjectList.sort([](CScriptObject *pA, CScriptObject *pB) -> bool {
-        return (pA->InstanceID() < pB->InstanceID());
+    mObjectList.sort([](const CScriptObject *pA, const CScriptObject *pB) {
+        return pA->InstanceID() < pB->InstanceID();
     });
 }
 
