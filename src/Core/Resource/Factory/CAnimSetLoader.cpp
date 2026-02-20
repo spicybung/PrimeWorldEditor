@@ -59,7 +59,7 @@ void CAnimSetLoader::LoadCorruptionCHAR(IInputStream& rCHAR)
     {
         pSet->mAnimations.push_back({
             .Name = rCHAR.ReadString(),
-            .pMetaAnim = gMetaAnimFactory.LoadFromStream(rCHAR, mGame),
+            .pMetaAnim = CMetaAnimFactory::LoadFromStream(rCHAR, mGame),
         });
     }
 
@@ -337,7 +337,7 @@ void CAnimSetLoader::LoadAnimationSet(IInputStream& rANCS)
     {
         pSet->mAnimations.push_back({
             .Name = rANCS.ReadString(),
-            .pMetaAnim = gMetaAnimFactory.LoadFromStream(rANCS, mGame),
+            .pMetaAnim = CMetaAnimFactory::LoadFromStream(rANCS, mGame),
         });
     }
 

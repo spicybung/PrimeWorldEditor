@@ -22,9 +22,8 @@ enum class EMetaAnimType
 class CMetaAnimFactory
 {
 public:
-    std::unique_ptr<class IMetaAnimation> LoadFromStream(IInputStream& rInput, EGame Game) const;
+    static std::unique_ptr<class IMetaAnimation> LoadFromStream(IInputStream& rInput, EGame Game);
 };
-extern CMetaAnimFactory gMetaAnimFactory;
 
 // Animation primitive class
 class CAnimPrimitive

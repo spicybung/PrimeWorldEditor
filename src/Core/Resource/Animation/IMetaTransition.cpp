@@ -33,7 +33,7 @@ std::unique_ptr<IMetaTransition> CMetaTransFactory::LoadFromStream(IInputStream&
 
 // ************ CMetaTransMetaAnim ************
 CMetaTransMetaAnim::CMetaTransMetaAnim(IInputStream& rInput, EGame Game)
-    : mpAnim{gMetaAnimFactory.LoadFromStream(rInput, Game)}
+    : mpAnim{CMetaAnimFactory::LoadFromStream(rInput, Game)}
 {
 }
 

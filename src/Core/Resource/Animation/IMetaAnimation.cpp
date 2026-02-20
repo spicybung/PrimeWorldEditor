@@ -3,9 +3,8 @@
 #include <Common/Log.h>
 
 // ************ CMetaAnimFactory ************
-CMetaAnimFactory gMetaAnimFactory;
 
-std::unique_ptr<IMetaAnimation> CMetaAnimFactory::LoadFromStream(IInputStream& rInput, EGame Game) const
+std::unique_ptr<IMetaAnimation> CMetaAnimFactory::LoadFromStream(IInputStream& rInput, EGame Game)
 {
     const auto Type = static_cast<EMetaAnimType>(rInput.ReadU32());
 
@@ -59,8 +58,8 @@ CMetaAnimBlend::CMetaAnimBlend(EMetaAnimType Type, IInputStream& rInput, EGame G
 {
     ASSERT(Type == EMetaAnimType::Blend || Type == EMetaAnimType::PhaseBlend);
     mType = Type;
-    mpMetaAnimA = gMetaAnimFactory.LoadFromStream(rInput, Game);
-    mpMetaAnimB = gMetaAnimFactory.LoadFromStream(rInput, Game);
+    mpMetaAnimA = CMetaAnimFactory::LoadFromStream(rInput, Game);
+    mpMetaAnimB = CMetaAnimFactory::LoadFromStream(rInput, Game);
     mBlend = rInput.ReadF32();
     mUnknown = rInput.ReadBool();
 }
@@ -87,7 +86,7 @@ CMetaAnimRandom::CMetaAnimRandom(IInputStream& rInput, EGame Game)
     for (uint32_t iAnim = 0; iAnim < NumPairs; iAnim++)
     {
         SAnimProbabilityPair Pair;
-        Pair.pAnim = gMetaAnimFactory.LoadFromStream(rInput, Game);
+        Pair.pAnim = CMetaAnimFactory::LoadFromStream(rInput, Game);
         Pair.Probability = rInput.ReadU32();
         mProbabilityPairs.push_back(std::move(Pair));
     }
@@ -114,7 +113,7 @@ CMetaAnimSequence::CMetaAnimSequence(IInputStream& rInput, EGame Game)
 
     for (uint32_t iAnim = 0; iAnim < NumAnims; iAnim++)
     {
-        mAnimations.push_back(gMetaAnimFactory.LoadFromStream(rInput, Game));
+        mAnimations.push_back(CMetaAnimFactory::LoadFromStream(rInput, Game));
     }
 }
 
