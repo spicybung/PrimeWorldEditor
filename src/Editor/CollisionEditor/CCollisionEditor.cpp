@@ -11,13 +11,12 @@
 CCollisionEditor::CCollisionEditor(CCollisionMeshGroup* pCollisionMesh, QWidget* pParent)
     : IEditor(pParent)
     , mpUI(std::make_unique<Ui::CCollisionEditor>())
+    , mpCollisionMesh(pCollisionMesh)
+    , mpScene(std::make_unique<CScene>())
+    , mpCollisionNode(std::make_unique<CCollisionNode>(mpScene.get(), -1))
 {
     mpUI->setupUi(this);
 
-    mpCollisionMesh = pCollisionMesh;
-
-    mpScene = std::make_unique<CScene>();
-    mpCollisionNode = std::make_unique<CCollisionNode>(mpScene.get(), -1);
     mpCollisionNode->SetCollision(mpCollisionMesh);
     mpUI->Viewport->SetNode(mpCollisionNode.get());
 
@@ -81,7 +80,7 @@ void CCollisionEditor::OnGridToggled(bool Enabled)
 void CCollisionEditor::OnOrbitToggled(bool Enabled)
 {
     CCamera& Camera = mpUI->Viewport->Camera();
-    Camera.SetMoveMode( Enabled ? ECameraMoveMode::Orbit : ECameraMoveMode::Free );
+    Camera.SetMoveMode(Enabled ? ECameraMoveMode::Orbit : ECameraMoveMode::Free);
 }
 
 void CCollisionEditor::OnOBBTreeDepthChanged(int NewValue)
