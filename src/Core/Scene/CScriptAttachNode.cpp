@@ -7,6 +7,7 @@
 #include "Core/Resource/Model/SSurface.h"
 #include "Core/Resource/Script/CScriptObject.h"
 #include "Core/Resource/Script/Property/IProperty.h"
+#include "Core/Scene/CScene.h"
 #include "Core/Scene/CScriptNode.h"
 #include <Common/Macros.h>
 
@@ -35,7 +36,7 @@ void CScriptAttachNode::AttachPropertyModified()
         return;
 
     if (mAttachAssetRef.IsValid())
-        mpAttachAsset = gpResourceStore->LoadResource<CModel>(mAttachAssetRef.Get());
+        mpAttachAsset = Scene()->ActiveArea()->Entry()->ResourceStore()->LoadResource<CModel>(mAttachAssetRef.Get());
     else if (mAttachAnimSetRef.IsValid())
         mpAttachAsset = mAttachAnimSetRef.Get().AnimSet();
 
