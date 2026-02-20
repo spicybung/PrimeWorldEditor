@@ -11,6 +11,7 @@
 #include <Common/Math/MathUtil.h>
 
 #include <algorithm>
+#include <string_view>
 
 namespace NCoreTests
 {
@@ -39,18 +40,9 @@ static const char* ParseParameter(const char* pkParmName, int argc, char* argv[]
 }
 
 /** Checks for the existence of a token in the commandline stream */
-static bool ParseToken(const char* pkToken, int argc, char* argv[])
+static bool ParseToken(std::string_view token, int argc, char* argv[])
 {
-    for (int i = 0; i < argc; i++)
-    {
-        if (strcmp(argv[i], pkToken) == 0)
-        {
-            return true;
-        }
-    }
-
-    // Couldn't find the token.
-    return false;
+    return std::ranges::contains(argv, argv + argc, token);
 }
 
 /** Check commandline input to see if the user is running a test */
