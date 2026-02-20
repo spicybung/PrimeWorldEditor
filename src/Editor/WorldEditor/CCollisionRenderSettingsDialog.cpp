@@ -35,8 +35,8 @@ CCollisionRenderSettingsDialog::~CCollisionRenderSettingsDialog() = default;
 
 void CCollisionRenderSettingsDialog::SetupWidgets()
 {
-    SCollisionRenderSettings& rSettings = mpEditor->Viewport()->CollisionRenderSettings();
-    EGame Game = mpEditor->CurrentGame();
+    const auto& rSettings = mpEditor->Viewport()->CollisionRenderSettings();
+    const auto Game = mpEditor->CurrentGame();
 
     // Set widgets to match current render setting values
     auto* hexValidator = new QRegularExpressionValidator(QRegularExpression(QStringLiteral("^(?:0[xX])?([0-9]|[A-F]|[a-f]){1,16}$")));
@@ -60,17 +60,17 @@ void CCollisionRenderSettingsDialog::SetupWidgets()
     mpUi->HideAiBlockCheckBox->setChecked(rSettings.HideMaterial.HasFlag(eCF_AiBlock));
 
     // Toggle visibility of game-exclusive widgets
-    mpUi->SurfaceTypeCheckBox->setHidden( Game == EGame::DKCReturns );
-    mpUi->StandableTrisCheckBox->setHidden( Game == EGame::DKCReturns );
-    mpUi->AreaBoundsCheckBox->setHidden( Game == EGame::DKCReturns );
-    mpUi->BackfacesCheckBox->setHidden( Game == EGame::DKCReturns );
+    mpUi->SurfaceTypeCheckBox->setHidden(Game == EGame::DKCReturns);
+    mpUi->StandableTrisCheckBox->setHidden(Game == EGame::DKCReturns);
+    mpUi->AreaBoundsCheckBox->setHidden(Game == EGame::DKCReturns);
+    mpUi->BackfacesCheckBox->setHidden(Game == EGame::DKCReturns);
 
-    mpUi->VisibilityGroupBox->setHidden( Game == EGame::DKCReturns );
-    mpUi->HideShootThruCheckBox->setHidden( Game == EGame::DKCReturns );
-    mpUi->HideCameraThruCheckBox->setHidden( Game == EGame::DKCReturns );
-    mpUi->HideScanThruCheckBox->setHidden( Game == EGame::DKCReturns );
-    mpUi->HideAiWalkThruCheckBox->setHidden( Game == EGame::DKCReturns );
-    mpUi->HideAiBlockCheckBox->setHidden( Game < EGame::EchoesDemo || Game == EGame::DKCReturns );
+    mpUi->VisibilityGroupBox->setHidden(Game == EGame::DKCReturns);
+    mpUi->HideShootThruCheckBox->setHidden(Game == EGame::DKCReturns);
+    mpUi->HideCameraThruCheckBox->setHidden(Game == EGame::DKCReturns);
+    mpUi->HideScanThruCheckBox->setHidden(Game == EGame::DKCReturns);
+    mpUi->HideAiWalkThruCheckBox->setHidden(Game == EGame::DKCReturns);
+    mpUi->HideAiBlockCheckBox->setHidden(Game < EGame::EchoesDemo || Game == EGame::DKCReturns);
 }
 
 void CCollisionRenderSettingsDialog::OnHideMaskChanged(const QString& NewMask)
