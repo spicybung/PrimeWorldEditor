@@ -351,11 +351,11 @@ void CAnimSetLoader::LoadAnimationSet(IInputStream& rANCS)
             .ID = rANCS.ReadU32(),
             .AnimIdA = rANCS.ReadU32(),
             .AnimIdB = rANCS.ReadU32(),
-            .pMetaTrans = gMetaTransFactory.LoadFromStream(rANCS, mGame),
+            .pMetaTrans = CMetaTransFactory::LoadFromStream(rANCS, mGame),
         });
     }
 
-    pSet->mpDefaultTransition = gMetaTransFactory.LoadFromStream(rANCS, mGame);
+    pSet->mpDefaultTransition = CMetaTransFactory::LoadFromStream(rANCS, mGame);
 
     // Additive Animations
     const auto NumAdditive = rANCS.ReadU32();
@@ -383,7 +383,7 @@ void CAnimSetLoader::LoadAnimationSet(IInputStream& rANCS)
         {
             pSet->mHalfTransitions.push_back({
                 .AnimID = rANCS.ReadU32(),
-                .pMetaTrans = gMetaTransFactory.LoadFromStream(rANCS, mGame),
+                .pMetaTrans = CMetaTransFactory::LoadFromStream(rANCS, mGame),
             });
         }
     }
@@ -686,7 +686,7 @@ std::unique_ptr<CSourceAnimData> CAnimSetLoader::LoadSAND(IInputStream& rSAND, C
         pData->mTransitions.push_back({
             .AnimA = CAssetID(rSAND, EIDLength::k64Bit),
             .AnimB = CAssetID(rSAND, EIDLength::k64Bit),
-            .pTransition = gMetaTransFactory.LoadFromStream(rSAND, pEntry->Game()),
+            .pTransition = CMetaTransFactory::LoadFromStream(rSAND, pEntry->Game()),
         });
     }
 
@@ -701,12 +701,12 @@ std::unique_ptr<CSourceAnimData> CAnimSetLoader::LoadSAND(IInputStream& rSAND, C
 
         pData->mHalfTransitions.push_back({
             .Anim = CAssetID(rSAND, EIDLength::k64Bit),
-            .pTransition = gMetaTransFactory.LoadFromStream(rSAND, pEntry->Game()),
+            .pTransition = CMetaTransFactory::LoadFromStream(rSAND, pEntry->Game()),
         });
     }
 
     // Default Transition
-    pData->mpDefaultTransition = gMetaTransFactory.LoadFromStream(rSAND, pEntry->Game());
+    pData->mpDefaultTransition = CMetaTransFactory::LoadFromStream(rSAND, pEntry->Game());
 
     return pData;
 }

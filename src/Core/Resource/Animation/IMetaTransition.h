@@ -23,15 +23,13 @@ enum class EMetaTransType
 class CMetaTransFactory
 {
 public:
-    std::unique_ptr<IMetaTransition> LoadFromStream(IInputStream& rInput, EGame Game) const;
+    static std::unique_ptr<IMetaTransition> LoadFromStream(IInputStream& rInput, EGame Game);
 };
-extern CMetaTransFactory gMetaTransFactory;
 
 // Base MetaTransition interface
 class IMetaTransition
 {
 public:
-    IMetaTransition() = default;
     virtual ~IMetaTransition() = default;
     virtual EMetaTransType Type() const = 0;
     virtual void GetUniquePrimitives(std::set<CAnimPrimitive>& rPrimSet) const = 0;

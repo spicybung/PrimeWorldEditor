@@ -4,9 +4,8 @@
 #include <Common/Log.h>
 
 // ************ CMetaTransFactory ************
-CMetaTransFactory gMetaTransFactory;
 
-std::unique_ptr<IMetaTransition> CMetaTransFactory::LoadFromStream(IInputStream& rInput, EGame Game) const
+std::unique_ptr<IMetaTransition> CMetaTransFactory::LoadFromStream(IInputStream& rInput, EGame Game)
 {
     const auto Type = static_cast<EMetaTransType>(rInput.ReadU32());
 
