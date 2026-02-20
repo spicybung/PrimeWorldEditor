@@ -32,7 +32,7 @@ public:
     explicit WVectorEditor(const CVector3f& rkValue, QWidget *pParent = nullptr);
     ~WVectorEditor() override;
 
-    CVector3f Value() const;
+    const CVector3f& Value() const;
     void SetOrientation(Qt::Orientation Orientation);
     void SetValue(const CVector3f& rkValue);
     void SetDefaultValue(double Value);
