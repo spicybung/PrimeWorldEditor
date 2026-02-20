@@ -284,7 +284,7 @@ void CPropertyDelegate::setEditorData(QWidget *pEditor, const QModelIndex &rkInd
                     auto* pColorPicker = static_cast<WColorPicker*>(pEditor);
                     const auto* pColor = TPropCast<CColorProperty>(pProp);
 
-                    const CColor Color = pColor->Value(pData);
+                    const auto& Color = pColor->ValueRef(pData);
                     pColorPicker->SetColor(TO_QCOLOR(Color));
                     break;
                 }
@@ -296,7 +296,7 @@ void CPropertyDelegate::setEditorData(QWidget *pEditor, const QModelIndex &rkInd
                     if (!pLineEdit->hasFocus())
                     {
                         const auto* pString = TPropCast<CStringProperty>(pProp);
-                        pLineEdit->setText(TO_QSTRING(pString->Value(pData)));
+                        pLineEdit->setText(TO_QSTRING(pString->ValueRef(pData)));
                     }
 
                     break;
@@ -315,7 +315,7 @@ void CPropertyDelegate::setEditorData(QWidget *pEditor, const QModelIndex &rkInd
                 {
                     auto* pSelector = static_cast<CResourceSelector*>(pEditor);
                     const auto* pAsset = TPropCast<CAssetProperty>(pProp);
-                    pSelector->SetResource(pAsset->Value(pData));
+                    pSelector->SetResource(pAsset->ValueRef(pData));
                     break;
                 }
 
@@ -564,11 +564,11 @@ bool CPropertyDelegate::eventFilter(QObject *pObject, QEvent *pEvent)
 // Character properties have separate functions because they're somewhat complicated - they have different layouts in different games
 QWidget* CPropertyDelegate::CreateCharacterEditor(QWidget *pParent, const QModelIndex& rkIndex) const
 {
-    CAnimationSetProperty* pAnimSetProp = TPropCast<CAnimationSetProperty>(mpModel->PropertyForIndex(rkIndex, true));
-    CAnimationParameters Params = pAnimSetProp->Value(mpModel->DataPointerForIndex(rkIndex));
+    const auto* pAnimSetProp = TPropCast<CAnimationSetProperty>(mpModel->PropertyForIndex(rkIndex, true));
+    const auto& Params = pAnimSetProp->ValueRef(mpModel->DataPointerForIndex(rkIndex));
 
     // Determine property type
-    EPropertyType Type = DetermineCharacterPropType(Params.Version(), rkIndex);
+    const auto Type = DetermineCharacterPropType(Params.Version(), rkIndex);
 
     // Create widget
     if (Type == EPropertyType::Asset)
@@ -588,7 +588,7 @@ QWidget* CPropertyDelegate::CreateCharacterEditor(QWidget *pParent, const QModel
     if (Type == EPropertyType::Enum || Type == EPropertyType::Choice)
     {
         auto* pComboBox = new QComboBox(pParent);
-        auto* pAnimSet = Params.AnimSet();
+        const auto* pAnimSet = Params.AnimSet();
 
         if (pAnimSet)
         {
@@ -612,9 +612,9 @@ QWidget* CPropertyDelegate::CreateCharacterEditor(QWidget *pParent, const QModel
 
 void CPropertyDelegate::SetCharacterEditorData(QWidget *pEditor, const QModelIndex& rkIndex) const
 {
-    CAnimationSetProperty* pAnimSetProp = TPropCast<CAnimationSetProperty>(mpModel->PropertyForIndex(rkIndex, true));
-    CAnimationParameters Params = pAnimSetProp->Value(mpModel->DataPointerForIndex(rkIndex));
-    EPropertyType Type = DetermineCharacterPropType(Params.Version(), rkIndex);
+    const auto* pAnimSetProp = TPropCast<CAnimationSetProperty>(mpModel->PropertyForIndex(rkIndex, true));
+    const auto& Params = pAnimSetProp->ValueRef(mpModel->DataPointerForIndex(rkIndex));
+    const auto Type = DetermineCharacterPropType(Params.Version(), rkIndex);
 
     if (Type == EPropertyType::Asset)
     {
@@ -634,9 +634,9 @@ void CPropertyDelegate::SetCharacterEditorData(QWidget *pEditor, const QModelInd
 
 void CPropertyDelegate::SetCharacterModelData(QWidget *pEditor, const QModelIndex& rkIndex) const
 {
-    CAnimationSetProperty* pAnimSetProp = TPropCast<CAnimationSetProperty>(mpModel->PropertyForIndex(rkIndex, true));
-    CAnimationParameters Params = pAnimSetProp->Value(mpModel->DataPointerForIndex(rkIndex));
-    EPropertyType Type = DetermineCharacterPropType(Params.Version(), rkIndex);
+    auto* pAnimSetProp = TPropCast<CAnimationSetProperty>(mpModel->PropertyForIndex(rkIndex, true));
+    auto Params = pAnimSetProp->Value(mpModel->DataPointerForIndex(rkIndex));
+    const auto Type = DetermineCharacterPropType(Params.Version(), rkIndex);
 
     if (Type == EPropertyType::Asset)
     {

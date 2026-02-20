@@ -210,8 +210,8 @@ CResource* CScriptTemplate::FindDisplayAsset(void* pPropertyData, uint32_t& rOut
 
             if (asset.AssetType == SEditorAsset::EAssetType::AnimParams && pProp->Type() == EPropertyType::AnimationSet)
             {
-                auto* pAnimSet = TPropCast<CAnimationSetProperty>(pProp);
-                const CAnimationParameters Params = pAnimSet->Value(pPropertyData);
+                const auto* pAnimSet = TPropCast<CAnimationSetProperty>(pProp);
+                const auto& Params = pAnimSet->ValueRef(pPropertyData);
                 pRes = Params.AnimSet();
 
                 if (pRes != nullptr)
@@ -221,12 +221,11 @@ CResource* CScriptTemplate::FindDisplayAsset(void* pPropertyData, uint32_t& rOut
                     rOutAnimIndex = Params.AnimIndex();
                 }
             }
-
             else
             {
                 ASSERT(pProp->Type() == EPropertyType::Asset);
-                auto* pAsset = TPropCast<CAssetProperty>(pProp);
-                const CAssetID ID = pAsset->Value(pPropertyData);
+                const auto* pAsset = TPropCast<CAssetProperty>(pProp);
+                const auto& ID = pAsset->ValueRef(pPropertyData);
                 if (CResourceEntry* pEntry = gpResourceStore->FindEntry(ID))
                     pRes = pEntry->Load();
             }
@@ -264,8 +263,8 @@ CCollisionMeshGroup* CScriptTemplate::FindCollision(void* pPropertyData)
 
             if (pProp->Type() == EPropertyType::Asset)
             {
-                auto* pAsset = TPropCast<CAssetProperty>(pProp);
-                pRes = gpResourceStore->LoadResource( pAsset->Value(pPropertyData), EResourceType::DynamicCollision );
+                const auto* pAsset = TPropCast<CAssetProperty>(pProp);
+                pRes = gpResourceStore->LoadResource(pAsset->ValueRef(pPropertyData), EResourceType::DynamicCollision);
             }
         }
 

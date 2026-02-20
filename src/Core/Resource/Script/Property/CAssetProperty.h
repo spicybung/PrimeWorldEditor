@@ -14,7 +14,7 @@ protected:
     explicit CAssetProperty(EGame Game)
         : TSerializeableTypedProperty(Game)
     {
-        mDefaultValue = CAssetID::InvalidID( mGame );
+        mDefaultValue = CAssetID::InvalidID(mGame);
     }
 
 public:
@@ -45,7 +45,7 @@ public:
 
     TString ValueAsString(const void* pData) const override
     {
-        return Value(pData).ToString();
+        return ValueRef(pData).ToString();
     }
 
     CAssetID GetSerializationDefaultValue() override

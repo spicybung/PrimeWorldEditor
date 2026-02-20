@@ -34,11 +34,10 @@ void CScriptCooker::WriteProperty(IOutputStream& rOut, IProperty* pProperty, voi
 
     switch (pProperty->Type())
     {
-
     case EPropertyType::Bool:
     {
         auto* pBool = TPropCast<CBoolProperty>(pProperty);
-        rOut.WriteBool( pBool->Value(pData) );
+        rOut.WriteBool(pBool->Value(pData));
         break;
     }
 
@@ -94,7 +93,7 @@ void CScriptCooker::WriteProperty(IOutputStream& rOut, IProperty* pProperty, voi
     case EPropertyType::String:
     {
         auto* pString = TPropCast<CStringProperty>(pProperty);
-        rOut.WriteString(pString->Value(pData));
+        rOut.WriteString(pString->ValueRef(pData));
         break;
     }
 
@@ -148,12 +147,12 @@ void CScriptCooker::WriteProperty(IOutputStream& rOut, IProperty* pProperty, voi
 
     case EPropertyType::Spline:
     {
-        auto* pSpline = TPropCast<CSplineProperty>(pProperty);
-        std::vector<char>& rBuffer = pSpline->ValueRef(pData);
+        const auto* pSpline = TPropCast<CSplineProperty>(pProperty);
+        const std::vector<char>& rBuffer = pSpline->ValueRef(pData);
 
         if (!rBuffer.empty())
         {
-            rOut.WriteBytes( rBuffer.data(), rBuffer.size() );
+            rOut.WriteBytes(rBuffer.data(), rBuffer.size());
         }
         else
         {

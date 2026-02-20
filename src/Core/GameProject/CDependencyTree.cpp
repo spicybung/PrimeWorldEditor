@@ -48,8 +48,8 @@ void IDependencyNode::ParseProperties(CResourceEntry* pParentEntry, CStructPrope
 
             if (SoundID != UINT32_MAX)
             {
-                CGameProject* pProj = pParentEntry->Project();
-                SSoundInfo Info = pProj->AudioManager()->GetSoundInfo(SoundID);
+                const CGameProject* pProj = pParentEntry->Project();
+                const SSoundInfo Info = pProj->AudioManager()->GetSoundInfo(SoundID);
 
                 if (Info.pAudioGroup)
                 {
@@ -59,7 +59,7 @@ void IDependencyNode::ParseProperties(CResourceEntry* pParentEntry, CStructPrope
         }
         else if (Type == EPropertyType::Asset)
         {
-            CAssetID ID = TPropCast<CAssetProperty>(pProp)->Value(pData);
+            const auto& ID = TPropCast<CAssetProperty>(pProp)->ValueRef(pData);
 
             if (ID.IsValid())
             {
@@ -68,8 +68,8 @@ void IDependencyNode::ParseProperties(CResourceEntry* pParentEntry, CStructPrope
         }
         else if (Type == EPropertyType::AnimationSet)
         {
-            const auto Params = TPropCast<CAnimationSetProperty>(pProp)->Value(pData);
-            const CAssetID& ID = Params.ID();
+            const auto& Params = TPropCast<CAnimationSetProperty>(pProp)->ValueRef(pData);
+            const auto& ID = Params.ID();
 
             if (ID.IsValid())
             {
