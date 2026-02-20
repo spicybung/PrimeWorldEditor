@@ -25,11 +25,11 @@ struct SCollisionRenderSettings
 
 struct SViewInfo
 {
-    class CScene *pScene;
-    class CRenderer *pRenderer;
-    class CCamera *pCamera;
+    class CScene* pScene{};
+    class CRenderer* pRenderer{};
+    class CCamera* pCamera{};
 
-    bool GameMode;
+    bool GameMode = false;
     FShowFlags ShowFlags;
     SCollisionRenderSettings CollisionSettings;
     CFrustumPlanes ViewFrustum;
