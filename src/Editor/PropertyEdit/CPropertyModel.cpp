@@ -218,8 +218,8 @@ int CPropertyModel::rowCount(const QModelIndex& rkParent) const
 
     case EPropertyType::AnimationSet:
     {
-        void* pData = DataPointerForIndex(rkParent);
-        const CAnimationParameters Params = TPropCast<CAnimationSetProperty>(pProp)->Value(pData);
+        const void* pData = DataPointerForIndex(rkParent);
+        const auto& Params = TPropCast<CAnimationSetProperty>(pProp)->ValueRef(pData);
 
         if (Params.Version() <= EGame::Echoes) return 3;
         if (Params.Version() <= EGame::Corruption) return 2;
@@ -256,7 +256,7 @@ QVariant CPropertyModel::data(const QModelIndex& rkIndex, int Role) const
 
             if (Type == EPropertyType::Flags)
             {
-                CFlagsProperty* pFlags = TPropCast<CFlagsProperty>(pProp);
+                auto* pFlags = TPropCast<CFlagsProperty>(pProp);
 
                 if (rkIndex.column() == 0)
                     return TO_QSTRING(pFlags->FlagName(rkIndex.row()));
@@ -271,9 +271,9 @@ QVariant CPropertyModel::data(const QModelIndex& rkIndex, int Role) const
             }
             else if (Type == EPropertyType::AnimationSet)
             {
-                void* pData = DataPointerForIndex(rkIndex);
-                const CAnimationSetProperty* pAnimSet = TPropCast<CAnimationSetProperty>(pProp);
-                const CAnimationParameters Params = pAnimSet->Value(pData);
+                const void* pData = DataPointerForIndex(rkIndex);
+                const auto* pAnimSet = TPropCast<CAnimationSetProperty>(pProp);
+                const auto& Params = pAnimSet->ValueRef(pData);
 
                 // There are three different layouts for this property - one for MP1/2, one for MP3, and one for DKCR
                 if (Params.Version() <= EGame::Echoes)
@@ -337,7 +337,7 @@ QVariant CPropertyModel::data(const QModelIndex& rkIndex, int Role) const
 
             if (rkIndex.column() == 1)
             {
-                void* pData = DataPointerForIndex(rkIndex);
+                const void* pData = DataPointerForIndex(rkIndex);
                 const EPropertyType Type = GetEffectiveFieldType(pProp);
 
                 switch (Type)
@@ -345,14 +345,14 @@ QVariant CPropertyModel::data(const QModelIndex& rkIndex, int Role) const
                 // Enclose vector property text in parentheses
                 case EPropertyType::Vector:
                 {
-                    const CVector3f Value = TPropCast<CVectorProperty>(pProp)->Value(pData);
+                    const auto& Value = TPropCast<CVectorProperty>(pProp)->ValueRef(pData);
                     return TO_QSTRING('(' + Value.ToString() + ')');
                 }
 
                 // Display the AGSC/sound name for sounds
                 case EPropertyType::Sound:
                 {
-                    const CSoundProperty* pSound = TPropCast<CSoundProperty>(pProp);
+                    const auto* pSound = TPropCast<CSoundProperty>(pProp);
                     const uint32_t SoundID = pSound->Value(pData);
                     if (SoundID == UINT32_MAX)
                         return tr("[None]");
@@ -376,14 +376,14 @@ QVariant CPropertyModel::data(const QModelIndex& rkIndex, int Role) const
 
                 // Display character name for characters
                 case EPropertyType::AnimationSet:
-                    return TO_QSTRING(TPropCast<CAnimationSetProperty>(pProp)->Value(pData).GetCurrentCharacterName());
+                    return TO_QSTRING(TPropCast<CAnimationSetProperty>(pProp)->ValueRef(pData).GetCurrentCharacterName());
 
                 // Display enumerator name for enums (but only on ToolTipRole)
                 case EPropertyType::Choice:
                 case EPropertyType::Enum:
                     if (Role == Qt::ToolTipRole)
                     {
-                        const CEnumProperty* pEnum = TPropCast<CEnumProperty>(pProp);
+                        const auto* pEnum = TPropCast<CEnumProperty>(pProp);
                         const uint32_t ValueID = pEnum->Value(pData);
                         const uint32_t ValueIndex = pEnum->ValueIndex(ValueID);
                         return TO_QSTRING(pEnum->ValueName(ValueIndex));
