@@ -105,8 +105,8 @@ bool ValidateCooker(EResourceType ResourceType, bool DumpInvalidFileContents)
                 TEnumReflection<EResourceType>::ConvertValueToString(ResourceType));
 
     // There must be a project loaded
-    CResourceStore* pStore = gpResourceStore;
-    CGameProject* pProject = (pStore ? pStore->Project() : nullptr);
+    const CResourceStore* pStore = gpResourceStore;
+    const CGameProject* pProject = (pStore ? pStore->Project() : nullptr);
 
     if (!pProject)
     {
@@ -114,17 +114,17 @@ bool ValidateCooker(EResourceType ResourceType, bool DumpInvalidFileContents)
         return false;
     }
 
-    TString ResourcesDir = pProject->ResourcesDir(false);
+    const TString ResourcesDir = pProject->ResourcesDir(false);
     uint32_t NumValid = 0, NumInvalid = 0;
 
     // Iterate through all resources
-    for (const auto& It : pStore->MakeResourceView())
+    for (const auto& resource : pStore->MakeTypedResourceView(ResourceType))
     {
-        if (It->ResourceType() != ResourceType || !It->HasCookedVersion())
+        if (!resource->HasCookedVersion())
             continue;
 
         // Get original cooked data
-        TString CookedPath = It->CookedAssetPath(true);
+        const TString CookedPath = resource->CookedAssetPath(true);
         CFileInStream FileStream(ResourcesDir / CookedPath, std::endian::big);
 
         if (!FileStream.IsValid())
@@ -137,10 +137,10 @@ bool ValidateCooker(EResourceType ResourceType, bool DumpInvalidFileContents)
         // Generate new cooked data
         std::vector<char> NewData;
         CVectorOutStream MemoryStream(&NewData, std::endian::big);
-        CResourceCooker::CookResource(It.get(), MemoryStream);
+        CResourceCooker::CookResource(resource.get(), MemoryStream);
 
         // Start our comparison by making sure the sizes match up
-        const size_t kAlignment         = (It->Game() >= EGame::Corruption ? 64 : 32);
+        const size_t kAlignment         = (resource->Game() >= EGame::Corruption ? 64 : 32);
         const auto kAlignedOriginalSize = Math::Align(OriginalData.size(), kAlignment);
         const auto kAlignedNewSize      = Math::Align(NewData.size(), kAlignment);
         const char* pkInvalidReason     = "";
@@ -206,7 +206,7 @@ bool ValidateCooker(EResourceType ResourceType, bool DumpInvalidFileContents)
 
         if (DumpInvalidFileContents)
         {
-            TString DumpPath = "dump" / CookedPath;
+            const TString DumpPath = "dump" / CookedPath;
             FileUtil::MakeDirectory(DumpPath.GetFileDirectory());
 
             CFileOutStream DumpFile(DumpPath, std::endian::big);
@@ -223,7 +223,7 @@ bool ValidateCooker(EResourceType ResourceType, bool DumpInvalidFileContents)
     }
 
     // Test complete
-    bool TestSuccess = (NumInvalid == 0);
+    const bool TestSuccess = (NumInvalid == 0);
     NLog::Debug("Test {}; checked {} resources, {} passed, {} failed",
                 TestSuccess ? "SUCCEEDED" : "FAILED",
                 NumValid + NumInvalid, NumValid, NumInvalid);
