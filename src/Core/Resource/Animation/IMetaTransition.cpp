@@ -5,14 +5,14 @@
 
 // ************ CMetaTransFactory ************
 
-std::unique_ptr<IMetaTransition> CMetaTransFactory::LoadFromStream(IInputStream& rInput, EGame Game)
+std::unique_ptr<IMetaTransition> CMetaTransFactory::LoadFromStream(CResourceStore* store, IInputStream& rInput, EGame Game)
 {
     const auto Type = static_cast<EMetaTransType>(rInput.ReadU32());
 
     switch (Type)
     {
     case EMetaTransType::MetaAnim:
-        return std::make_unique<CMetaTransMetaAnim>(rInput, Game);
+        return std::make_unique<CMetaTransMetaAnim>(store, rInput, Game);
 
     case EMetaTransType::Trans:
     case EMetaTransType::PhaseTrans:
@@ -31,8 +31,8 @@ std::unique_ptr<IMetaTransition> CMetaTransFactory::LoadFromStream(IInputStream&
 }
 
 // ************ CMetaTransMetaAnim ************
-CMetaTransMetaAnim::CMetaTransMetaAnim(IInputStream& rInput, EGame Game)
-    : mpAnim{CMetaAnimFactory::LoadFromStream(rInput, Game)}
+CMetaTransMetaAnim::CMetaTransMetaAnim(CResourceStore* store, IInputStream& rInput, EGame Game)
+    : mpAnim{CMetaAnimFactory::LoadFromStream(store, rInput, Game)}
 {
 }
 

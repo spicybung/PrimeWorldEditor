@@ -4,24 +4,24 @@
 
 // ************ CMetaAnimFactory ************
 
-std::unique_ptr<IMetaAnimation> CMetaAnimFactory::LoadFromStream(IInputStream& rInput, EGame Game)
+std::unique_ptr<IMetaAnimation> CMetaAnimFactory::LoadFromStream(CResourceStore* store, IInputStream& rInput, EGame Game)
 {
     const auto Type = static_cast<EMetaAnimType>(rInput.ReadU32());
 
     switch (Type)
     {
     case EMetaAnimType::Play:
-        return std::make_unique<CMetaAnimPlay>(rInput, Game);
+        return std::make_unique<CMetaAnimPlay>(store, rInput, Game);
 
     case EMetaAnimType::Blend:
     case EMetaAnimType::PhaseBlend:
-        return std::make_unique<CMetaAnimBlend>(Type, rInput, Game);
+        return std::make_unique<CMetaAnimBlend>(store, Type, rInput, Game);
 
     case EMetaAnimType::Random:
-        return std::make_unique<CMetaAnimRandom>(rInput, Game);
+        return std::make_unique<CMetaAnimRandom>(store, rInput, Game);
 
     case EMetaAnimType::Sequence:
-        return std::make_unique<CMetaAnimSequence>(rInput, Game);
+        return std::make_unique<CMetaAnimSequence>(store, rInput, Game);
 
     default:
         NLog::Error("Unrecognized meta-animation type: {}", static_cast<int>(Type));
@@ -36,9 +36,9 @@ CMetaAnimPlay::CMetaAnimPlay(const CAnimPrimitive& rkPrimitive, float time, CCha
 {
 }
 
-CMetaAnimPlay::CMetaAnimPlay(IInputStream& rInput, EGame Game)
+CMetaAnimPlay::CMetaAnimPlay(CResourceStore* store, IInputStream& rInput, EGame Game)
+    : mPrimitive(store, rInput, Game)
 {
-    mPrimitive = CAnimPrimitive(rInput, Game);
     mTime.SetTime(rInput.ReadF32());
     mTime.SetType(static_cast<CCharAnimTime::EType>(rInput.ReadU32()));
 }
@@ -54,12 +54,12 @@ void CMetaAnimPlay::GetUniquePrimitives(std::set<CAnimPrimitive>& rPrimSet) cons
 }
 
 // ************ CMetaAnimBlend ************
-CMetaAnimBlend::CMetaAnimBlend(EMetaAnimType Type, IInputStream& rInput, EGame Game)
+CMetaAnimBlend::CMetaAnimBlend(CResourceStore* store, EMetaAnimType Type, IInputStream& rInput, EGame Game)
 {
     ASSERT(Type == EMetaAnimType::Blend || Type == EMetaAnimType::PhaseBlend);
     mType = Type;
-    mpMetaAnimA = CMetaAnimFactory::LoadFromStream(rInput, Game);
-    mpMetaAnimB = CMetaAnimFactory::LoadFromStream(rInput, Game);
+    mpMetaAnimA = CMetaAnimFactory::LoadFromStream(store, rInput, Game);
+    mpMetaAnimB = CMetaAnimFactory::LoadFromStream(store, rInput, Game);
     mBlend = rInput.ReadF32();
     mUnknown = rInput.ReadBool();
 }
@@ -78,7 +78,7 @@ void CMetaAnimBlend::GetUniquePrimitives(std::set<CAnimPrimitive>& rPrimSet) con
 }
 
 // ************ CMetaAnimRandom ************
-CMetaAnimRandom::CMetaAnimRandom(IInputStream& rInput, EGame Game)
+CMetaAnimRandom::CMetaAnimRandom(CResourceStore* store, IInputStream& rInput, EGame Game)
 {
     const auto NumPairs = rInput.ReadU32();
     mProbabilityPairs.reserve(NumPairs);
@@ -86,7 +86,7 @@ CMetaAnimRandom::CMetaAnimRandom(IInputStream& rInput, EGame Game)
     for (uint32_t iAnim = 0; iAnim < NumPairs; iAnim++)
     {
         SAnimProbabilityPair Pair;
-        Pair.pAnim = CMetaAnimFactory::LoadFromStream(rInput, Game);
+        Pair.pAnim = CMetaAnimFactory::LoadFromStream(store, rInput, Game);
         Pair.Probability = rInput.ReadU32();
         mProbabilityPairs.push_back(std::move(Pair));
     }
@@ -106,14 +106,14 @@ void CMetaAnimRandom::GetUniquePrimitives(std::set<CAnimPrimitive>& rPrimSet) co
 }
 
 // ************ CMetaAnimSequence ************
-CMetaAnimSequence::CMetaAnimSequence(IInputStream& rInput, EGame Game)
+CMetaAnimSequence::CMetaAnimSequence(CResourceStore* store, IInputStream& rInput, EGame Game)
 {
     const auto NumAnims = rInput.ReadU32();
     mAnimations.reserve(NumAnims);
 
     for (uint32_t iAnim = 0; iAnim < NumAnims; iAnim++)
     {
-        mAnimations.push_back(CMetaAnimFactory::LoadFromStream(rInput, Game));
+        mAnimations.push_back(CMetaAnimFactory::LoadFromStream(store, rInput, Game));
     }
 }
 

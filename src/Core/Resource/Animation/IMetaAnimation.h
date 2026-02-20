@@ -22,7 +22,7 @@ enum class EMetaAnimType
 class CMetaAnimFactory
 {
 public:
-    static std::unique_ptr<class IMetaAnimation> LoadFromStream(IInputStream& rInput, EGame Game);
+    static std::unique_ptr<class IMetaAnimation> LoadFromStream(CResourceStore* store, IInputStream& rInput, EGame Game);
 };
 
 // Animation primitive class
@@ -35,15 +35,15 @@ class CAnimPrimitive
 public:
     CAnimPrimitive() = default;
 
-    CAnimPrimitive(const CAssetID& rkAnimAssetID, uint32_t CharAnimID, const TString& rkAnimName)
+    CAnimPrimitive(CResourceStore* store, const CAssetID& rkAnimAssetID, uint32_t CharAnimID, const TString& rkAnimName)
         : mID(CharAnimID), mName(rkAnimName)
     {
-        mpAnim = gpResourceStore->LoadResource(rkAnimAssetID);
+        mpAnim = store->LoadResource(rkAnimAssetID);
     }
 
-    CAnimPrimitive(IInputStream& rInput, EGame Game)
+    CAnimPrimitive(CResourceStore* store, IInputStream& rInput, EGame Game)
     {
-        mpAnim = gpResourceStore->LoadResource(CAssetID(rInput, Game));
+        mpAnim = store->LoadResource(CAssetID(rInput, Game));
         mID = rInput.ReadU32();
         mName = rInput.ReadString();
     }
@@ -102,7 +102,7 @@ protected:
 
 public:
     CMetaAnimPlay(const CAnimPrimitive& rkPrimitive, float time, CCharAnimTime::EType type);
-    CMetaAnimPlay(IInputStream& rInput, EGame Game);
+    CMetaAnimPlay(CResourceStore* store, IInputStream& rInput, EGame Game);
     EMetaAnimType Type() const override;
     void GetUniquePrimitives(std::set<CAnimPrimitive>& rPrimSet) const override;
 
@@ -123,7 +123,7 @@ protected:
     bool mUnknown;
 
 public:
-    CMetaAnimBlend(EMetaAnimType Type, IInputStream& rInput, EGame Game);
+    CMetaAnimBlend(CResourceStore* store, EMetaAnimType Type, IInputStream& rInput, EGame Game);
     ~CMetaAnimBlend() override;
     EMetaAnimType Type() const override;
     void GetUniquePrimitives(std::set<CAnimPrimitive>& rPrimSet) const override;
@@ -149,7 +149,7 @@ protected:
     std::vector<SAnimProbabilityPair> mProbabilityPairs;
 
 public:
-    CMetaAnimRandom(IInputStream& rInput, EGame Game);
+    CMetaAnimRandom(CResourceStore* store, IInputStream& rInput, EGame Game);
     ~CMetaAnimRandom() override;
     EMetaAnimType Type() const override;
     void GetUniquePrimitives(std::set<CAnimPrimitive>& rPrimSet) const override;
@@ -162,7 +162,7 @@ protected:
     std::vector<std::unique_ptr<IMetaAnimation>> mAnimations;
 
 public:
-    CMetaAnimSequence(IInputStream& rInput, EGame Game);
+    CMetaAnimSequence(CResourceStore* store, IInputStream& rInput, EGame Game);
     ~CMetaAnimSequence() override;
     EMetaAnimType Type() const override;
     void GetUniquePrimitives(std::set<CAnimPrimitive>& rPrimSet) const override;

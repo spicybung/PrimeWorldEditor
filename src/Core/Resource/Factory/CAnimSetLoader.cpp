@@ -59,7 +59,7 @@ void CAnimSetLoader::LoadCorruptionCHAR(IInputStream& rCHAR)
     {
         pSet->mAnimations.push_back({
             .Name = rCHAR.ReadString(),
-            .pMetaAnim = CMetaAnimFactory::LoadFromStream(rCHAR, mGame),
+            .pMetaAnim = CMetaAnimFactory::LoadFromStream(resourceStore, rCHAR, mGame),
         });
     }
 
@@ -151,7 +151,7 @@ void CAnimSetLoader::LoadReturnsCHAR(IInputStream& rCHAR)
 
         // small hack - create a meta-anim for it so we can generate asset names for the ANIM files correctly
         SAnimation Anim;
-        Anim.pMetaAnim = std::make_unique<CMetaAnimPlay>(CAnimPrimitive(AnimID, AnimIdx, AnimName), 0.f, CCharAnimTime::EType::NonZero);
+        Anim.pMetaAnim = std::make_unique<CMetaAnimPlay>(CAnimPrimitive(resourceStore, AnimID, AnimIdx, AnimName), 0.f, CCharAnimTime::EType::NonZero);
         Anim.Name = std::move(AnimName);
         pSet->mAnimations.push_back(std::move(Anim));
     }
@@ -327,6 +327,8 @@ void CAnimSetLoader::LoadParticleResourceData(IInputStream& rFile, SSetCharacter
 
 void CAnimSetLoader::LoadAnimationSet(IInputStream& rANCS)
 {
+    auto* const resourceStore = pSet->Entry()->ResourceStore();
+
     const auto Version = rANCS.ReadU16();
 
     // Animations
@@ -337,7 +339,7 @@ void CAnimSetLoader::LoadAnimationSet(IInputStream& rANCS)
     {
         pSet->mAnimations.push_back({
             .Name = rANCS.ReadString(),
-            .pMetaAnim = CMetaAnimFactory::LoadFromStream(rANCS, mGame),
+            .pMetaAnim = CMetaAnimFactory::LoadFromStream(resourceStore, rANCS, mGame),
         });
     }
 
@@ -351,11 +353,11 @@ void CAnimSetLoader::LoadAnimationSet(IInputStream& rANCS)
             .ID = rANCS.ReadU32(),
             .AnimIdA = rANCS.ReadU32(),
             .AnimIdB = rANCS.ReadU32(),
-            .pMetaTrans = CMetaTransFactory::LoadFromStream(rANCS, mGame),
+            .pMetaTrans = CMetaTransFactory::LoadFromStream(resourceStore, rANCS, mGame),
         });
     }
 
-    pSet->mpDefaultTransition = CMetaTransFactory::LoadFromStream(rANCS, mGame);
+    pSet->mpDefaultTransition = CMetaTransFactory::LoadFromStream(resourceStore, rANCS, mGame);
 
     // Additive Animations
     const auto NumAdditive = rANCS.ReadU32();
@@ -383,7 +385,7 @@ void CAnimSetLoader::LoadAnimationSet(IInputStream& rANCS)
         {
             pSet->mHalfTransitions.push_back({
                 .AnimID = rANCS.ReadU32(),
-                .pMetaTrans = CMetaTransFactory::LoadFromStream(rANCS, mGame),
+                .pMetaTrans = CMetaTransFactory::LoadFromStream(resourceStore, rANCS, mGame),
             });
         }
     }
@@ -668,6 +670,8 @@ std::unique_ptr<CSourceAnimData> CAnimSetLoader::LoadSAND(IInputStream& rSAND, C
     if (!rSAND.IsValid())
         return nullptr;
 
+    auto* const resourceStore = pEntry->ResourceStore();
+
     // We only care about the transitions right now
     auto pData = std::make_unique<CSourceAnimData>(pEntry);
 
@@ -686,7 +690,7 @@ std::unique_ptr<CSourceAnimData> CAnimSetLoader::LoadSAND(IInputStream& rSAND, C
         pData->mTransitions.push_back({
             .AnimA = CAssetID(rSAND, EIDLength::k64Bit),
             .AnimB = CAssetID(rSAND, EIDLength::k64Bit),
-            .pTransition = CMetaTransFactory::LoadFromStream(rSAND, pEntry->Game()),
+            .pTransition = CMetaTransFactory::LoadFromStream(resourceStore, rSAND, pEntry->Game()),
         });
     }
 
@@ -701,12 +705,12 @@ std::unique_ptr<CSourceAnimData> CAnimSetLoader::LoadSAND(IInputStream& rSAND, C
 
         pData->mHalfTransitions.push_back({
             .Anim = CAssetID(rSAND, EIDLength::k64Bit),
-            .pTransition = CMetaTransFactory::LoadFromStream(rSAND, pEntry->Game()),
+            .pTransition = CMetaTransFactory::LoadFromStream(resourceStore, rSAND, pEntry->Game()),
         });
     }
 
     // Default Transition
-    pData->mpDefaultTransition = CMetaTransFactory::LoadFromStream(rSAND, pEntry->Game());
+    pData->mpDefaultTransition = CMetaTransFactory::LoadFromStream(resourceStore, rSAND, pEntry->Game());
 
     return pData;
 }

@@ -5,6 +5,7 @@
 #include <memory>
 #include <set>
 
+class CResourceStore;
 class IInputStream;
 class IMetaAnimation;
 class IMetaTransition;
@@ -23,7 +24,7 @@ enum class EMetaTransType
 class CMetaTransFactory
 {
 public:
-    static std::unique_ptr<IMetaTransition> LoadFromStream(IInputStream& rInput, EGame Game);
+    static std::unique_ptr<IMetaTransition> LoadFromStream(CResourceStore* store, IInputStream& rInput, EGame Game);
 };
 
 // Base MetaTransition interface
@@ -41,7 +42,7 @@ class CMetaTransMetaAnim : public IMetaTransition
     std::unique_ptr<IMetaAnimation> mpAnim;
 
 public:
-    CMetaTransMetaAnim(IInputStream& rInput, EGame Game);
+    CMetaTransMetaAnim(CResourceStore* store, IInputStream& rInput, EGame Game);
     ~CMetaTransMetaAnim() override;
     EMetaTransType Type() const override;
     void GetUniquePrimitives(std::set<CAnimPrimitive>& rPrimSet) const override;
