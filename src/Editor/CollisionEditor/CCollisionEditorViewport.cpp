@@ -28,7 +28,9 @@ void CCollisionEditorViewport::Paint()
 {
     mpRenderer->BeginFrame();
     mCamera.LoadMatrices();
-    if (mGridEnabled) mGrid.AddToRenderer(mpRenderer.get(), mViewInfo);
+
+    if (mGridEnabled)
+        mGrid.AddToRenderer(mpRenderer.get(), mViewInfo);
 
     if (mpCollisionNode)
     {
