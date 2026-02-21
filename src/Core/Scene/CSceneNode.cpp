@@ -309,7 +309,7 @@ void CSceneNode::Scale(const CVector3f& rkScale, const CVector3f& rkPivot)
 
 void CSceneNode::ForceRecalculateTransform() const
 {
-    _mCachedTransform = CTransform4f::skIdentity;
+    _mCachedTransform = {};
     CalculateTransform(_mCachedTransform);
     _mCachedAABox = mLocalAABox.Transformed(_mCachedTransform);
 

@@ -200,7 +200,7 @@ void CCamera::LoadMatrices() const
 
 CTransform4f CCamera::GetCameraTransform() const
 {
-    CTransform4f Out = CTransform4f::skIdentity;
+    CTransform4f Out;
     Out.SetRotationFromAxes(mRightVector, mDirection, mUpVector);
     Out.SetTranslation(mPosition);
     return Out;
