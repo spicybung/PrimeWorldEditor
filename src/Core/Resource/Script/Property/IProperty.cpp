@@ -587,15 +587,7 @@ bool IProperty::HasAccurateName()
             GeneratedID = Hash.Digest();
         }
 
-        if (GeneratedID == mID)
-        {
-            mFlags.SetFlag(EPropertyFlag::HasCorrectPropertyName);
-        }
-        else
-        {
-            mFlags.ClearFlag(EPropertyFlag::HasCorrectPropertyName);
-        }
-
+        mFlags.AssignFlag(EPropertyFlag::HasCorrectPropertyName, GeneratedID == mID);
         mFlags.SetFlag(EPropertyFlag::HasCachedNameCheck);
     }
 
