@@ -4,6 +4,7 @@
 #include <Common/TString.h>
 
 #include <array>
+#include <compare>
 #include <cstdint>
 #include <fmt/format.h>
 
@@ -59,20 +60,7 @@ public:
     }
 
     // Operators
-    bool operator==(const CSavedStateID& rkOther) const
-    {
-        return m == rkOther.m;
-    }
-
-    bool operator!=(const CSavedStateID& rkOther) const
-    {
-        return !operator==(rkOther);
-    }
-
-    bool operator<(const CSavedStateID& rkOther) const
-    {
-        return (m[0] == rkOther.m[0] ? m[1] < rkOther.m[1] : m[0] < rkOther.m[0]);
-    }
+    constexpr auto operator<=>(const CSavedStateID&) const noexcept = default;
 
     // Static
     static CSavedStateID FromString(TString Str)
