@@ -602,37 +602,35 @@ EGame IProperty::Game() const
 
 IProperty* IProperty::Create(EPropertyType Type, EGame Game)
 {
-    IProperty* pOut = nullptr;
-
     switch (Type)
     {
-    case EPropertyType::Bool:            pOut = new CBoolProperty(Game);             break;
-    case EPropertyType::Byte:            pOut = new CByteProperty(Game);             break;
-    case EPropertyType::Short:           pOut = new CShortProperty(Game);            break;
-    case EPropertyType::Int:             pOut = new CIntProperty(Game);              break;
-    case EPropertyType::Float:           pOut = new CFloatProperty(Game);            break;
-    case EPropertyType::Choice:          pOut = new CChoiceProperty(Game);           break;
-    case EPropertyType::Enum:            pOut = new CEnumProperty(Game);             break;
-    case EPropertyType::Flags:           pOut = new CFlagsProperty(Game);            break;
-    case EPropertyType::String:          pOut = new CStringProperty(Game);           break;
-    case EPropertyType::Vector:          pOut = new CVectorProperty(Game);           break;
-    case EPropertyType::Color:           pOut = new CColorProperty(Game);            break;
-    case EPropertyType::Asset:           pOut = new CAssetProperty(Game);            break;
-    case EPropertyType::Sound:           pOut = new CSoundProperty(Game);            break;
-    case EPropertyType::Animation:       pOut = new CAnimationProperty(Game);        break;
-    case EPropertyType::AnimationSet:    pOut = new CAnimationSetProperty(Game);     break;
-    case EPropertyType::Sequence:        pOut = new CSequenceProperty(Game);         break;
-    case EPropertyType::Spline:          pOut = new CSplineProperty(Game);           break;
-    case EPropertyType::Guid:            pOut = new CGuidProperty(Game);             break;
-    case EPropertyType::Pointer:         pOut = new CPointerProperty(Game);          break;
-    case EPropertyType::Struct:          pOut = new CStructProperty(Game);           break;
-    case EPropertyType::Array:           pOut = new CArrayProperty(Game);            break;
-    default: break;
-    }
+    case EPropertyType::Bool:         return new CBoolProperty(Game);
+    case EPropertyType::Byte:         return new CByteProperty(Game);
+    case EPropertyType::Short:        return new CShortProperty(Game);
+    case EPropertyType::Int:          return new CIntProperty(Game);
+    case EPropertyType::Float:        return new CFloatProperty(Game);
+    case EPropertyType::Choice:       return new CChoiceProperty(Game);
+    case EPropertyType::Enum:         return new CEnumProperty(Game);
+    case EPropertyType::Flags:        return new CFlagsProperty(Game);
+    case EPropertyType::String:       return new CStringProperty(Game);
+    case EPropertyType::Vector:       return new CVectorProperty(Game);
+    case EPropertyType::Color:        return new CColorProperty(Game);
+    case EPropertyType::Asset:        return new CAssetProperty(Game);
+    case EPropertyType::Sound:        return new CSoundProperty(Game);
+    case EPropertyType::Animation:    return new CAnimationProperty(Game);
+    case EPropertyType::AnimationSet: return new CAnimationSetProperty(Game);
+    case EPropertyType::Sequence:     return new CSequenceProperty(Game);
+    case EPropertyType::Spline:       return new CSplineProperty(Game);
+    case EPropertyType::Guid:         return new CGuidProperty(Game);
+    case EPropertyType::Pointer:      return new CPointerProperty(Game);
+    case EPropertyType::Struct:       return new CStructProperty(Game);
+    case EPropertyType::Array:        return new CArrayProperty(Game);
 
-    // If this assertion fails, then there is an unhandled type!
-    ASSERT(pOut != nullptr);
-    return pOut;
+    // If this is reached, then we have an unhandled property type.
+    default:
+        ASSERT(false);
+        return nullptr;
+    }
 }
 
 IProperty* IProperty::CreateCopy(IProperty* pArchetype)
