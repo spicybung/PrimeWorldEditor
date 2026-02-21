@@ -42,7 +42,7 @@ IProperty::~IProperty()
     if (mpArchetype != nullptr)
     {
         // If you crash here, it most likely means this property was not added to the archetype's sub-instances list.
-        NBasics::VectorRemoveOne(mpArchetype->mSubInstances, this);
+        NBasics::RemoveOne(mpArchetype->mSubInstances, this);
     }
 
     // If this is an archetype, make sure no sub-instances have a reference to us.
@@ -449,7 +449,7 @@ bool IProperty::ConvertType(EPropertyType NewType, IProperty* pNewArchetype)
     // actually the same type, so the virtual overrides will likely crash.
     pNewProperty->IProperty::InitFromArchetype(this);
     pNewProperty->mpArchetype = pNewArchetype;
-    NBasics::VectorRemoveOne(mSubInstances, pNewProperty);
+    NBasics::RemoveOne(mSubInstances, pNewProperty);
 
     if (pNewArchetype)
     {
