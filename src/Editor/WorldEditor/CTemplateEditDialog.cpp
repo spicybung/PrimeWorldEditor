@@ -184,10 +184,8 @@ void CTemplateEditDialog::ConvertPropertyType(EPropertyType Type)
     const char* pkCurType = TEnumReflection<EPropertyType>::ConvertValueToString(mpProperty->Type());
     const char* pkNewType = TEnumReflection<EPropertyType>::ConvertValueToString(Type);
 
-    if (
-        UICommon::YesNoQuestion(this, tr("Warning"),
-                                tr("You are converting %1 %2 property to %3. This cannot be undone. Are you sure?")
-                                    .arg(TString::IsVowel(pkCurType[0]) ? tr("an") : tr("a"))
+    if (UICommon::YesNoQuestion(this, tr("Warning"),
+                                tr("You are converting a %1 property to %2. This cannot be undone. Are you sure?")
                                     .arg(pkCurType)
                                     .arg(pkNewType)))
     {
