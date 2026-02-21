@@ -213,7 +213,7 @@ public:
     bool HasAccurateName();
 
     /** Accessors */
-    EGame Game() const;
+    EGame Game() const { return mGame; }
     ECookPreference CookPreference() const { return mCookPreference; }
     size_t NumChildren() const { return mChildren.size(); }
 

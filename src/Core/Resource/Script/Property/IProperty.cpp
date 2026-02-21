@@ -594,12 +594,7 @@ bool IProperty::HasAccurateName()
     return mFlags.HasFlag(EPropertyFlag::HasCorrectPropertyName);
 }
 
-/** IProperty Accessors */
-EGame IProperty::Game() const
-{
-    return mGame;
-}
-
+/** IProperty creation facilities */
 IProperty* IProperty::Create(EPropertyType Type, EGame Game)
 {
     switch (Type)
