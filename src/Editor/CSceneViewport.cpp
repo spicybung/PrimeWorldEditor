@@ -284,11 +284,13 @@ void CSceneViewport::CheckUserInput()
 
     if (MouseActive)
     {
+        const auto ray = CastRay();
+
         if (!mViewInfo.GameMode)
-            CheckGizmoInput(CastRay());
+            CheckGizmoInput(ray);
 
         if (!mpEditor->Gizmo()->IsTransforming())
-            mRayIntersection = SceneRayCast(CastRay());
+            mRayIntersection = SceneRayCast(ray);
     }
     else
     {
