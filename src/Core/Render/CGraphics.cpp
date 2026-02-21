@@ -37,6 +37,8 @@ std::array<CLight, 3> CGraphics::sDefaultDirectionalLights{{
     CLight::BuildDirectional(CVector3f(0), CVector3f(0.75f, 0.433013f, -0.5f), CColor(0.3f, 0.3f, 0.3f, 0.3f)),
 }};
 
+constexpr size_t sNumBoneTransforms = 100;
+
 // ************ FUNCTIONS ************
 void CGraphics::Initialize()
 {
@@ -52,7 +54,7 @@ void CGraphics::Initialize()
         mpVertexBlockBuffer = std::make_unique<CUniformBuffer>(sizeof(sVertexBlock));
         mpPixelBlockBuffer = std::make_unique<CUniformBuffer>(sizeof(sPixelBlock));
         mpLightBlockBuffer = std::make_unique<CUniformBuffer>(sizeof(sLightBlock));
-        mpBoneTransformBuffer = std::make_unique<CUniformBuffer>(sizeof(CTransform4f) * 100);
+        mpBoneTransformBuffer = std::make_unique<CUniformBuffer>(sizeof(CTransform4f) * sNumBoneTransforms);
 
         mInitialized = true;
     }
@@ -206,7 +208,7 @@ void CGraphics::LoadBoneTransforms(const CBoneTransformData& rkData)
 
 void CGraphics::LoadIdentityBoneTransforms()
 {
-    static const CTransform4f skIdentityTransforms[100];
+    static constexpr CTransform4f skIdentityTransforms[sNumBoneTransforms];
 
     if (!mIdentityBoneTransforms)
     {
