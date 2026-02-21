@@ -27,13 +27,13 @@ namespace NDolphinIntegration
 {
 
 /** Constants */
-const char* const gkDolphinPathSetting  = "Quickplay/DolphinPath";
-const char* const gkFeaturesSetting     = "Quickplay/Features";
+constexpr char gkDolphinPathSetting[] = "Quickplay/DolphinPath";
+constexpr char gkFeaturesSetting[]    = "Quickplay/Features";
 
-const char* const gkRelFileName         = "patches.rel";
-const char* const gkParameterFile       = "dbgconfig";
-const char* const gkDolPath             = "sys/main.dol";
-const char* const gkDolBackupPath       = "sys/main.original.dol";
+constexpr char gkRelFileName[]   = "patches.rel";
+constexpr char gkParameterFile[] = "dbgconfig";
+constexpr char gkDolPath[]       = "sys/main.dol";
+constexpr char gkDolBackupPath[] = "sys/main.original.dol";
 
 /** The user's path to the Dolphin exe */
 static QString gDolphinPath;
