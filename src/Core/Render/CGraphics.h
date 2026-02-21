@@ -45,7 +45,7 @@ public:
         CMatrix4f ViewMatrix;
         CMatrix4f ProjectionMatrix;
     };
-    static SMVPBlock sMVPBlock;
+    static constinit SMVPBlock sMVPBlock;
 
     // SVertexBlock
     struct SVertexBlock
@@ -57,7 +57,7 @@ public:
         CColor COLOR1_Amb;
         CVector4f COLOR1_Mat;
     };
-    static SVertexBlock sVertexBlock;
+    static constinit SVertexBlock sVertexBlock;
 
     // SPixelBlock
     struct SPixelBlock
@@ -65,15 +65,15 @@ public:
         std::array<CColor, 4> Konst;
         std::array<CColor, 4> TevColor;
         CColor TintColor;
-        float LightmapMultiplier;
-        std::array<float, 3> Padding;
+        float LightmapMultiplier{};
+        std::array<float, 3> Padding{};
 
         void SetAllTevColors(const CColor& color)
         {
             TevColor.fill(color);
         }
     };
-    static SPixelBlock sPixelBlock;
+    static constinit SPixelBlock sPixelBlock;
 
     // SLightBlock
     struct SLightBlock
@@ -88,7 +88,7 @@ public:
         };
         std::array<SGXLight, 8> Lights;
     };
-    static SLightBlock sLightBlock;
+    static constinit SLightBlock sLightBlock;
 
     // Lighting-related
     enum class ELightingMode { None, Basic, World };

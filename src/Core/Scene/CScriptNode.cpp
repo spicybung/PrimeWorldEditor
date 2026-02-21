@@ -274,7 +274,7 @@ void CScriptNode::DrawSelection()
 
     if (mpInstance != nullptr)
     {
-        CGraphics::sMVPBlock.ModelMatrix = CMatrix4f::skIdentity;
+        CGraphics::sMVPBlock.ModelMatrix = CMatrix4f::Identity();
         CGraphics::UpdateMVPBlock();
 
         for (const auto* link : mpInstance->Links(ELinkType::Incoming))

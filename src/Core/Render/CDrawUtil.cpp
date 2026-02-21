@@ -13,7 +13,7 @@ void CDrawUtil::DrawGrid(CColor LineColor, CColor BoldLineColor)
 
     mGridVertices->Bind();
 
-    CGraphics::sMVPBlock.ModelMatrix = CMatrix4f::skIdentity;
+    CGraphics::sMVPBlock.ModelMatrix = CMatrix4f::Identity();
     CGraphics::UpdateMVPBlock();
 
     glBlendFunc(GL_ONE, GL_ZERO);

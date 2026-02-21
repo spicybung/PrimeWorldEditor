@@ -22,10 +22,10 @@ bool CGraphics::mInitialized = false;
 std::vector<std::unique_ptr<CVertexArrayManager>> CGraphics::mVAMs;
 bool CGraphics::mIdentityBoneTransforms = false;
 
-CGraphics::SMVPBlock    CGraphics::sMVPBlock;
-CGraphics::SVertexBlock CGraphics::sVertexBlock;
-CGraphics::SPixelBlock  CGraphics::sPixelBlock;
-CGraphics::SLightBlock  CGraphics::sLightBlock;
+constinit CGraphics::SMVPBlock    CGraphics::sMVPBlock;
+constinit CGraphics::SVertexBlock CGraphics::sVertexBlock;
+constinit CGraphics::SPixelBlock  CGraphics::sPixelBlock;
+constinit CGraphics::SLightBlock  CGraphics::sLightBlock;
 
 CGraphics::ELightingMode CGraphics::sLightMode = CGraphics::ELightingMode::World;
 uint32_t CGraphics::sNumLights = 0;
@@ -193,9 +193,9 @@ void CGraphics::SetupAmbientColor()
 
 void CGraphics::SetIdentityMVP()
 {
-    sMVPBlock.ModelMatrix = CMatrix4f::skIdentity;
-    sMVPBlock.ViewMatrix = CMatrix4f::skIdentity;
-    sMVPBlock.ProjectionMatrix = CMatrix4f::skIdentity;
+    sMVPBlock.ModelMatrix = CMatrix4f::Identity();
+    sMVPBlock.ViewMatrix = CMatrix4f::Identity();
+    sMVPBlock.ProjectionMatrix = CMatrix4f::Identity();
 }
 
 void CGraphics::LoadBoneTransforms(const CBoneTransformData& rkData)

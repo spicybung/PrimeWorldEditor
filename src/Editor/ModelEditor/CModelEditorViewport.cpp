@@ -67,11 +67,13 @@ void CModelEditorViewport::Paint()
     }
     else if (mMode == EDrawMode::DrawSphere)
     {
-        if (!mpActiveMaterial) return;
+        if (!mpActiveMaterial)
+            return;
+
         glEnable(GL_CULL_FACE);
 
         CGraphics::sVertexBlock.COLOR0_Amb = CGraphics::skDefaultAmbientColor;
-        CGraphics::sMVPBlock.ModelMatrix = CMatrix4f::skIdentity;
+        CGraphics::sMVPBlock.ModelMatrix = CMatrix4f::Identity();
         CGraphics::UpdateMVPBlock();
         CGraphics::SetDefaultLighting();
         CGraphics::UpdateLightBlock(); // Note: vertex block is updated by the material
@@ -84,16 +86,18 @@ void CModelEditorViewport::Paint()
     }
     else if (mMode == EDrawMode::DrawSquare)
     {
-        if (!mpActiveMaterial) return;
+        if (!mpActiveMaterial)
+            return;
+
         glDisable(GL_CULL_FACE);
 
         CGraphics::SetDefaultLighting();
         CGraphics::UpdateLightBlock();
         CGraphics::sVertexBlock.COLOR0_Amb = CGraphics::skDefaultAmbientColor;
 
-        CGraphics::sMVPBlock.ModelMatrix = CMatrix4f::skIdentity;
-        CGraphics::sMVPBlock.ViewMatrix = CMatrix4f::skIdentity;
-        CGraphics::sMVPBlock.ProjectionMatrix = CMatrix4f::skIdentity;
+        CGraphics::sMVPBlock.ModelMatrix = CMatrix4f::Identity();
+        CGraphics::sMVPBlock.ViewMatrix = CMatrix4f::Identity();
+        CGraphics::sMVPBlock.ProjectionMatrix = CMatrix4f::Identity();
         CGraphics::UpdateMVPBlock();
 
         for (CMaterial* passMat = mpActiveMaterial; passMat; passMat = passMat->GetNextDrawPass())

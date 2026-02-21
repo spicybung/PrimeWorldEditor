@@ -36,7 +36,7 @@ public:
 
     void Draw(FRenderOptions, int, ERenderCommand, const SViewInfo&) override
     {
-        CGraphics::sMVPBlock.ModelMatrix = CMatrix4f::skIdentity;
+        CGraphics::sMVPBlock.ModelMatrix = CMatrix4f::Identity();
         CGraphics::UpdateMVPBlock();
         glDepthRange(0.f, 1.f);
         glLineWidth(1.f);

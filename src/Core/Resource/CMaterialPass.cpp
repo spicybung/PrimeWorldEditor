@@ -76,12 +76,11 @@ void CMaterialPass::SetAnimCurrent(FRenderOptions Options, size_t PassIndex)
     const CMatrix4f& ModelMtx = CGraphics::sMVPBlock.ModelMatrix;
     const CMatrix4f& ViewMtx = CGraphics::sMVPBlock.ViewMatrix;
 
-    CTransform4f TexMtx = CMatrix4f::skIdentity;
-    CTransform4f PostMtx = CMatrix4f::skIdentity;
+    CTransform4f TexMtx(CMatrix4f::Identity());
+    CTransform4f PostMtx(CMatrix4f::Identity());
 
     switch (mAnimMode)
     {
-
     case EUVAnimMode::InverseMV: // Mode 0
     case EUVAnimMode::SimpleMode: // Mode 10 - maybe not correct?
     {

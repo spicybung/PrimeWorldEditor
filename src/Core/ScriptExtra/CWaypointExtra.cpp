@@ -188,7 +188,7 @@ void CWaypointExtra::Draw(FRenderOptions /*Options*/, int ComponentIndex, ERende
     glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
     glDepthMask(GL_TRUE);
 
-    CGraphics::sMVPBlock.ModelMatrix = CMatrix4f::skIdentity;
+    CGraphics::sMVPBlock.ModelMatrix = CMatrix4f::Identity();
     CGraphics::UpdateMVPBlock();
     CDrawUtil::DrawLine(mpParent->AABox().Center(), mLinks[ComponentIndex].pWaypoint->AABox().Center(), mColor);
 }
