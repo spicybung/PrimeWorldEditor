@@ -139,7 +139,7 @@ CResourceEntry* CVirtualDirectory::FindChildResource(const TString& rkPath)
 CResourceEntry* CVirtualDirectory::FindChildResource(const TString& rkName, EResourceType Type)
 {
     const auto it = std::ranges::find_if(mResources, [&](const auto* resource) {
-        return rkName.CaseInsensitiveCompare(resource->Name()) && resource->ResourceType() == Type;
+        return resource->ResourceType() == Type && rkName.CaseInsensitiveCompare(resource->Name());
     });
 
     if (it == mResources.cend())
