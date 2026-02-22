@@ -180,10 +180,10 @@ void CPackage::Cook(IProgressNotifier *pProgress)
     // Start writing resources
     struct SResourceTableInfo
     {
-        CResourceEntry *pEntry;
-        uint32_t Offset;
-        uint32_t Size;
-        bool Compressed;
+        CResourceEntry* pEntry{};
+        uint32_t Offset{};
+        uint32_t Size{};
+        bool Compressed{};
     };
     std::vector<SResourceTableInfo> ResourceTableData(AssetList.size());
     uint32_t ResIdx = 0;
