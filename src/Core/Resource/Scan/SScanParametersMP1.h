@@ -41,21 +41,21 @@ enum class EScanImagePane
 struct SScanImage
 {
     CAssetID        Texture;
-    float           AppearPercentage;
-    EScanImagePane  Pane;
-    int32_t         AnimationCellWidth;
-    int32_t         AnimationCellHeight;
-    float           AnimationSwapInterval;
-    float           FadeDuration;
+    float           AppearPercentage{};
+    EScanImagePane  Pane{};
+    int32_t         AnimationCellWidth{};
+    int32_t         AnimationCellHeight{};
+    float           AnimationSwapInterval{};
+    float           FadeDuration{};
 };
 
 struct SScanParametersMP1
 {
     CAssetID                  GuiFrame;
     CAssetID                  String;
-    EScanSpeed                Speed;
-    ELogbookCategory          LogbookCategory;
-    bool                      IsCritical;
+    EScanSpeed                Speed{};
+    ELogbookCategory          LogbookCategory{};
+    bool                      IsCritical{};
     std::array<SScanImage, 4> ScanImages;
 };
 
