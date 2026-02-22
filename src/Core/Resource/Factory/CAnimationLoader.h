@@ -27,16 +27,16 @@ class CAnimationLoader
 
     struct SCompressedChannel
     {
-        uint32_t BoneID;
-        uint16_t NumRotationKeys;
-        std::array<int16_t, 3> Rotation;
-        std::array<uint8_t, 3> RotationBits;
-        uint16_t NumTranslationKeys;
-        std::array<int16_t, 3> Translation;
-        std::array<uint8_t, 3> TranslationBits;
-        uint16_t NumScaleKeys;
-        std::array<int16_t, 3> Scale;
-        std::array<uint8_t, 3> ScaleBits;
+        uint32_t BoneID{};
+        uint16_t NumRotationKeys{};
+        std::array<int16_t, 3> Rotation{};
+        std::array<uint8_t, 3> RotationBits{};
+        uint16_t NumTranslationKeys{};
+        std::array<int16_t, 3> Translation{};
+        std::array<uint8_t, 3> TranslationBits{};
+        uint16_t NumScaleKeys{};
+        std::array<int16_t, 3> Scale{};
+        std::array<uint8_t, 3> ScaleBits{};
     };
     std::vector<SCompressedChannel> mCompressedChannels;
 
