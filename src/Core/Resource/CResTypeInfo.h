@@ -14,7 +14,7 @@ class CResTypeInfo
 {
     struct SGameExtension
     {
-        EGame Game;
+        EGame Game{};
         CFourCC CookedExt;
     };
 
