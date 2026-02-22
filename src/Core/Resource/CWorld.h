@@ -28,28 +28,28 @@ class CWorld : public CResource
 
     struct STimeAttackData
     {
-        bool HasTimeAttack;
+        bool HasTimeAttack{};
         TString ActNumber;
-        float BronzeTime;
-        float SilverTime;
-        float GoldTime;
-        float ShinyGoldTime;
+        float BronzeTime{};
+        float SilverTime{};
+        float GoldTime{};
+        float ShinyGoldTime{};
     };
     STimeAttackData mTimeAttackData{};
 
     struct SAudioGrp
     {
         CAssetID ResID;
-        uint32_t GroupID;
+        uint32_t GroupID{};
     };
     std::vector<SAudioGrp> mAudioGrps;
 
     struct SMemoryRelay
     {
-        uint32_t InstanceID;
-        uint32_t TargetID;
-        uint16_t Message;
-        bool Active;
+        uint32_t InstanceID{};
+        uint32_t TargetID{};
+        uint16_t Message{};
+        bool Active{};
     };
     std::vector<SMemoryRelay> mMemoryRelays;
 
@@ -61,7 +61,7 @@ class CWorld : public CResource
         CAABox AetherBox;
         CAssetID AreaResID; // Area resource ID
         CAssetID AreaID; // Internal area ID (same length as an asset ID)
-        bool AllowPakDuplicates;
+        bool AllowPakDuplicates{};
 
         std::vector<SMemoryRelay> MemoryRelays; // Only needed for MP1
         std::vector<uint16_t> AttachedAreaIDs;
@@ -72,8 +72,8 @@ class CWorld : public CResource
         {
             struct SConnectingDock
             {
-                uint32_t AreaIndex;
-                uint32_t DockIndex;
+                uint32_t AreaIndex{};
+                uint32_t DockIndex{};
             };
             std::vector<SConnectingDock> ConnectingDocks;
             std::vector<CVector3f> DockCoordinates;
@@ -83,7 +83,7 @@ class CWorld : public CResource
         struct SLayer
         {
             TString LayerName;
-            bool Active;
+            bool Active{};
             CSavedStateID LayerStateID;
         };
         std::vector<SLayer> Layers;
