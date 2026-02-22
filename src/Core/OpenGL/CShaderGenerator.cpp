@@ -153,7 +153,7 @@ bool CShaderGenerator::CreateVertexShader(const CMaterial& rkMat)
     std::stringstream ShaderCode;
 
     ShaderCode << "#version 330 core\n"
-               << "\n";
+                  "\n";
 
     // Input
     ShaderCode << "// Input\n";
@@ -174,7 +174,7 @@ bool CShaderGenerator::CreateVertexShader(const CMaterial& rkMat)
     if (VtxDesc.HasFlag(EVertexAttribute::Tex7))        ShaderCode  << "layout(location = 11) in vec2 RawTex7;\n";
     if (VtxDesc.HasFlag(EVertexAttribute::BoneIndices)) ShaderCode  << "layout(location = 12) in int BoneIndices;\n";
     if (VtxDesc.HasFlag(EVertexAttribute::BoneWeights)) ShaderCode  << "layout(location = 13) in vec4 BoneWeights;\n";
-    ShaderCode << "\n";
+    ShaderCode << '\n';
 
     // Output
     ShaderCode << "// Output\n";
@@ -189,61 +189,60 @@ bool CShaderGenerator::CreateVertexShader(const CMaterial& rkMat)
     }
 
     ShaderCode  << "out vec4 COLOR0A0;\n"
-                << "out vec4 COLOR1A1;\n";
-    ShaderCode  << "\n";
+                   "out vec4 COLOR1A1;\n"
+                    "\n";
 
     // Uniforms
     ShaderCode  << "// Uniforms\n"
-                << "layout(std140) uniform MVPBlock\n"
-                << "{\n"
-                << "    mat4 ModelMtx;\n"
-                << "    mat4 ViewMtx;\n"
-                << "    mat4 ProjMtx;\n"
-                << "};\n"
-                << "\n"
-                << "layout(std140) uniform VertexBlock\n"
-                << "{\n"
-                << "    mat4 TexMtx[10];\n"
-                << "    mat4 PostMtx[20];\n"
-                << "    vec4 COLOR0_Amb;\n"
-                << "    vec4 COLOR0_Mat;\n"
-                << "    vec4 COLOR1_Amb;\n"
-                << "    vec4 COLOR1_Mat;\n"
-                << "};\n"
-                << "\n"
-                << "struct GXLight\n"
-                << "{\n"
-                << "    vec4 Position;\n"
-                << "    vec4 Direction;\n"
-                << "    vec4 Color;\n"
-                << "    vec4 DistAtten;\n"
-                << "    vec4 AngleAtten;\n"
-                << "};\n"
-                << "\n"
-                << "layout(std140) uniform LightBlock\n"
-                << "{\n"
-                << "    GXLight Lights[8];\n"
-                << "};\n"
-                << "uniform int NumLights;\n"
-                << "\n";
+                   "layout(std140) uniform MVPBlock\n"
+                   "{\n"
+                   "    mat4 ModelMtx;\n"
+                   "    mat4 ViewMtx;\n"
+                   "    mat4 ProjMtx;\n"
+                   "};\n"
+                   "\n"
+                   "layout(std140) uniform VertexBlock\n"
+                   "{\n"
+                   "    mat4 TexMtx[10];\n"
+                   "    mat4 PostMtx[20];\n"
+                   "    vec4 COLOR0_Amb;\n"
+                   "    vec4 COLOR0_Mat;\n"
+                   "    vec4 COLOR1_Amb;\n"
+                   "    vec4 COLOR1_Mat;\n"
+                   "};\n"
+                   "\n"
+                   "struct GXLight\n"
+                   "{\n"
+                   "    vec4 Position;\n"
+                   "    vec4 Direction;\n"
+                   "    vec4 Color;\n"
+                   "    vec4 DistAtten;\n"
+                   "    vec4 AngleAtten;\n"
+                   "};\n"
+                   "\n"
+                   "layout(std140) uniform LightBlock\n"
+                   "{\n"
+                   "    GXLight Lights[8];\n"
+                   "};\n"
+                   "uniform int NumLights;\n"
+                   "\n";
 
-    bool HasSkinning = (rkMat.VtxDesc().HasAnyFlags(EVertexAttribute::BoneIndices | EVertexAttribute::BoneWeights));
-
+    const bool HasSkinning = (rkMat.VtxDesc().HasAnyFlags(EVertexAttribute::BoneIndices | EVertexAttribute::BoneWeights));
     if (HasSkinning)
     {
         ShaderCode  << "layout(std140) uniform BoneTransformBlock\n"
-                    << "{\n"
-                    << "    mat4 BoneTransforms[100];\n"
-                    << "};\n"
-                    << "\n";
+                       "{\n"
+                       "    mat4 BoneTransforms[100];\n"
+                       "};\n"
+                       "\n";
     }
 
     // Main
     ShaderCode  << "// Main\n"
-                << "void main()\n"
-                << "{\n"
-                << "    mat4 MV = ModelMtx * ViewMtx;\n"
-                << "    mat4 MVP = MV * ProjMtx;\n";
+                   "void main()\n"
+                   "{\n"
+                   "    mat4 MV = ModelMtx * ViewMtx;\n"
+                   "    mat4 MVP = MV * ProjMtx;\n";
 
     if (VtxDesc.HasFlag(EVertexAttribute::Color0)) ShaderCode << "    Color0 = RawColor0;\n";
     if (VtxDesc.HasFlag(EVertexAttribute::Color1)) ShaderCode << "    Color1 = RawColor1;\n";
@@ -253,32 +252,32 @@ bool CShaderGenerator::CreateVertexShader(const CMaterial& rkMat)
     if (HasSkinning)
     {
         ShaderCode  << "    // Skinning\n"
-                    << "    vec3 ModelSpacePos = vec3(0,0,0);\n";
+                       "    vec3 ModelSpacePos = vec3(0,0,0);\n";
 
         if (VtxDesc.HasFlag(EVertexAttribute::Normal))
             ShaderCode  << "    vec3 ModelSpaceNormal = vec3(0,0,0);\n";
 
         ShaderCode  << "    \n"
-                    << "    for (int iBone = 0; iBone < 4; iBone++)\n"
-                    << "    {\n"
-                    << "        int Shift = (8 * iBone);\n"
-                    << "        int BoneIdx = (BoneIndices >> Shift) & 0xFF;\n"
-                    << "        float Weight = BoneWeights[iBone];\n"
-                    << "        \n"
-                    << "        if (BoneIdx > 0)\n"
-                    << "        {\n"
-                    << "            ModelSpacePos += vec3(vec4(RawPosition, 1) * BoneTransforms[BoneIdx] * Weight);\n";
+                       "    for (int iBone = 0; iBone < 4; iBone++)\n"
+                       "    {\n"
+                       "        int Shift = (8 * iBone);\n"
+                       "        int BoneIdx = (BoneIndices >> Shift) & 0xFF;\n"
+                       "        float Weight = BoneWeights[iBone];\n"
+                       "        \n"
+                       "        if (BoneIdx > 0)\n"
+                       "        {\n"
+                       "            ModelSpacePos += vec3(vec4(RawPosition, 1) * BoneTransforms[BoneIdx] * Weight);\n";
 
         if (VtxDesc.HasFlag(EVertexAttribute::Normal))
             ShaderCode  << "            ModelSpaceNormal += RawNormal.xyz * inverse(transpose(mat3(BoneTransforms[BoneIdx]))) * Weight;\n";
 
         ShaderCode  << "        }\n"
-                    << "    }\n"
-                    << "    \n";
+                       "    }\n"
+                       "    \n";
 
         if (VtxDesc.HasFlag(EVertexAttribute::Normal))
             ShaderCode  << "    ModelSpaceNormal = normalize(ModelSpaceNormal);\n"
-                        << "    \n";
+                           "    \n";
     }
     else
     {
@@ -287,7 +286,7 @@ bool CShaderGenerator::CreateVertexShader(const CMaterial& rkMat)
         if (VtxDesc.HasFlag(EVertexAttribute::Normal))
             ShaderCode  << "    vec3 ModelSpaceNormal = RawNormal.xyz;\n";
 
-        ShaderCode << "\n";
+        ShaderCode << '\n';
     }
 
     ShaderCode  << "    gl_Position = vec4(ModelSpacePos, 1) * MVP;\n";
@@ -297,45 +296,44 @@ bool CShaderGenerator::CreateVertexShader(const CMaterial& rkMat)
 
     // Per-vertex lighting
     ShaderCode  << "\n"
-                << "    // Dynamic Lighting\n";
+                   "    // Dynamic Lighting\n";
 
     // This bit could do with some cleaning up
     // It took a lot of experimentation to get dynamic lights working and I never went back and cleaned it up after
     if (rkMat.IsLightingEnabled())
     {
         ShaderCode  << "    vec4 Illum = vec4(0.0);\n"
-                    << "    vec3 PositionMV = vec3(vec4(ModelSpacePos, 1.0) * MV);\n"
-                    << "    \n"
-                    << "    for (int iLight = 0; iLight < NumLights; iLight++)\n"
-                    << "    {\n"
-                    << "        vec3 LightPosMV = vec3(Lights[iLight].Position * ViewMtx);\n"
-                    << "        vec3 LightDirMV = normalize(Lights[iLight].Direction.xyz * inverse(transpose(mat3(ViewMtx))));\n"
-                    << "        vec3 LightDist = LightPosMV.xyz - PositionMV.xyz;\n"
-                    << "        float DistSquared = dot(LightDist, LightDist);\n"
-                    << "        float Dist = sqrt(DistSquared);\n"
-                    << "        LightDist /= Dist;\n"
-                    << "        vec3 AngleAtten = Lights[iLight].AngleAtten.xyz;\n"
-                    << "        AngleAtten = vec3(AngleAtten.x, AngleAtten.y, AngleAtten.z);\n"
-                    << "        float Atten = max(0, dot(LightDist, LightDirMV.xyz));\n"
-                    << "        Atten = max(0, dot(AngleAtten, vec3(1.0, Atten, Atten * Atten))) / dot(Lights[iLight].DistAtten.xyz, vec3(1.0, Dist, DistSquared));\n"
-                    << "        float DiffuseAtten = max(0, dot(Normal, LightDist));\n"
-                    << "        Illum += (Atten * DiffuseAtten * Lights[iLight].Color);\n"
-                    << "    }\n"
-                    << "    COLOR0A0 = COLOR0_Mat * (Illum + COLOR0_Amb);\n"
-                    << "    COLOR1A1 = COLOR1_Mat * (Illum + COLOR1_Amb);\n"
-                    << "    \n";
+                       "    vec3 PositionMV = vec3(vec4(ModelSpacePos, 1.0) * MV);\n"
+                       "    \n"
+                       "    for (int iLight = 0; iLight < NumLights; iLight++)\n"
+                       "    {\n"
+                       "        vec3 LightPosMV = vec3(Lights[iLight].Position * ViewMtx);\n"
+                       "        vec3 LightDirMV = normalize(Lights[iLight].Direction.xyz * inverse(transpose(mat3(ViewMtx))));\n"
+                       "        vec3 LightDist = LightPosMV.xyz - PositionMV.xyz;\n"
+                       "        float DistSquared = dot(LightDist, LightDist);\n"
+                       "        float Dist = sqrt(DistSquared);\n"
+                       "        LightDist /= Dist;\n"
+                       "        vec3 AngleAtten = Lights[iLight].AngleAtten.xyz;\n"
+                       "        AngleAtten = vec3(AngleAtten.x, AngleAtten.y, AngleAtten.z);\n"
+                       "        float Atten = max(0, dot(LightDist, LightDirMV.xyz));\n"
+                       "        Atten = max(0, dot(AngleAtten, vec3(1.0, Atten, Atten * Atten))) / dot(Lights[iLight].DistAtten.xyz, vec3(1.0, Dist, DistSquared));\n"
+                       "        float DiffuseAtten = max(0, dot(Normal, LightDist));\n"
+                       "        Illum += (Atten * DiffuseAtten * Lights[iLight].Color);\n"
+                       "    }\n"
+                       "    COLOR0A0 = COLOR0_Mat * (Illum + COLOR0_Amb);\n"
+                       "    COLOR1A1 = COLOR1_Mat * (Illum + COLOR1_Amb);\n"
+                       "    \n";
     }
-
     else
     {
         ShaderCode  << "    COLOR0A0 = COLOR0_Mat;\n"
-                    << "    COLOR1A1 = COLOR1_Mat;\n"
-                    << "\n";
+                       "    COLOR1A1 = COLOR1_Mat;\n"
+                       "\n";
     }
 
     // Texture coordinate generation
     ShaderCode  << "    \n"
-                << "    // TexGen\n";
+                   "    // TexGen\n";
 
     for (const auto [idx, pass] : Utils::enumerate(rkMat.Passes()))
     {
@@ -360,7 +358,7 @@ bool CShaderGenerator::CreateVertexShader(const CMaterial& rkMat)
             }
         }
 
-        ShaderCode << "\n";
+        ShaderCode << '\n';
     }
     ShaderCode << "}\n\n";
 
@@ -403,7 +401,7 @@ bool CShaderGenerator::CreatePixelShader(const CMaterial& rkMat)
 {
     std::stringstream ShaderCode;
     ShaderCode << "#version 330 core\n"
-               << "\n";
+                  "\n";
 
     const FVertexDescription VtxDesc = rkMat.VtxDesc();
     if (VtxDesc.HasFlag(EVertexAttribute::Position)) ShaderCode << "in vec3 Position;\n";
@@ -418,16 +416,16 @@ bool CShaderGenerator::CreatePixelShader(const CMaterial& rkMat)
     }
 
     ShaderCode << "in vec4 COLOR0A0;\n"
-               << "in vec4 COLOR1A1;\n"
-               << "\n"
-               << "out vec4 PixelColor;\n"
-               << "\n"
-               << "layout(std140) uniform PixelBlock {\n"
-               << "    vec4 KonstColors[4];\n"
-               << "    vec4 TevColor[4];\n"
-               << "    vec4 TintColor;\n"
-               << "    float LightmapMultiplier;\n"
-               << "};\n\n";
+                  "in vec4 COLOR1A1;\n"
+                  "\n"
+                  "out vec4 PixelColor;\n"
+                  "\n"
+                  "layout(std140) uniform PixelBlock {\n"
+                  "    vec4 KonstColors[4];\n"
+                  "    vec4 TevColor[4];\n"
+                  "    vec4 TintColor;\n"
+                  "    float LightmapMultiplier;\n"
+                  "};\n\n";
 
     for (const auto [idx, pass] : Utils::enumerate(rkMat.Passes()))
     {
@@ -435,17 +433,17 @@ bool CShaderGenerator::CreatePixelShader(const CMaterial& rkMat)
             ShaderCode << "uniform sampler2D Texture" << idx << ";\n";
     }
 
-    ShaderCode <<"\n";
+    ShaderCode << '\n';
 
     ShaderCode << "void main()\n"
-               << "{\n"
-               << "    vec4 TevInA = vec4(0, 0, 0, 0), TevInB = vec4(0, 0, 0, 0), TevInC = vec4(0, 0, 0, 0), TevInD = vec4(0, 0, 0, 0);\n"
-               << "    vec4 Prev = TevColor[0], C0 = TevColor[1], C1 = TevColor[2], C2 = TevColor[3];\n"
-               << "    vec4 Ras = vec4(0, 0, 0, 1), Tex = vec4(0, 0, 0, 0);\n"
-               << "    vec4 Konst = vec4(1, 1, 1, 1);\n";
+                  "{\n"
+                  "    vec4 TevInA = vec4(0, 0, 0, 0), TevInB = vec4(0, 0, 0, 0), TevInC = vec4(0, 0, 0, 0), TevInD = vec4(0, 0, 0, 0);\n"
+                  "    vec4 Prev = TevColor[0], C0 = TevColor[1], C1 = TevColor[2], C2 = TevColor[3];\n"
+                  "    vec4 Ras = vec4(0, 0, 0, 1), Tex = vec4(0, 0, 0, 0);\n"
+                  "    vec4 Konst = vec4(1, 1, 1, 1);\n";
 
     ShaderCode << "    vec2 TevCoord = vec2(0, 0);\n"
-               << "    \n";
+                  "    \n";
 
     bool Lightmap = false;
     for (const auto [idx, pass] : Utils::enumerate(rkMat.Passes()))
@@ -516,7 +514,7 @@ bool CShaderGenerator::CreatePixelShader(const CMaterial& rkMat)
         if (rkMat.Version() < EGame::CorruptionProto)
         {
             ShaderCode << "    if (Prev.a <= 0.25) discard;\n"
-                       << "    else Prev.a = 1.0;\n\n";
+                          "    else Prev.a = 1.0;\n\n";
         }
         else
         {
@@ -526,7 +524,7 @@ bool CShaderGenerator::CreatePixelShader(const CMaterial& rkMat)
     }
 
     ShaderCode << "    PixelColor = Prev.rgba * TintColor;\n"
-               << "}\n\n";
+                  "}\n\n";
 
     // Done!
     return mpShader->CompilePixelSource(ShaderCode.str());
