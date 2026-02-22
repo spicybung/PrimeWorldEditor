@@ -9,10 +9,10 @@ class IRenderable;
 
 struct SRenderablePtr
 {
-    IRenderable *pRenderable;
-    int32_t ComponentIndex;
+    IRenderable* pRenderable{};
+    int32_t ComponentIndex{};
     CAABox AABox;
-    ERenderCommand Command;
+    ERenderCommand Command{};
 };
 
 #endif // SRENDERABLEPTR_H
