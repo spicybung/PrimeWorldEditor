@@ -37,24 +37,24 @@ class CFont : public CResource
 
     struct SGlyph
     {
-        uint16_t Character;                 // The UTF-16 character that this glyph corresponds to
+        uint16_t Character{};               // The UTF-16 character that this glyph corresponds to
         std::array<CVector2f, 4> TexCoords; // The format only lists the min/max X/Y values; tracking absolute coordinates in memory is faster
-        int32_t LeftPadding;                // The amount of padding applied left of this glyph, in points
-        int32_t RightPadding;               // The amount of padding applied right of this glyph, in points
-        uint32_t Width;                     // The width of the glyph, in points
-        uint32_t Height;                    // The height of the glyph, in points
-        uint32_t PrintAdvance;              // How far the print head advances horizontally after printing this glyph, in points
-        uint32_t BaseOffset;                // Vertical offset for this glyph, in points; the font-wide offset is added to this
-        uint32_t KerningIndex;              // Index into the kerning table of the first kerning pair for this glyph. -1 if no pairs.
-        uint8_t RGBAChannel;                // Fonts can store multiple glyphs in the same space on different RGBA channels. This value corresponds to R, G, B, or A.
+        int32_t LeftPadding{};              // The amount of padding applied left of this glyph, in points
+        int32_t RightPadding{};             // The amount of padding applied right of this glyph, in points
+        uint32_t Width{};                   // The width of the glyph, in points
+        uint32_t Height{};                  // The height of the glyph, in points
+        uint32_t PrintAdvance{};            // How far the print head advances horizontally after printing this glyph, in points
+        uint32_t BaseOffset{};              // Vertical offset for this glyph, in points; the font-wide offset is added to this
+        uint32_t KerningIndex{};            // Index into the kerning table of the first kerning pair for this glyph. -1 if no pairs.
+        uint8_t RGBAChannel{};              // Fonts can store multiple glyphs in the same space on different RGBA channels. This value corresponds to R, G, B, or A.
     };
     std::unordered_map<uint16_t, SGlyph> mGlyphs;
 
     struct SKerningPair
     {
-        uint16_t CharacterA;  // Left character
-        uint16_t CharacterB;  // Right character
-        int32_t Adjust;       // The horizontal offset to apply to CharacterB if this pair is encountered, in points
+        uint16_t CharacterA{}; // Left character
+        uint16_t CharacterB{}; // Right character
+        int32_t Adjust{};      // The horizontal offset to apply to CharacterB if this pair is encountered, in points
     };
     std::vector<SKerningPair> mKerningTable; // The kerning table should be laid out in alphabetical order for the indices to work properly
 

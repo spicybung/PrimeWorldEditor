@@ -42,7 +42,7 @@ class CGameArea : public CResource
     struct SSectionNumber
     {
         CFourCC SectionID;
-        uint32_t Index;
+        uint32_t Index{};
     };
     std::vector<SSectionNumber> mSectionNumbers;
 
