@@ -157,11 +157,11 @@ void CStringCooker::WriteCorruptionSTRG(IOutputStream& STRG)
     // is reused, instead of duplicating the string data like MP1 and MP2 would have.
     struct SCookedLanguageData
     {
-        ELanguage Language;
+        ELanguage Language{};
         std::vector<uint32_t> StringOffsets;
-        uint32_t TotalSize;
+        uint32_t TotalSize{};
     };
-    std::vector<SCookedLanguageData> CookedLanguageData( mpStringTable->NumLanguages() );
+    std::vector<SCookedLanguageData> CookedLanguageData(mpStringTable->NumLanguages());
     size_t EnglishIdx = UINT32_MAX;
 
     for (size_t LanguageIdx = 0; LanguageIdx < mpStringTable->NumLanguages(); LanguageIdx++)
@@ -247,8 +247,8 @@ void CStringCooker::WriteNameTable(IOutputStream& STRG)
     // Build a list of name entries to put in the map
     struct SNameEntry
     {
-        uint32_t Offset;
-        uint32_t Index;
+        uint32_t Offset{};
+        uint32_t Index{};
         TString Name;
     };
     std::vector<SNameEntry> NameEntries;
