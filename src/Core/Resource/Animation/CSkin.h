@@ -7,8 +7,8 @@
 
 struct SVertexWeights
 {
-    TBoneIndices Indices;
-    TBoneWeights Weights;
+    TBoneIndices Indices{};
+    TBoneWeights Weights{};
 };
 
 class CSkin : public CResource
@@ -19,7 +19,7 @@ class CSkin : public CResource
     struct SVertGroup
     {
         SVertexWeights Weights;
-        uint32_t NumVertices;
+        uint32_t NumVertices{};
     };
     std::vector<SVertGroup> mVertGroups;
 
