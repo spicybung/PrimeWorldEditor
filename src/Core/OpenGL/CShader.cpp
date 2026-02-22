@@ -89,8 +89,9 @@ bool CShader::CompileVertexSource(std::string_view source)
         glDeleteShader(mVertexShader);
         return false;
     }
+
     // Debug dump
-    else if (gDebugDumpShaders == true)
+    if (gDebugDumpShaders)
     {
         const auto out = fmt::format("dump/VS_{:08d}.txt", gSuccessfulCompileCount);
         DumpShaderSource(mVertexShader, out);
@@ -128,7 +129,7 @@ bool CShader::CompilePixelSource(std::string_view source)
     }
 
     // Debug dump
-    if (gDebugDumpShaders == true)
+    if (gDebugDumpShaders)
     {
         const auto out = fmt::format("dump/PS_{:08d}.txt", gSuccessfulCompileCount);
         NLog::Debug("Debug shader dumping enabled; dumped to {}", out);
