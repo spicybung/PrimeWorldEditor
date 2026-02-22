@@ -45,7 +45,7 @@ std::unique_ptr<CSkeleton> CSkeletonLoader::LoadCINF(IInputStream& rCINF, CResou
     // Read bones
     struct SBoneInfo
     {
-        uint32_t ParentID;
+        uint32_t ParentID{};
         std::vector<uint32_t> ChildIDs;
     };
     std::vector<SBoneInfo> BoneInfo(NumBones);
