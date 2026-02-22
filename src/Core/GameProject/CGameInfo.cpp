@@ -14,8 +14,8 @@ constexpr char gkGameInfoExt[] = "xml";
 
 struct CGameInfo::SBuildInfo
 {
-    float Version;
-    ERegion Region;
+    float Version{};
+    ERegion Region{};
     TString Name;
 
     void Serialize(IArchive& rArc)
