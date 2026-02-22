@@ -89,8 +89,8 @@ public:
     // Accessors
     void SetProjectName(TString name) { mProjectName = std::move(name); }
 
-    const TString& Name() const                           { return mProjectName; }
-    std::span<const std::unique_ptr<CPackage>> Packages() { return mPackages; }
+    const TString& Name() const                                 { return mProjectName; }
+    std::span<const std::unique_ptr<CPackage>> Packages() const { return mPackages; }
     void AddPackage(std::unique_ptr<CPackage>&& package);
     CResourceStore* ResourceStore() const                { return mpResourceStore.get(); }
     CGameInfo* GameInfo() const                          { return mpGameInfo.get(); }

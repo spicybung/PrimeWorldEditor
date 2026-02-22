@@ -32,7 +32,7 @@
 #define PROCESS_SCANS 1
 #define PROCESS_FONTS 1
 
-void ApplyGeneratedName(CResourceEntry *pEntry, const TString& rkDir, const TString& rkName)
+static void ApplyGeneratedName(CResourceEntry* pEntry, const TString& rkDir, const TString& rkName)
 {
     ASSERT(pEntry != nullptr);
 
@@ -96,33 +96,13 @@ void ApplyGeneratedName(CResourceEntry *pEntry, const TString& rkDir, const TStr
     ASSERT(Success);
 }
 
-void GenerateAssetNames(CGameProject *pProj)
+static void ProcessPackages(const CGameProject* proj, CResourceStore* store)
 {
-    NLog::Debug("*** Generating Asset Names ***");
-    CResourceStore *pStore = pProj->ResourceStore();
-
-#if REVERT_AUTO_NAMES
-    // Revert all auto-generated asset names back to default to prevent name conflicts resulting in inconsistent results.
-    NLog::Debug("Reverting auto-generated names");
-
-    for (auto& resource : pProj->ResourceStore()->MakeResourceView())
-    {
-        const bool HasCustomDir = !resource->HasFlag(EResEntryFlag::AutoResDir);
-        const bool HasCustomName = !resource->HasFlag(EResEntryFlag::AutoResName);
-        if (HasCustomDir && HasCustomName)
-            continue;
-
-        const TString NewDir = (HasCustomDir ? resource->DirectoryPath() : pStore->DefaultResourceDirPath());
-        const TString NewName = (HasCustomName ? resource->Name() : resource->ID().ToString());
-        resource->MoveAndRename(NewDir, NewName, true, true);
-    }
-#endif
-
 #if PROCESS_PACKAGES
     // Generate names for package named resources
     NLog::Debug("Processing packages");
 
-    for (const auto& pkg : pProj->Packages())
+    for (const auto& pkg : proj->Packages())
     {
         for (const auto& res : pkg->NamedResources())
         {
@@ -130,18 +110,21 @@ void GenerateAssetNames(CGameProject *pProj)
                 continue;
 
             // Some of Retro's paks reference assets that don't exist, so we need this check here.
-            if (CResourceEntry* pRes = pStore->FindEntry(res.ID))
+            if (CResourceEntry* pRes = store->FindEntry(res.ID))
                 ApplyGeneratedName(pRes, pkg->Name(), res.Name);
         }
     }
 #endif
+}
 
+static void ProcessWorlds(const CGameProject* proj, CResourceStore* store)
+{
 #if PROCESS_WORLDS
     // Generate world/area names
     NLog::Debug("Processing worlds");
     const TString kWorldsRoot = "Worlds/";
 
-    for (const auto& It : pStore->MakeTypedResourceView(EResourceType::World))
+    for (const auto& It : store->MakeTypedResourceView(EResourceType::World))
     {
         // Set world name
         TResPtr<CWorld> pWorld = It->Load();
@@ -215,7 +198,7 @@ void GenerateAssetNames(CGameProject *pProj)
                 AreaName = AreaID.ToString();
 
             // Rename area stuff
-            CResourceEntry* pAreaEntry = pStore->FindEntry(AreaID);
+            CResourceEntry* pAreaEntry = store->FindEntry(AreaID);
             // Some DKCR worlds reference areas that don't exist
             if (!pAreaEntry)
                 continue;
@@ -231,7 +214,7 @@ void GenerateAssetNames(CGameProject *pProj)
                 ASSERT(pGroup != nullptr);
 
                 const CAssetID& MapID = pGroup->Dependencies()[iArea];
-                CResourceEntry* pMapEntry = pStore->FindEntry(MapID);
+                CResourceEntry* pMapEntry = store->FindEntry(MapID);
                 ASSERT(pMapEntry != nullptr);
 
                 ApplyGeneratedName(pMapEntry, WorldMasterDir, AreaName);
@@ -298,14 +281,14 @@ void GenerateAssetNames(CGameProject *pProj)
 
                         if (Name.StartsWith("POI_", false))
                         {
-                            const TIDString ScanIDString = (pProj->Game() <= EGame::Prime ? "0x4:0x0" : "0xBDBEC295:0xB94E9BE7");
+                            const TIDString ScanIDString = (proj->Game() <= EGame::Prime ? "0x4:0x0" : "0xBDBEC295:0xB94E9BE7");
                             const auto* pScanProperty = TPropCast<CAssetProperty>(pProperties->ChildByIDString(ScanIDString));
                             ASSERT(pScanProperty); // Temporary assert to remind myself later to update this code when uncooked properties are added to the template
 
                             if (pScanProperty)
                             {
                                 const CAssetID ScanID = pScanProperty->Value(inst->PropertyData());
-                                CResourceEntry* pEntry = pStore->FindEntry(ScanID);
+                                CResourceEntry* pEntry = store->FindEntry(ScanID);
 
                                 if (pEntry && !pEntry->IsNamed())
                                 {
@@ -320,7 +303,7 @@ void GenerateAssetNames(CGameProject *pProj)
                                     if (pScan)
                                     {
                                         const CAssetID StringID = pScan->ScanStringPropertyRef();
-                                        CResourceEntry* pStringEntry = pStore->FindEntry(StringID);
+                                        CResourceEntry* pStringEntry = store->FindEntry(StringID);
 
                                         if (pStringEntry)
                                         {
@@ -337,14 +320,14 @@ void GenerateAssetNames(CGameProject *pProj)
 
                         if (Name.EndsWith(".STRG", false))
                         {
-                            const uint32_t StringPropID = (pProj->Game() <= EGame::Prime ? 0x4 : 0x9182250C);
+                            const uint32_t StringPropID = (proj->Game() <= EGame::Prime ? 0x4 : 0x9182250C);
                             const auto* pStringProperty = TPropCast<CAssetProperty>(pProperties->ChildByID(StringPropID));
                             ASSERT(pStringProperty); // Temporary assert to remind myself later to update this code when uncooked properties are added to the template
 
                             if (pStringProperty)
                             {
                                 const CAssetID StringID = pStringProperty->Value(inst->PropertyData());
-                                CResourceEntry* pEntry = pStore->FindEntry(StringID);
+                                CResourceEntry* pEntry = store->FindEntry(StringID);
 
                                 if (pEntry && !pEntry->IsNamed())
                                 {
@@ -362,14 +345,14 @@ void GenerateAssetNames(CGameProject *pProj)
                     else if (inst->ObjectTypeID() == 0x0 || inst->ObjectTypeID() == FOURCC('ACTR') ||
                              inst->ObjectTypeID() == 0x8 || inst->ObjectTypeID() == FOURCC('PLAT'))
                     {
-                        const uint32_t ModelPropID = (pProj->Game() <= EGame::Prime ? (inst->ObjectTypeID() == 0x0 ? 0xA : 0x6) : 0xC27FFA8F);
+                        const uint32_t ModelPropID = (proj->Game() <= EGame::Prime ? (inst->ObjectTypeID() == 0x0 ? 0xA : 0x6) : 0xC27FFA8F);
                         const auto* pModelProperty = TPropCast<CAssetProperty>(pProperties->ChildByID(ModelPropID));
                         ASSERT(pModelProperty); // Temporary assert to remind myself later to update this code when uncooked properties are added to the template
 
                         if (pModelProperty)
                         {
                             const CAssetID ModelID = pModelProperty->Value(inst->PropertyData());
-                            CResourceEntry* pEntry = pStore->FindEntry(ModelID);
+                            CResourceEntry* pEntry = store->FindEntry(ModelID);
 
                             if (pEntry && !pEntry->IsCategorized())
                             {
@@ -384,9 +367,9 @@ void GenerateAssetNames(CGameProject *pProj)
             }
 
             // Other area assets
-            CResourceEntry* pPathEntry = pStore->FindEntry(pArea->PathID());
+            CResourceEntry* pPathEntry = store->FindEntry(pArea->PathID());
             CResourceEntry* pPoiMapEntry = pArea->PoiToWorldMap() ? pArea->PoiToWorldMap()->Entry() : nullptr;
-            CResourceEntry* pPortalEntry = pStore->FindEntry(pArea->PortalAreaID());
+            CResourceEntry* pPortalEntry = store->FindEntry(pArea->PortalAreaID());
 
             if (pPathEntry)
                 ApplyGeneratedName(pPathEntry, WorldMasterDir, AreaName);
@@ -397,17 +380,20 @@ void GenerateAssetNames(CGameProject *pProj)
             if (pPortalEntry)
                 ApplyGeneratedName(pPortalEntry, WorldMasterDir, AreaName);
 
-            pStore->DestroyUnreferencedResources();
+            store->DestroyUnreferencedResources();
 #endif
         }
     }
 #endif
+}
 
+static void ProcessModels(CResourceStore* store)
+{
 #if PROCESS_MODELS
     // Generate Model Lightmap names
     NLog::Debug("Processing model lightmaps");
 
-    for (const auto& It : pStore->MakeTypedResourceView(EResourceType::Model))
+    for (const auto& It : store->MakeTypedResourceView(EResourceType::Model))
     {
         auto* pModel = static_cast<CModel*>(It->Load());
         size_t LightmapNum = 0;
@@ -441,37 +427,43 @@ void GenerateAssetNames(CGameProject *pProj)
             }
         }
 
-        pStore->DestroyUnreferencedResources();
+        store->DestroyUnreferencedResources();
     }
 #endif
+}
 
+static void ProcessAudioGroups(CResourceStore* store)
+{
 #if PROCESS_AUDIO_GROUPS
     // Generate Audio Group names
     NLog::Debug("Processing audio groups");
     const TString kAudioGrpDir = "Audio/";
 
-    for (const auto& It : pStore->MakeTypedResourceView(EResourceType::AudioGroup))
+    for (const auto& entry : store->MakeTypedResourceView(EResourceType::AudioGroup))
     {
-        auto* pGroup = static_cast<CAudioGroup*>(It->Load());
+        const auto* pGroup = static_cast<const CAudioGroup*>(entry->Load());
         const TString& GroupName = pGroup->GroupName();
-        ApplyGeneratedName(It.get(), kAudioGrpDir, GroupName);
+        ApplyGeneratedName(entry.get(), kAudioGrpDir, GroupName);
     }
 #endif
+}
 
+static void ProcessAudioMacros(CResourceStore* store)
+{
 #if PROCESS_AUDIO_MACROS
     // Process audio macro/sample names
     NLog::Debug("Processing audio macros");
     const TString kSfxDir = "Audio/Uncategorized/";
 
-    for (const auto& It : pStore->MakeTypedResourceView(EResourceType::AudioMacro))
+    for (const auto& It : store->MakeTypedResourceView(EResourceType::AudioMacro))
     {
-        const auto* pMacro = static_cast<CAudioMacro*>(It->Load());
+        const auto* pMacro = static_cast<const CAudioMacro*>(It->Load());
         const TString& MacroName = pMacro->MacroName();
         ApplyGeneratedName(It.get(), kSfxDir, MacroName);
 
         for (const auto [idx, SampleID] : std::views::enumerate(pMacro->Samples()))
         {
-            auto* pSample = pStore->FindEntry(SampleID);
+            auto* pSample = store->FindEntry(SampleID);
             if (pSample == nullptr || pSample->IsNamed())
                 continue;
 
@@ -485,13 +477,16 @@ void GenerateAssetNames(CGameProject *pProj)
         }
     }
 #endif
+}
 
+static void ProcessAnimCharSets(const CGameProject* proj, CResourceStore* store)
+{
 #if PROCESS_ANIM_CHAR_SETS
     // Generate animation format names
     // Hacky syntax because animsets are under eAnimSet in MP1/2 and eCharacter in MP3/DKCR
     NLog::Debug("Processing animation data");
-    auto View = pProj->Game() <= EGame::Echoes ? pStore->MakeTypedResourceView(EResourceType::AnimSet) :
-                                                 pStore->MakeTypedResourceView(EResourceType::Character);
+    auto View = proj->Game() <= EGame::Echoes ? store->MakeTypedResourceView(EResourceType::AnimSet)
+                                              : store->MakeTypedResourceView(EResourceType::Character);
     for (const auto& It : View)
     {
         const TString SetDir = It->DirectoryPath();
@@ -502,15 +497,19 @@ void GenerateAssetNames(CGameProject *pProj)
         {
             const TString& CharName = character.Name;
 
-            if (idx == 0) NewSetName = CharName;
+            if (idx == 0)
+                NewSetName = CharName;
 
-            if (character.pModel)     ApplyGeneratedName(character.pModel->Entry(), SetDir, CharName);
-            if (character.pSkeleton)  ApplyGeneratedName(character.pSkeleton->Entry(), SetDir, CharName);
-            if (character.pSkin)      ApplyGeneratedName(character.pSkin->Entry(), SetDir, CharName);
+            if (character.pModel)
+                ApplyGeneratedName(character.pModel->Entry(), SetDir, CharName);
+            if (character.pSkeleton)
+                ApplyGeneratedName(character.pSkeleton->Entry(), SetDir, CharName);
+            if (character.pSkin)
+                ApplyGeneratedName(character.pSkin->Entry(), SetDir, CharName);
 
-            if (pProj->Game() >= EGame::CorruptionProto && pProj->Game() <= EGame::Corruption && character.ID == 0)
+            if (proj->Game() >= EGame::CorruptionProto && proj->Game() <= EGame::Corruption && character.ID == 0)
             {
-                CResourceEntry* pAnimDataEntry = pStore->FindEntry(character.AnimDataID);
+                CResourceEntry* pAnimDataEntry = store->FindEntry(character.AnimDataID);
 
                 if (pAnimDataEntry)
                 {
@@ -523,25 +522,23 @@ void GenerateAssetNames(CGameProject *pProj)
             {
                 if (rkOverlay.ModelID.IsValid() || rkOverlay.SkinID.IsValid())
                 {
-                    const TString TypeName = (
-                                rkOverlay.Type == EOverlayType::Frozen ? "frozen" :
-                                rkOverlay.Type == EOverlayType::Acid ? "acid" :
-                                rkOverlay.Type == EOverlayType::Hypermode ? "hypermode" :
-                                rkOverlay.Type == EOverlayType::XRay ? "xray" :
-                                ""
-                    );
+                    const TString TypeName = (rkOverlay.Type == EOverlayType::Frozen    ? "frozen"
+                                            : rkOverlay.Type == EOverlayType::Acid      ? "acid"
+                                            : rkOverlay.Type == EOverlayType::Hypermode ? "hypermode"
+                                            : rkOverlay.Type == EOverlayType::XRay      ? "xray"
+                                            : "");
                     ASSERT(TypeName != "");
 
                     const TString OverlayName = fmt::format("{}_{}", CharName, TypeName);
 
                     if (rkOverlay.ModelID.IsValid())
                     {
-                        CResourceEntry* pModelEntry = pStore->FindEntry(rkOverlay.ModelID);
+                        CResourceEntry* pModelEntry = store->FindEntry(rkOverlay.ModelID);
                         ApplyGeneratedName(pModelEntry, SetDir, OverlayName);
                     }
                     if (rkOverlay.SkinID.IsValid())
                     {
-                        CResourceEntry* pSkinEntry = pStore->FindEntry(rkOverlay.SkinID);
+                        CResourceEntry* pSkinEntry = store->FindEntry(rkOverlay.SkinID);
                         ApplyGeneratedName(pSkinEntry, SetDir, OverlayName);
                     }
                 }
@@ -569,13 +566,16 @@ void GenerateAssetNames(CGameProject *pProj)
         }
     }
 #endif
+}
 
+static void ProcessStrings(CResourceStore* store)
+{
 #if PROCESS_STRINGS
     // Generate string names
     NLog::Debug("Processing strings");
     const TString kStringsDir = "Strings/Uncategorized/";
 
-    for (const auto& It : pStore->MakeTypedResourceView(EResourceType::StringTable))
+    for (const auto& It : store->MakeTypedResourceView(EResourceType::StringTable))
     {
         if (It->IsNamed())
             continue;
@@ -598,11 +598,14 @@ void GenerateAssetNames(CGameProject *pProj)
         }
     }
 #endif
+}
 
+static void ProcessScans(const CGameProject* proj, CResourceStore* store)
+{
 #if PROCESS_SCANS
     // Generate scan names
     NLog::Debug("Processing scans");
-    for (const auto& It : pStore->MakeTypedResourceView(EResourceType::Scan))
+    for (const auto& It : store->MakeTypedResourceView(EResourceType::Scan))
     {
         if (It->IsNamed())
             continue;
@@ -613,46 +616,86 @@ void GenerateAssetNames(CGameProject *pProj)
         if (ScanName.IsEmpty())
         {
             const CAssetID StringID = pScan->ScanStringPropertyRef().Get();
-            if (const auto* pString = static_cast<const CStringTable*>(pStore->LoadResource(StringID, EResourceType::StringTable)))
+            if (const auto* pString = static_cast<const CStringTable*>(store->LoadResource(StringID, EResourceType::StringTable)))
                 ScanName = pString->Entry()->Name();
         }
 
         ApplyGeneratedName(pScan->Entry(), It->DirectoryPath(), ScanName);
 
-        if (!ScanName.IsEmpty() && pProj->Game() <= EGame::Prime)
+        if (!ScanName.IsEmpty() && proj->Game() <= EGame::Prime)
         {
             const auto& kParms = *static_cast<const SScanParametersMP1*>(pScan->ScanData().DataPointer());
 
-            if (CResourceEntry* pEntry = pStore->FindEntry(kParms.GuiFrame))
+            if (CResourceEntry* pEntry = store->FindEntry(kParms.GuiFrame))
                 ApplyGeneratedName(pEntry, pEntry->DirectoryPath(), "ScanFrame");
 
             for (size_t iImg = 0; iImg < kParms.ScanImages.size(); iImg++)
             {
                 const CAssetID ImageID = kParms.ScanImages[iImg].Texture;
-                if (CResourceEntry* pImgEntry = pStore->FindEntry(ImageID))
+                if (CResourceEntry* pImgEntry = store->FindEntry(ImageID))
                     ApplyGeneratedName(pImgEntry, pImgEntry->DirectoryPath(), fmt::format("{}_Image{}", ScanName, iImg));
             }
         }
     }
 #endif
+}
 
+static void ProcessFonts(CResourceStore* store)
+{
 #if PROCESS_FONTS
     // Generate font names
     NLog::Debug("Processing fonts");
-    for (const auto& It : pStore->MakeTypedResourceView(EResourceType::Font))
+    for (const auto& It : store->MakeTypedResourceView(EResourceType::Font))
     {
         if (auto* pFont = static_cast<CFont*>(It->Load()))
         {
             ApplyGeneratedName(pFont->Entry(), pFont->Entry()->DirectoryPath(), pFont->FontName());
-
 
             if (CTexture* pFontTex = pFont->Texture())
                 ApplyGeneratedName(pFontTex->Entry(), pFont->Entry()->DirectoryPath(), pFont->Entry()->Name() + "_tex");
         }
     }
 #endif
+}
 
-    pStore->RootDirectory()->DeleteEmptySubdirectories();
-    pStore->ConditionalSaveStore();
+static void RevertAutoNames(CResourceStore* store)
+{
+#if REVERT_AUTO_NAMES
+    // Revert all auto-generated asset names back to default to prevent name conflicts resulting in inconsistent results.
+    NLog::Debug("Reverting auto-generated names");
+
+    for (auto& resource : store->MakeResourceView())
+    {
+        const bool HasCustomDir = !resource->HasFlag(EResEntryFlag::AutoResDir);
+        const bool HasCustomName = !resource->HasFlag(EResEntryFlag::AutoResName);
+        if (HasCustomDir && HasCustomName)
+            continue;
+
+        const TString NewDir = (HasCustomDir ? resource->DirectoryPath() : store->DefaultResourceDirPath());
+        const TString NewName = (HasCustomName ? resource->Name() : resource->ID().ToString());
+        resource->MoveAndRename(NewDir, NewName, true, true);
+    }
+#endif
+}
+
+void GenerateAssetNames(CGameProject* proj)
+{
+    NLog::Debug("*** Generating Asset Names ***");
+    CResourceStore* store = proj->ResourceStore();
+
+    RevertAutoNames(store);
+
+    ProcessPackages(proj, store);
+    ProcessWorlds(proj, store);
+    ProcessModels(store);
+    ProcessAudioGroups(store);
+    ProcessAudioMacros(store);
+    ProcessAnimCharSets(proj, store);
+    ProcessStrings(store);
+    ProcessScans(proj, store);
+    ProcessFonts(store);
+
+    store->RootDirectory()->DeleteEmptySubdirectories();
+    store->ConditionalSaveStore();
     NLog::Debug("*** Asset Name Generation FINISHED ***");
 }

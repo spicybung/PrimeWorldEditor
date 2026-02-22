@@ -2,7 +2,7 @@
 #define ASSETNAMEGENERATION
 
 class CGameProject;
-void GenerateAssetNames(CGameProject *pProj);
+void GenerateAssetNames(CGameProject* proj);
 
 #endif // ASSETNAMEGENERATION
 
