@@ -183,8 +183,8 @@ std::unique_ptr<CMaterial> CMaterialLoader::ReadPrimeMaterial()
     const auto NumAnims = mpFile->ReadU32();
 
     struct SUVAnim {
-        int32_t Mode;
-        std::array<float, 4> Params;
+        int32_t Mode{};
+        std::array<float, 4> Params{};
     };
     std::vector <SUVAnim> Anims(NumAnims);
 
