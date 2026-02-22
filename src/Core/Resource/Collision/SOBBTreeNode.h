@@ -18,7 +18,7 @@ struct SOBBTreeNode
     virtual ~SOBBTreeNode() = default;
     CTransform4f        Transform;
     CVector3f           Radii;
-    EOBBTreeNodeType    NodeType;
+    EOBBTreeNodeType    NodeType{};
 };
 
 struct SOBBTreeBranch : public SOBBTreeNode
