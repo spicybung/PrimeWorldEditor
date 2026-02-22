@@ -135,7 +135,7 @@ void CPropertyNameGenerator::GenerateTask(const SPropertyNameGenerationParameter
     // the same hashes over and over. Init the stack with the first word.
     struct SWordCache
     {
-        uint32_t WordIndex;
+        uint32_t WordIndex{};
         CCRC32 Hash;
     };
     std::vector<SWordCache> WordCache;

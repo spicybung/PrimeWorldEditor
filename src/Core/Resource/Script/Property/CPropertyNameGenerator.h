@@ -25,18 +25,18 @@ enum class ENameCasing
 /** ID/type pairing for ID pool */
 struct SPropertyIdTypePair
 {
-    uint32_t ID;
-    const char* pkType;
+    uint32_t ID{};
+    const char* pkType{};
 };
 
 /** Parameters for using the name generator */
 struct SPropertyNameGenerationParameters
 {
     /** Number of concurrent tasks to run */
-    int ConcurrentTasks;
+    int ConcurrentTasks{};
 
     /** Maximum number of words per name; name generation will complete when all possibilities have been checked */
-    int MaxWords;
+    int MaxWords{};
 
     /** Prefix to include at the beginning of every name */
     TString Prefix;
@@ -45,7 +45,7 @@ struct SPropertyNameGenerationParameters
     TString Suffix;
 
     /** Name casing to use */
-    ENameCasing Casing;
+    ENameCasing Casing{};
 
     /** List of valid type suffixes */
     std::vector<TString> TypeNames;
@@ -54,25 +54,25 @@ struct SPropertyNameGenerationParameters
     std::vector<SPropertyIdTypePair> ValidIdPairs;
 
     /** Whether to exclude properties that already have accurate names from the generation results. */
-    bool ExcludeAccuratelyNamedProperties;
+    bool ExcludeAccuratelyNamedProperties{};
 
     /** Whether to test int properties as choices */
-    bool TestIntsAsChoices;
+    bool TestIntsAsChoices{};
 
     /** Whether to print the output from the generation process to the log */
-    bool PrintToLog;
+    bool PrintToLog{};
 };
 
 struct SPropertyNameGenerationTaskParameters
 {
     /** Task index */
-    uint32_t TaskIndex;
+    uint32_t TaskIndex{};
 
     /** Base word start index */
-    uint32_t StartWord;
+    uint32_t StartWord{};
 
     /** Base word end index */
-    uint32_t EndWord;
+    uint32_t EndWord{};
 };
 
 /** A generated property name */
@@ -80,7 +80,7 @@ struct SGeneratedPropertyName
 {
     TString Name;
     TString Type;
-    uint32_t ID;
+    uint32_t ID{};
     std::set<TString> XmlList;
 };
 
@@ -112,7 +112,7 @@ class CPropertyNameGenerator
     std::mutex mPropertyCheckMutex;
 
     /** Total number of tests to perform */
-    uint64_t TotalTests;
+    uint64_t TotalTests{};
 
     /** Current number of tests performed */
     std::atomic<uint64_t> TotalTestsDone{0};
