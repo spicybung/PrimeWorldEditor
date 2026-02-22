@@ -17,8 +17,8 @@ struct CAssetNameMap::SAssetNameInfo
     TString Name;
     TString Directory;
     CFourCC Type; // This is mostly just needed to verify no name conflicts
-    bool AutoGenName;
-    bool AutoGenDir;
+    bool AutoGenName{};
+    bool AutoGenDir{};
 
     TString FullPath() const
     {
