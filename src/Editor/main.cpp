@@ -19,6 +19,10 @@
 #include "Editor/MacOSExtras.h"
 #endif
 
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 // Redirect qDebug output to the log file
 static void QtLogRedirect(QtMsgType Type, const QMessageLogContext& /*rkContext*/, const QString& rkMessage)
 {
@@ -92,6 +96,22 @@ static std::string LocateLogPath()
 #endif
 }
 
+static void SetUpLogging()
+{
+#ifdef _WIN32
+    // Due to Win32 shenanigans, we need to attach to a parent process
+    // if one exists. Otherwise, debug logs when launching the application via
+    // the command line won't be received by spdlog.
+    ::AttachConsole(ATTACH_PARENT_PROCESS);
+#endif
+
+    const bool Initialized = NLog::InitLog(LocateLogPath());
+    if (!Initialized)
+        UICommon::ErrorMsg(nullptr, QCoreApplication::translate("Main", "Couldn't open log file. Logging will not work for this session."));
+
+    qInstallMessageHandler(QtLogRedirect);
+}
+
 class CMain
 {
 public:
@@ -127,10 +147,7 @@ public:
 #endif
 
         // Init log
-        bool Initialized = NLog::InitLog(LocateLogPath());
-        if (!Initialized)
-            UICommon::ErrorMsg(nullptr, QCoreApplication::translate("Main", "Couldn't open log file. Logging will not work for this session."));
-        qInstallMessageHandler(QtLogRedirect);
+        SetUpLogging();
 
         // Locate data directory and check write permissions
         gDataDir = LocateDataDirectory();
