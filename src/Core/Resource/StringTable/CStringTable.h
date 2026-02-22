@@ -36,7 +36,7 @@ class CStringTable : public CResource
 
     struct SLanguageData
     {
-        ELanguage Language;
+        ELanguage Language{};
         std::vector<SStringData> Strings;
 
         void Serialize(IArchive& Arc)
