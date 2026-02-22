@@ -11,7 +11,7 @@ class CAnimEventData : public CResource
 
     struct SEvent
     {
-        uint32_t mCharacterIndex;
+        uint32_t mCharacterIndex{};
         CAssetID mAssetRef;
     };
 
