@@ -153,19 +153,19 @@ void CSkeleton::Draw(FRenderOptions /*Options*/, const CBoneTransformData *pkDat
     }
 }
 
-std::pair<int, float> CSkeleton::RayIntersect(const CRay& rkRay, const CBoneTransformData& rkData) const
+CSkeleton::RayIntersectResult CSkeleton::RayIntersect(const CRay& rkRay, const CBoneTransformData& rkData) const
 {
-    std::pair<int, float> Out(-1, FLT_MAX);
+    RayIntersectResult Out{-1, FLT_MAX};
 
     for (const auto& pBone : mBones)
     {
         const CVector3f BonePos = pBone->TransformedPosition(rkData);
-        const std::pair<bool, float> Intersect = Math::RaySphereIntersection(rkRay, BonePos, skSphereRadius);
+        const auto [hit, distance] = Math::RaySphereIntersection(rkRay, BonePos, skSphereRadius);
 
-        if (Intersect.first && Intersect.second < Out.second)
+        if (hit && distance < Out.distance)
         {
-            Out.first = pBone->ID();
-            Out.second = Intersect.second;
+            Out.id = pBone->ID();
+            Out.distance = distance;
         }
     }
 

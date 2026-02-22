@@ -34,6 +34,12 @@ class CSkeleton : public CResource
     static constexpr float skSphereRadius = 0.025f;
 
 public:
+    struct RayIntersectResult
+    {
+        int id{};
+        float distance{};
+    };
+
     explicit CSkeleton(CResourceEntry *pEntry = nullptr);
     ~CSkeleton() override;
     void UpdateTransform(CBoneTransformData& rData, const CAnimation* pAnim, float Time, bool AnchorRoot);
@@ -42,7 +48,7 @@ public:
     uint32_t MaxBoneID() const;
 
     void Draw(FRenderOptions Options, const CBoneTransformData *pkData);
-    std::pair<int, float> RayIntersect(const CRay& rkRay, const CBoneTransformData& rkData) const;
+    RayIntersectResult RayIntersect(const CRay& rkRay, const CBoneTransformData& rkData) const;
 
     size_t NumBones() const  { return mBones.size(); }
     CBone* RootBone() const  { return mpRootBone; }
