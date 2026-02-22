@@ -34,7 +34,7 @@ struct SAttachment
 {
     TIDString AttachProperty; // Must point to a CMDL!
     TString LocatorName;
-    EAttachType AttachType;
+    EAttachType AttachType{};
 
     void Serialize(IArchive& Arc)
     {
@@ -66,14 +66,14 @@ public:
     {
         enum class EAssetType {
             Model, AnimParams, Billboard, Collision
-        } AssetType;
+        } AssetType{};
 
         enum class EAssetSource {
             Property, File
-        } AssetSource;
+        } AssetSource{};
 
         TIDString AssetLocation;
-        int32_t ForceNodeIndex; // Force animsets to use specific node instead of one from property
+        int32_t ForceNodeIndex{}; // Force animsets to use specific node instead of one from property
 
         void Serialize(IArchive& Arc)
         {
@@ -121,9 +121,9 @@ private:
     CStructProperty* mpLightParametersProperty = nullptr;
 
     struct SVolumeCondition {
-        uint32_t Value;
-        EVolumeShape Shape;
-        float Scale;
+        uint32_t Value{};
+        EVolumeShape Shape{};
+        float Scale{};
 
         void Serialize(IArchive& Arc)
         {
