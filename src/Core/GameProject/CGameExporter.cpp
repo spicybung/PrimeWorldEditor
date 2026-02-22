@@ -352,7 +352,7 @@ void CGameExporter::LoadPaks()
 
             struct SPakSection {
                 CFourCC Type;
-                uint32_t Size;
+                uint32_t Size{};
             };
             std::vector<SPakSection> PakSections;
 
@@ -480,8 +480,8 @@ void CGameExporter::LoadResource(const SResourceInstance& rkResource, std::vecto
                 const auto NumBlocks = Pak.ReadU32();
 
                 struct SCompressedBlock {
-                    uint32_t CompressedSize;
-                    uint32_t UncompressedSize;
+                    uint32_t CompressedSize{};
+                    uint32_t UncompressedSize{};
                 };
                 std::vector<SCompressedBlock> CompressedBlocks;
 
