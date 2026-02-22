@@ -113,7 +113,7 @@ struct SNameValue
     TString Name;
 
     /** Whether this name is valid */
-    bool IsValid;
+    bool IsValid{};
 
     /** List of all properties using this ID */
     /** @todo - make this an intrusively linked list */
