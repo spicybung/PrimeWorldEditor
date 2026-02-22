@@ -186,8 +186,8 @@ void CStringLoader::LoadNameTable(IInputStream& STRG)
 
     // Name definitions
     struct SNameDef {
-        uint32_t NameOffset;
-        uint32_t StringIndex;
+        uint32_t NameOffset{};
+        uint32_t StringIndex{};
     };
     std::vector<SNameDef> NameDefs(NameCount);
 
