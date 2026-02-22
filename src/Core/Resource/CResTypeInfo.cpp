@@ -166,11 +166,10 @@ void CResTypeInfo::CResTypeInfoFactory::AddExtension(CResTypeInfo *pType, CFourC
         ASSERT(!pType->IsInGame(static_cast<EGame>(GameIdx)));
 #endif
 
-        SGameExtension Info{static_cast<EGame>(GameIdx), Ext};
-        pType->mCookedExtensions.push_back(Info);
+        pType->mCookedExtensions.emplace_back(static_cast<EGame>(GameIdx), Ext);
     }
 
-    std::sort(pType->mCookedExtensions.begin(), pType->mCookedExtensions.end(), [](const SGameExtension& left, const SGameExtension& right) {
+    std::ranges::sort(pType->mCookedExtensions, [](const SGameExtension& left, const SGameExtension& right) {
         return left.Game < right.Game;
     });
 }
