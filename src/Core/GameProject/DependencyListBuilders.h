@@ -19,7 +19,7 @@ class CCharacterUsageMap
 {
     std::map<CAssetID, std::vector<bool>> mUsageMap;
     std::set<CAssetID> mStillLookingIDs;
-    CResourceStore *mpStore = nullptr;
+    CResourceStore* mpStore = nullptr;
     uint32_t mLayerIndex = UINT32_MAX;
     bool mIsInitialArea = true;
     bool mCurrentAreaAllowsDupes = false;
@@ -30,24 +30,24 @@ public:
     {}
 
     bool IsCharacterUsed(const CAssetID& rkID, size_t CharacterIndex) const;
-    bool IsAnimationUsed(const CAssetID& rkID, CSetAnimationDependency *pAnim) const;
-    void FindUsagesForAsset(CResourceEntry *pEntry);
-    void FindUsagesForArea(CWorld *pWorld, CResourceEntry *pEntry);
-    void FindUsagesForArea(CWorld *pWorld, size_t AreaIndex);
-    void FindUsagesForLayer(CResourceEntry *pAreaEntry, uint32_t LayerIndex);
+    bool IsAnimationUsed(const CAssetID& rkID, const CSetAnimationDependency* pAnim) const;
+    void FindUsagesForAsset(const CResourceEntry* pEntry);
+    void FindUsagesForArea(const CWorld* pWorld, const CResourceEntry* pEntry);
+    void FindUsagesForArea(const CWorld* pWorld, size_t AreaIndex);
+    void FindUsagesForLayer(const CResourceEntry* pAreaEntry, uint32_t LayerIndex);
     void Clear();
     void DebugPrintContents();
 
 protected:
-    void ParseDependencyNode(IDependencyNode *pNode);
+    void ParseDependencyNode(const IDependencyNode* pNode);
 };
 
 // ************ CPackageDependencyListBuilder ************
 class CPackageDependencyListBuilder
 {
-    const CPackage *mpkPackage;
-    CResourceStore *mpStore;
-    EGame mGame;
+    const CPackage* mpkPackage{};
+    CResourceStore* mpStore{};
+    EGame mGame{};
     TResPtr<CWorld> mpWorld;
     CAssetID mCurrentAnimSetID;
     CCharacterUsageMap mCharacterUsageMap;
@@ -69,17 +69,17 @@ public:
     }
 
     void BuildDependencyList(bool AllowDuplicates, std::list<CAssetID>& rOut);
-    void AddDependency(CResourceEntry *pCurEntry, const CAssetID& rkID, std::list<CAssetID>& rOut);
-    void EvaluateDependencyNode(CResourceEntry *pCurEntry, IDependencyNode *pNode, std::list<CAssetID>& rOut);
+    void AddDependency(const CResourceEntry* pCurEntry, const CAssetID& rkID, std::list<CAssetID>& rOut);
+    void EvaluateDependencyNode(const CResourceEntry* pCurEntry, const IDependencyNode* pNode, std::list<CAssetID>& rOut);
     void FindUniversalAreaAssets();
 };
 
 // ************ CAreaDependencyListBuilder ************
 class CAreaDependencyListBuilder
 {
-    CResourceEntry *mpAreaEntry;
-    CResourceStore *mpStore;
-    EGame mGame;
+    CResourceEntry* mpAreaEntry{};
+    CResourceStore* mpStore{};
+    EGame mGame{};
     CAssetID mCurrentAnimSetID;
     CCharacterUsageMap mCharacterUsageMap;
     std::set<CAssetID> mBaseUsedAssets;
@@ -96,16 +96,16 @@ public:
         ASSERT(mpAreaEntry->ResourceType() == EResourceType::Area);
     }
 
-    void BuildDependencyList(std::list<CAssetID>& rAssetsOut, std::list<uint32_t>& rLayerOffsetsOut, std::set<CAssetID> *pAudioGroupsOut = nullptr);
-    void AddDependency(const CAssetID& rkID, std::list<CAssetID>& rOut, std::set<CAssetID> *pAudioGroupsOut);
-    void EvaluateDependencyNode(CResourceEntry *pCurEntry, IDependencyNode *pNode, std::list<CAssetID>& rOut, std::set<CAssetID> *pAudioGroupsOut);
+    void BuildDependencyList(std::list<CAssetID>& rAssetsOut, std::list<uint32_t>& rLayerOffsetsOut, std::set<CAssetID>* pAudioGroupsOut = nullptr);
+    void AddDependency(const CAssetID& rkID, std::list<CAssetID>& rOut, std::set<CAssetID>* pAudioGroupsOut);
+    void EvaluateDependencyNode(const CResourceEntry* pCurEntry, const IDependencyNode* pNode, std::list<CAssetID>& rOut, std::set<CAssetID>* pAudioGroupsOut);
 };
 
 // ************ CAssetDependencyListBuilder ************
 //@todo merge with CAreaDependencyListBuilder; code is very similar
 class CAssetDependencyListBuilder
 {
-    CResourceEntry* mpResourceEntry;
+    CResourceEntry* mpResourceEntry{};
     CCharacterUsageMap mCharacterUsageMap;
     std::set<CAssetID> mUsedAssets;
     CAssetID mCurrentAnimSetID;
@@ -118,7 +118,7 @@ public:
 
     void BuildDependencyList(std::vector<CAssetID>& OutAssets);
     void AddDependency(const CAssetID& kID, std::vector<CAssetID>& Out);
-    void EvaluateDependencyNode(CResourceEntry* pCurEntry, IDependencyNode* pNode, std::vector<CAssetID>& Out);
+    void EvaluateDependencyNode(const CResourceEntry* pCurEntry, const IDependencyNode* pNode, std::vector<CAssetID>& Out);
 };
 
 #endif // DEPENDENCYLISTBUILDERS
