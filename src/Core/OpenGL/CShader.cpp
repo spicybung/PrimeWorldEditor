@@ -29,9 +29,9 @@ static void DumpShaderSource(GLuint shader, const std::string& out)
     std::ofstream ShaderOut(out);
 
     if (SourceLen > 0)
-        ShaderOut << Source.get();
+        ShaderOut.write(Source.get(), SourceLen - 1);
     if (LogLen > 0)
-        ShaderOut << pInfoLog.get();
+        ShaderOut.write(pInfoLog.get(), LogLen - 1);
 }
 
 CShader::CShader()
@@ -173,7 +173,7 @@ bool CShader::LinkShaders()
 
         std::ofstream LinkOut(out);
         if (LogLen > 0)
-            LinkOut << pInfoLog.get();
+            LinkOut.write(pInfoLog.get(), LogLen - 1);
 
         gFailedCompileCount++;
         glDeleteProgram(mProgram);
