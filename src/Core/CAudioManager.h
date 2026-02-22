@@ -14,10 +14,10 @@ class CStringList;
 
 struct SSoundInfo
 {
-    CAudioGroup* pAudioGroup;
+    CAudioGroup* pAudioGroup{};
     TString Name;
-    uint32_t SoundID;
-    uint16_t DefineID;
+    uint32_t SoundID{};
+    uint16_t DefineID{};
 };
 
 class CAudioManager
