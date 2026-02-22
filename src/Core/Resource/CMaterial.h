@@ -108,8 +108,8 @@ private:
     // Reuse shaders between materials that have identical TEV setups
     struct SMaterialShader
     {
-        int NumReferences;
-        CShader *pShader;
+        int NumReferences{};
+        CShader* pShader{};
     };
     static std::map<uint64_t, SMaterialShader> smShaderMap;
 
