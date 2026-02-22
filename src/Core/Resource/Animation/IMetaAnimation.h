@@ -116,11 +116,11 @@ public:
 class CMetaAnimBlend : public IMetaAnimation
 {
 protected:
-    EMetaAnimType mType;
+    EMetaAnimType mType{};
     std::unique_ptr<IMetaAnimation> mpMetaAnimA;
     std::unique_ptr<IMetaAnimation> mpMetaAnimB;
-    float mBlend;
-    bool mUnknown;
+    float mBlend{};
+    bool mUnknown{};
 
 public:
     CMetaAnimBlend(CResourceStore* store, EMetaAnimType Type, IInputStream& rInput, EGame Game);
@@ -139,7 +139,7 @@ public:
 struct SAnimProbabilityPair
 {
     std::unique_ptr<IMetaAnimation> pAnim;
-    uint32_t Probability;
+    uint32_t Probability{};
 };
 
 // CMetaAnimRandom - play random animation
