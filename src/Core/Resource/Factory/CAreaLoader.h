@@ -55,10 +55,10 @@ class CAreaLoader
     uint32_t mRSOBlockNum = UINT32_MAX;
 
     struct SCompressedCluster {
-        uint32_t BufferSize;
-        uint32_t DecompressedSize;
-        uint32_t CompressedSize;
-        uint32_t NumSections;
+        uint32_t BufferSize{};
+        uint32_t DecompressedSize{};
+        uint32_t CompressedSize{};
+        uint32_t NumSections{};
     };
 
     CAreaLoader();
