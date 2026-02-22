@@ -10,7 +10,7 @@
 
 struct CWaypointExtra::SWaypointLink
 {
-    CScriptNode* pWaypoint;
+    CScriptNode* pWaypoint{};
     CAABox LineAABB;
 };
 
