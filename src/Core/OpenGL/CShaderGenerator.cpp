@@ -376,24 +376,18 @@ static std::string GetColorInputExpression(const CMaterialPass* pPass, ETevColor
             Ret += pPass->TexSwapComp(i);
         return Ret;
     }
-    else if (iInput == ETevColorInput::kTextureAAA)
-    {
-        std::string Ret("Tex.");
-        for (uint32_t i = 0; i < 3; ++i)
-            Ret += pPass->TexSwapComp(3);
-        return Ret;
-    }
+
+    if (iInput == ETevColorInput::kTextureAAA)
+        return std::string("Tex.").append(3, pPass->TexSwapComp(3));
+
     return std::string(gkTevColor[iInput]);
 }
 
 static std::string GetAlphaInputExpression(const CMaterialPass* pPass, ETevAlphaInput iInput)
 {
     if (iInput == ETevAlphaInput::kTextureAlpha)
-    {
-        std::string Ret("Tex.");
-        Ret += pPass->TexSwapComp(3);
-        return Ret;
-    }
+        return std::string("Tex.").append(1, pPass->TexSwapComp(3));
+
     return std::string(gkTevAlpha[iInput]);
 }
 
