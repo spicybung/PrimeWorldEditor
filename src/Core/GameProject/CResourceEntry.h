@@ -68,7 +68,7 @@ public:
     TString CookedAssetPath(bool Relative = false) const;
     CFourCC CookedExtension() const;
     TString MetadataFilePath(bool Relative = false) const;
-    bool IsInDirectory(CVirtualDirectory *pDir) const;
+    bool IsInDirectory(const CVirtualDirectory *pDir) const;
     uint64_t Size() const;
     bool NeedsRecook() const;
     bool Save(bool SkipCacheSave = false, bool FlagForRecook = true);

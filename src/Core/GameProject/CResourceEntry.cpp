@@ -234,9 +234,9 @@ TString CResourceEntry::MetadataFilePath(bool Relative) const
     return CookedAssetPath(Relative) + ".rsmeta";
 }
 
-bool CResourceEntry::IsInDirectory(CVirtualDirectory *pDir) const
+bool CResourceEntry::IsInDirectory(const CVirtualDirectory* pDir) const
 {
-    CVirtualDirectory *pParentDir = mpDirectory;
+    const CVirtualDirectory* pParentDir = mpDirectory;
 
     while (pParentDir)
     {
