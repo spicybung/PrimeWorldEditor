@@ -83,10 +83,10 @@ public:
     void ExitPickMode();
 
     void NotifySelectionTransformed();
-    virtual void NotifyNodeAboutToBeSpawned();
-    virtual void NotifyNodeSpawned(CSceneNode *pNode);
-    virtual void NotifyNodeAboutToBeDeleted(CSceneNode *pNode);
-    virtual void NotifyNodeDeleted();
+    void NotifyNodeAboutToBeSpawned();
+    void NotifyNodeSpawned(CSceneNode *pNode);
+    void NotifyNodeAboutToBeDeleted(CSceneNode *pNode);
+    void NotifyNodeDeleted();
 
 signals:
     void InstanceLinksModified(const QList<CScriptObject*>& rkInstances);

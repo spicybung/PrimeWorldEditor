@@ -96,7 +96,6 @@ public:
 
 public slots:
     void EditorTick(float) override;
-    void NotifyNodeAboutToBeDeleted(CSceneNode *pNode) override;
     bool Save() override;
 
     void Cut();
@@ -153,6 +152,8 @@ private slots:
     void OnCameraSpeedChange(double Speed);
     void OnTransformSpinBoxModified(const CVector3f& Value);
     void OnTransformSpinBoxEdited(const CVector3f& Value);
+
+    void OnNodeAboutToBeDeleted(CSceneNode* node);
 
     void SelectAllTriggered();
     void InvertSelectionTriggered();

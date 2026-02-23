@@ -176,6 +176,7 @@ CWorldEditor::CWorldEditor(QWidget *parent)
     connect(this, &CWorldEditor::SelectionTransformed, this, &CWorldEditor::UpdateCameraOrbit);
     connect(this, &CWorldEditor::PickModeEntered, this, &CWorldEditor::OnPickModeEnter);
     connect(this, &CWorldEditor::PickModeExited, this, &CWorldEditor::OnPickModeExit);
+    connect(this, &INodeEditor::NodeAboutToBeDeleted, this, &CWorldEditor::OnNodeAboutToBeDeleted);
     connect(ui->TransformSpinBox, &WVectorEditor::ValueChanged, this, &CWorldEditor::OnTransformSpinBoxModified);
     connect(ui->TransformSpinBox, &WVectorEditor::EditingDone, this, &CWorldEditor::OnTransformSpinBoxEdited);
     connect(ui->CamSpeedSpinBox, &WDraggableSpinBox::valueChanged, this, &CWorldEditor::OnCameraSpeedChange);
@@ -375,14 +376,6 @@ void CWorldEditor::EditorTick(float)
 {
     // Update new link line
     UpdateNewLinkLine();
-}
-
-void CWorldEditor::NotifyNodeAboutToBeDeleted(CSceneNode *pNode)
-{
-    INodeEditor::NotifyNodeAboutToBeDeleted(pNode);
-
-    if (ui->MainViewport->HoverNode() == pNode)
-        ui->MainViewport->ResetHover();
 }
 
 bool CWorldEditor::Save()
@@ -1245,6 +1238,12 @@ void CWorldEditor::OnTransformSpinBoxEdited(const CVector3f&)
     else if (mGizmo.Mode() == CGizmo::EGizmoMode::Scale)  UndoStack().push(CScaleNodeCommand::End());
 
     UpdateGizmoUI();
+}
+
+void CWorldEditor::OnNodeAboutToBeDeleted(CSceneNode* node)
+{
+    if (ui->MainViewport->HoverNode() == node)
+        ui->MainViewport->ResetHover();
 }
 
 void CWorldEditor::SelectAllTriggered()
