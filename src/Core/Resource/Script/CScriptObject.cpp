@@ -58,12 +58,12 @@ void CScriptObject::CopyProperties(CScriptObject* pObject)
     ASSERT(pObject->Template() == Template());
     CSerialVersion Version(0, IArchive::skCurrentArchiveVersion, Template()->Game());
 
-    CVectorOutStream DataStream;
+    CVectorOutStream DataStream(std::endian::native);
     CBasicBinaryWriter DataWriter(&DataStream, Version);
-    Template()->Properties()->SerializeValue( pObject->PropertyData(), DataWriter );
+    Template()->Properties()->SerializeValue(pObject->PropertyData(), DataWriter);
 
-    CBasicBinaryReader DataReader(DataStream.Data(), DataStream.Size(), Version);
-    Template()->Properties()->SerializeValue( PropertyData(), DataReader );
+    CBasicBinaryReader DataReader(DataStream.Data(), DataStream.Size(), Version, std::endian::native);
+    Template()->Properties()->SerializeValue(PropertyData(), DataReader);
 }
 
  void CScriptObject::EvaluateProperties()
