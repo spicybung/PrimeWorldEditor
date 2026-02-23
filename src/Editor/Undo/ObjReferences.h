@@ -26,28 +26,29 @@
  * QList dependencies would need to be removed but they could easily be replaced with
  * std::list instead.
  */
+template <typename PtrClassName, typename DereferencedClassName>
+class CObjectList : public QList<PtrClassName>
+{
+    using base = QList<PtrClassName>;
 
-#define DEFINE_PTR_LIST_CLASS(ClassName, PtrClassName, DereferencedClassName) \
-    class ClassName : public QList<PtrClassName>             \
-    {                                                        \
-    public:                                                  \
-        ClassName() = default;                               \
-                                                             \
-        ClassName(const QList<DereferencedClassName>& rkIn)  \
-        {                                                    \
-             assign(rkIn.begin(), rkIn.end());               \
-        }                                                    \
-                                                             \
-        QList<DereferencedClassName> DereferenceList() const \
-        {                                                    \
-            QList<DereferencedClassName> Out;                \
-            Out.reserve(size());                             \
-            for (const PtrClassName& rkPtr : *this)          \
-                Out.push_back(*rkPtr);                       \
-                                                             \
-            return Out;                                      \
-        }                                                    \
-    };
+public:
+    CObjectList() = default;
+
+    CObjectList(const QList<DereferencedClassName>& rkIn)
+    {
+        base::assign(rkIn.begin(), rkIn.end());
+    }
+
+    QList<DereferencedClassName> DereferenceList() const
+    {
+        QList<DereferencedClassName> Out;
+        Out.reserve(base::size());
+        for (const PtrClassName& rkPtr : *this)
+            Out.push_back(*rkPtr);
+
+        return Out;
+    }
+};
 
 class CNodePtr
 {
@@ -151,9 +152,9 @@ public:
     }
 };
 
-DEFINE_PTR_LIST_CLASS(CNodePtrList, CNodePtr, CSceneNode*)
-DEFINE_PTR_LIST_CLASS(CInstancePtrList, CInstancePtr, CScriptObject*)
-DEFINE_PTR_LIST_CLASS(CLinkPtrList, CLinkPtr, CLink*)
+using CNodePtrList = CObjectList<CNodePtr, CSceneNode*>;
+using CInstancePtrList = CObjectList<CInstancePtr, CScriptObject*>;
+using CLinkPtrList = CObjectList<CLinkPtr, CLink*>;
 
 #endif // OBJREFERENCES
 
