@@ -53,8 +53,8 @@ public:
 class CNodePtr
 {
     uint32_t mNodeID;
-    CScene *mpScene;
-    bool mValid;
+    CScene* mpScene{};
+    bool mValid{};
 
 public:
     CNodePtr()                  { SetNode(nullptr); }
@@ -64,7 +64,7 @@ public:
     {
         mNodeID = pNode ? pNode->ID() : 0;
         mpScene = pNode ? pNode->Scene() : nullptr;
-        mValid = pNode ? true : false;
+        mValid = pNode != nullptr;
     }
 
     bool Valid() const       { return mValid; }
@@ -88,8 +88,8 @@ public:
 class CInstancePtr
 {
     CInstanceID mInstanceID;
-    CGameArea *mpArea;
-    bool mValid;
+    CGameArea* mpArea{};
+    bool mValid{};
 
 public:
     CInstancePtr()                      { SetInstance(nullptr); }
@@ -99,7 +99,7 @@ public:
     {
         mInstanceID = pInst ? pInst->InstanceID() : CInstanceID();
         mpArea = pInst ? pInst->Area() : nullptr;
-        mValid = pInst ? true : false;
+        mValid = pInst != nullptr;
     }
 
     CInstanceID InstanceID() const   { return mInstanceID; }
@@ -122,8 +122,8 @@ public:
 class CLinkPtr
 {
     CInstancePtr mpInstance;
-    uint32_t mLinkIndex;
-    bool mValid;
+    uint32_t mLinkIndex{};
+    bool mValid{};
 
 public:
     CLinkPtr()              { SetLink(nullptr); }
@@ -133,7 +133,7 @@ public:
     {
         mpInstance = pLink ? pLink->Sender() : 0;
         mLinkIndex = pLink ? pLink->SenderIndex() : 0;
-        mValid = pLink ? true : false;
+        mValid = pLink != nullptr;
     }
 
     uint32_t LinkIndex() const   { return mLinkIndex; }
