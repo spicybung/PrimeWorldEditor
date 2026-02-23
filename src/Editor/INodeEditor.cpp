@@ -283,6 +283,21 @@ void INodeEditor::NotifyNodeDeleted()
 }
 
 // ************ PUBLIC SLOTS ************
+void INodeEditor::OnLinksModified(const QList<CScriptObject*>& rkInstances)
+{
+    for (const CScriptObject* pInstance : rkInstances)
+    {
+        CScriptNode* pNode = mScene.NodeForInstance(pInstance);
+        if (!pNode)
+            continue;
+
+        pNode->LinksModified();
+    }
+
+    if (!rkInstances.isEmpty())
+        emit InstanceLinksModified(rkInstances);
+}
+
 void INodeEditor::OnSelectionModified()
 {
     UpdateSelectionUI();

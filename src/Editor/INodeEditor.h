@@ -14,6 +14,8 @@
 
 #include <memory>
 
+class CScriptObject;
+
 class INodeEditor : public IEditor
 {
     Q_OBJECT
@@ -87,6 +89,8 @@ public:
     virtual void NotifyNodeDeleted();
 
 signals:
+    void InstanceLinksModified(const QList<CScriptObject*>& rkInstances);
+
     void NodeAboutToBeSpawned();
     void NodeSpawned(CSceneNode *pNode);
     void NodeAboutToBeDeleted(CSceneNode *pNode);
@@ -100,6 +104,7 @@ signals:
     void PickModeHoverChanged(const SRayIntersection& rkRayIntersect, QMouseEvent *pEvent);
 
 public slots:
+    void OnLinksModified(const QList<CScriptObject*>& rkInstances);
     void OnSelectionModified();
     void OnGizmoMoved();
     virtual void UpdateGizmoUI() = 0;

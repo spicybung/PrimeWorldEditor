@@ -116,7 +116,6 @@ public slots:
     void OpenProjectSettings();
 
     void OnActiveProjectChanged(CGameProject *pProj);
-    void OnLinksModified(const QList<CScriptObject*>& rkInstances);
     void OnPropertyModified(IProperty *pProp);
     void SetSelectionActive(bool Active);
     void SetSelectionInstanceNames(const QString& rkNewName, bool IsDone);
@@ -181,7 +180,6 @@ signals:
     void LayersModified();
     void InstancesLayerAboutToChange();
     void InstancesLayerChanged(const QList<CScriptNode*>& rkInstanceList);
-    void InstanceLinksModified(const QList<CScriptObject*>& rkInstances);
     void PropertyModified(IProperty *pProp, CScriptObject* pObject);
 };
 

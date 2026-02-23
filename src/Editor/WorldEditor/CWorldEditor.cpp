@@ -586,21 +586,6 @@ void CWorldEditor::OnActiveProjectChanged(CGameProject *pProj)
     ChangeEditMode(eWEM_EditWorldInfo);
 }
 
-void CWorldEditor::OnLinksModified(const QList<CScriptObject*>& rkInstances)
-{
-    for (const CScriptObject* pInstance : rkInstances)
-    {
-        CScriptNode *pNode = mScene.NodeForInstance(pInstance);
-        if (!pNode)
-            continue;
-
-        pNode->LinksModified();
-    }
-
-    if (!rkInstances.isEmpty())
-        emit InstanceLinksModified(rkInstances);
-}
-
 void CWorldEditor::OnPropertyModified(IProperty *pProp)
 {
     bool ShouldUpdateSelection = false;

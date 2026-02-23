@@ -49,7 +49,7 @@ WModifyTab::WModifyTab(CWorldEditor *pEditor, QWidget *pParent)
     connect(ui->PropertyView, qOverload<IProperty*>(&CPropertyView::PropertyModified), mpWorldEditor, &CWorldEditor::OnPropertyModified);
     connect(mpWorldEditor, &CWorldEditor::MapChanged, this, &WModifyTab::OnMapChanged);
     connect(mpWorldEditor, &CWorldEditor::SelectionTransformed, this, &WModifyTab::OnWorldSelectionTransformed);
-    connect(mpWorldEditor, &CWorldEditor::InstanceLinksModified, this, &WModifyTab::OnInstanceLinksModified);
+    connect(mpWorldEditor, &INodeEditor::InstanceLinksModified, this, &WModifyTab::OnInstanceLinksModified);
     connect(mpWorldEditor->Selection(), &CNodeSelection::Modified, this, &WModifyTab::GenerateUI);
 
     ClearUI();
