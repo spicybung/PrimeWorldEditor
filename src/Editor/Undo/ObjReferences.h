@@ -52,12 +52,12 @@ public:
 
 class CNodePtr
 {
-    uint32_t mNodeID;
+    uint32_t mNodeID{};
     CScene* mpScene{};
     bool mValid{};
 
 public:
-    CNodePtr()                  { SetNode(nullptr); }
+    CNodePtr() = default;
     CNodePtr(CSceneNode *pNode) { SetNode(pNode); }
 
     void SetNode(CSceneNode *pNode)
@@ -92,7 +92,7 @@ class CInstancePtr
     bool mValid{};
 
 public:
-    CInstancePtr()                      { SetInstance(nullptr); }
+    CInstancePtr() = default;
     CInstancePtr(CScriptObject *pInst)  { SetInstance(pInst); }
 
     void SetInstance(CScriptObject *pInst)
@@ -126,7 +126,7 @@ class CLinkPtr
     bool mValid{};
 
 public:
-    CLinkPtr()              { SetLink(nullptr); }
+    CLinkPtr() = default;
     CLinkPtr(CLink *pLink)  { SetLink(pLink); }
 
     void SetLink(CLink *pLink)
