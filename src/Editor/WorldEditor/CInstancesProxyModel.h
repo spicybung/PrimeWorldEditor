@@ -12,10 +12,19 @@ public:
         setSortCaseSensitivity(Qt::CaseInsensitive);
     }
 
+    void sort(int column, Qt::SortOrder sortOrder = Qt::AscendingOrder) override
+    {
+        // Don't perform sorting via the Show column
+        if (column == 3)
+            return;
+
+        QSortFilterProxyModel::sort(column, sortOrder);
+    }
+
     bool lessThan(const QModelIndex& rkLeft, const QModelIndex& rkRight) const override
     {
-        // Don't sort from the top two levels and don't sort the Show column
-        if (rkLeft.parent() == QModelIndex() || rkLeft.parent().parent() == QModelIndex() || rkLeft.column() == 2)
+        // Don't sort from the top two levels
+        if (rkLeft.parent() == QModelIndex() || rkLeft.parent().parent() == QModelIndex())
         {
             if (sortOrder() == Qt::AscendingOrder)
                 return rkLeft.row() < rkRight.row();
