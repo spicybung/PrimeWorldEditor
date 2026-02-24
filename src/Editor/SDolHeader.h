@@ -5,42 +5,44 @@
 #include <Common/FileIO/IOutputStream.h>
 #include <Common/FileIO/IInputStream.h>
 
+#include <array>
+
 class SDolHeader
 {
 public:
-    static const size_t kNumTextSections = 7;
-    static const size_t kNumDataSections = 11;
-    static const size_t kNumSections = kNumTextSections + kNumDataSections;
+    static constexpr size_t kNumTextSections = 7;
+    static constexpr size_t kNumDataSections = 11;
+    static constexpr size_t kNumSections = kNumTextSections + kNumDataSections;
 
     struct Section
     {
-        uint32_t Offset;
-        uint32_t BaseAddress;
-        uint32_t Size;
+        uint32_t Offset{};
+        uint32_t BaseAddress{};
+        uint32_t Size{};
 
         bool IsEmpty() const {
             return Size == 0;
         }
     };
 
-    Section Sections[kNumSections];
-    uint32_t BssAddress;
-    uint32_t BssSize;
-    uint32_t EntryPoint;
+    std::array<Section, kNumSections> Sections;
+    uint32_t BssAddress{};
+    uint32_t BssSize{};
+    uint32_t EntryPoint{};
 
     explicit SDolHeader(IInputStream& rInput)
     {
-        for (size_t i = 0; i < kNumSections; ++i)
+        for (auto& section : Sections)
         {
-            Sections[i].Offset = rInput.ReadU32();
+            section.Offset = rInput.ReadU32();
         }
-        for (size_t i = 0; i < kNumSections; ++i)
+        for (auto& section : Sections)
         {
-            Sections[i].BaseAddress = rInput.ReadU32();
+            section.BaseAddress = rInput.ReadU32();
         }
-        for (size_t i = 0; i < kNumSections; ++i)
+        for (auto& section : Sections)
         {
-            Sections[i].Size = rInput.ReadU32();
+            section.Size = rInput.ReadU32();
         }
         BssAddress = rInput.ReadU32();
         BssSize = rInput.ReadU32();
@@ -49,17 +51,17 @@ public:
 
     void Write(IOutputStream& rOutput) const
     {
-        for (size_t i = 0; i < kNumSections; ++i)
+        for (const auto& section : Sections)
         {
-            rOutput.WriteU32(Sections[i].Offset);
+            rOutput.WriteU32(section.Offset);
         }
-        for (size_t i = 0; i < kNumSections; ++i)
+        for (const auto& section : Sections)
         {
-            rOutput.WriteU32(Sections[i].BaseAddress);
+            rOutput.WriteU32(section.BaseAddress);
         }
-        for (size_t i = 0; i < kNumSections; ++i)
+        for (const auto& section : Sections)
         {
-            rOutput.WriteU32(Sections[i].Size);
+            rOutput.WriteU32(section.Size);
         }
         rOutput.WriteU32(BssAddress);
         rOutput.WriteU32(BssSize);
@@ -91,9 +93,8 @@ public:
 
     uint32_t OffsetForAddress(uint32_t address) const
     {
-        for (size_t i = 0; i < kNumSections; ++i)
+        for (const auto& sec : Sections)
         {
-            const auto& sec = Sections[i];
             if (address > sec.BaseAddress && address < sec.BaseAddress + sec.Size)
             {
                 return sec.Offset + (address - sec.BaseAddress);
