@@ -89,6 +89,8 @@ public:
     void NotifyNodeDeleted();
 
 signals:
+    void InstancesLayerAboutToChange();
+    void InstancesLayerChanged(const QList<CScriptNode*>& rkInstanceList);
     void InstanceLinksModified(const QList<CScriptObject*>& rkInstances);
 
     void NodeAboutToBeSpawned();

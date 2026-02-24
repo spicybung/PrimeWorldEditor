@@ -179,8 +179,6 @@ private slots:
 signals:
     void MapChanged(CWorld *pNewWorld, CGameArea *pNewArea);
     void LayersModified();
-    void InstancesLayerAboutToChange();
-    void InstancesLayerChanged(const QList<CScriptNode*>& rkInstanceList);
     void PropertyModified(IProperty *pProp, CScriptObject* pObject);
 };
 
