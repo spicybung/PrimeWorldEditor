@@ -23,7 +23,7 @@ class CNodeCopyMimeData : public QMimeData
 public:
     struct SCopiedNode
     {
-        ENodeType Type;
+        ENodeType Type{};
         TString Name;
         CVector3f Position;
         CQuaternion Rotation;
