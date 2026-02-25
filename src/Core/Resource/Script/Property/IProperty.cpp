@@ -154,7 +154,7 @@ bool IProperty::ShouldSerialize() const
 void IProperty::Initialize(IProperty* pInParent, CScriptTemplate* pInTemplate, uint32_t InOffset)
 {
     // Make sure we only get initialized once.
-    ASSERT( (mFlags & EPropertyFlag::IsInitialized) == 0 );
+    ASSERT(!mFlags.HasFlag(EPropertyFlag::IsInitialized));
 
     mpParent = pInParent;
     mOffset = InOffset;

@@ -300,7 +300,7 @@ std::unique_ptr<CDependencyTree> CStringTable::BuildDependencyTree()
                         ParamString = ParamString.ChopFront(2);
                     }
 
-                    ASSERT(ParamString.Size() == IDLength * 2);
+                    ASSERT(ParamString.Size() == size_t(IDLength) * 2);
                     pTree->AddDependency(CAssetID::FromString(ParamString));
                 }
                 // Image
@@ -352,7 +352,7 @@ std::unique_ptr<CDependencyTree> CStringTable::BuildDependencyTree()
                                 Param = Param.ChopFront(2);
                             }
 
-                            ASSERT(Param.Size() == IDLength * 2);
+                            ASSERT(Param.Size() == size_t(IDLength) * 2);
                             pTree->AddDependency(CAssetID::FromString(Param));
                         }
                     }

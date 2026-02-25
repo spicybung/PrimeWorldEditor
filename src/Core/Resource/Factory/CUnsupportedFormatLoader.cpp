@@ -363,7 +363,7 @@ std::unique_ptr<CDependencyGroup> CUnsupportedFormatLoader::LoadFSMC(IInputStrea
 std::unique_ptr<CDependencyGroup> CUnsupportedFormatLoader::LoadHIER(IInputStream& rHIER, CResourceEntry *pEntry)
 {
     [[maybe_unused]] const CFourCC Magic(rHIER.ReadU32());
-    ASSERT(Magic == "HIER");
+    ASSERT(Magic == CFourCC("HIER"));
 
     const auto NumNodes = rHIER.ReadU32();
     auto pOut = std::make_unique<CDependencyGroup>(pEntry);

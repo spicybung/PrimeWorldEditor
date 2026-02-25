@@ -386,7 +386,7 @@ void CGameExporter::LoadPaks()
                 }
                 else if (PakSections[iSec].Type == CFourCC("RSHD"))
                 {
-                    ASSERT(PakSections[iSec + 1].Type == "DATA");
+                    ASSERT(PakSections[iSec + 1].Type == CFourCC("DATA"));
                     const auto DataStart = Next;
                     const auto NumResources = Pak.ReadU32();
 
@@ -475,7 +475,7 @@ void CGameExporter::LoadResource(const SResourceInstance& rkResource, std::vecto
             else
             {
                 [[maybe_unused]] const auto Magic = CFourCC(Pak.ReadU32());
-                ASSERT(Magic == "CMPD");
+                ASSERT(Magic == CFourCC("CMPD"));
 
                 const auto NumBlocks = Pak.ReadU32();
 

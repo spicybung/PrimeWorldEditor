@@ -48,13 +48,13 @@ struct CAssetNameMap::SAssetNameInfo
 CAssetNameMap::CAssetNameMap(EIDLength IDLength)
     : mIDLength(IDLength)
 {
-    ASSERT(mIDLength != kInvalidIDLength);
+    ASSERT(mIDLength != EIDLength::kInvalidIDLength);
 }
 
 CAssetNameMap::CAssetNameMap(EGame Game) 
     : mIDLength(CAssetID::GameIDLength(Game))
 {
-    ASSERT(mIDLength != kInvalidIDLength);
+    ASSERT(mIDLength != EIDLength::kInvalidIDLength);
 }
 
 CAssetNameMap::~CAssetNameMap() = default;
@@ -251,7 +251,7 @@ void CAssetNameMap::PostLoadValidate()
 
 TString CAssetNameMap::DefaultNameMapPath(EIDLength IDLength)
 {
-    ASSERT(IDLength != kInvalidIDLength);
+    ASSERT(IDLength != EIDLength::kInvalidIDLength);
     const char* const Suffix = (IDLength == EIDLength::k32Bit ? "32" : "64");
     return gDataDir + gkAssetMapPath + Suffix + '.' + gkAssetMapExt;
 }

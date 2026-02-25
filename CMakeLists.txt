@@ -10,8 +10,8 @@ set(CMAKE_CONFIGURATION_TYPES ${CMAKE_BUILD_TYPE})
 project(PrimeWorldEditor LANGUAGES C CXX)
 
 option(PWE_PUBLIC_RELEASE "Enable end-user deployment configuration for PWE" ON)
-if (PWE_PUBLIC_RELEASE)
-    add_compile_definitions(PUBLIC_RELEASE=1)
+if (PWE_PUBLIC_RELEASE AND "${CMAKE_BUILD_TYPE}" STREQUAL "Release")
+    add_compile_definitions(PUBLIC_RELEASE)
     message(STATUS "Enabled public release mode")
 endif()
 

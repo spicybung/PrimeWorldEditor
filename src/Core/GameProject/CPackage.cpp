@@ -410,7 +410,7 @@ void CPackage::CompareOriginalAssetList(const std::list<CAssetID>& rkNewList)
         Pak.Seek(0x44, SEEK_SET);
         [[maybe_unused]] const auto StringSecType = CFourCC(Pak.ReadU32());
         const auto StringSecSize = Pak.ReadU32();
-        ASSERT(StringSecType == "STRG");
+        ASSERT(StringSecType == CFourCC("STRG"));
 
         Pak.Seek(0x80 + StringSecSize, SEEK_SET);
 

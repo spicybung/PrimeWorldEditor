@@ -21,6 +21,7 @@
 #include <Core/Resource/CResource.h>
 #include <Core/Resource/CResTypeInfo.h>
 
+#include <QActionGroup>
 #include <QButtonGroup>
 #include <QCheckBox>
 #include <QInputDialog>
@@ -129,7 +130,7 @@ CResourceBrowser::CResourceBrowser(QWidget *pParent)
     pOptionsMenu->addAction(tr("Rebuild Database"), this, &CResourceBrowser::RebuildResourceDB);
     mpUI->OptionsToolButton->setMenu(pOptionsMenu);
 
-#if !PUBLIC_RELEASE
+#ifndef PUBLIC_RELEASE
     // Only add the store menu in debug builds. We don't want end users editing the editor store.
     pOptionsMenu->addSeparator();
     QMenu *pStoreMenu = pOptionsMenu->addMenu(tr("Set Store"));
@@ -140,7 +141,7 @@ CResourceBrowser::CResourceBrowser(QWidget *pParent)
     pProjStoreAction->setChecked(true);
     pEdStoreAction->setCheckable(true);
 
-    QActionGroup *pGroup = new QActionGroup(this);
+    auto* pGroup = new QActionGroup(this);
     pGroup->addAction(pProjStoreAction);
     pGroup->addAction(pEdStoreAction);
 #endif
