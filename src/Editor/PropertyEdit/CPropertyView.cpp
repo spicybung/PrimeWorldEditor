@@ -47,9 +47,12 @@ CPropertyView::CPropertyView(QWidget *pParent)
     connect(mpGenNamesForChildrenAction, &QAction::triggered, this, &CPropertyView::GenerateNamesForChildren);
 
     connect(this, &CPropertyView::expanded, this, &CPropertyView::SetPersistentEditors);
-    connect(this, &CPropertyView::clicked, [this](const QModelIndex& index) { edit(index); });
+    connect(this, &CPropertyView::clicked, this, [this](const QModelIndex& index) {
+        if ((model()->flags(index) & Qt::ItemIsEditable) != 0)
+            edit(index);
+    });
     connect(this, &CPropertyView::customContextMenuRequested, this, &CPropertyView::CreateContextMenu);
-    connect(mpModel, &CPropertyModel::rowsInserted, [this](const QModelIndex& index, int, int) { SetPersistentEditors(index); });
+    connect(mpModel, &CPropertyModel::rowsInserted, this, [this](const QModelIndex& index, int, int) { SetPersistentEditors(index); });
     connect(mpModel, &CPropertyModel::PropertyModified, this, &CPropertyView::OnPropertyModified);
 }
 
