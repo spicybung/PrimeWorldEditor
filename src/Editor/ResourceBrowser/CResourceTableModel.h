@@ -59,6 +59,8 @@ public:
 
 public slots:
     void RefreshAllIndices();
+
+private slots:
     void CheckAddResource(CResourceEntry *pEntry);
     void CheckRemoveResource(CResourceEntry *pEntry);
     void CheckAddDirectory(CVirtualDirectory *pDir);
