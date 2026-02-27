@@ -53,7 +53,7 @@ public:
     void undo() override
     {
         // Restore old state of object
-        CMemoryInStream In(&mOldData[0], mOldData.size(), std::endian::native);
+        CMemoryInStream In(mOldData.data(), mOldData.size(), std::endian::native);
         CBasicBinaryReader Reader(&In, CSerialVersion(0, 0, EGame::Invalid));
         mpObject->Serialize(Reader);
     }
@@ -68,21 +68,12 @@ public:
             mpObject->Serialize(Writer);
 
             // Obsolete command if memory buffers match
-            if (mIsActionComplete)
-            {
-                if (mOldData.size() == mNewData.size())
-                {
-                    if (memcmp(mOldData.data(), mNewData.data(), mNewData.size()) == 0)
-                    {
-                        setObsolete(true);
-                    }
-                }
-            }
+            if (mIsActionComplete && mOldData == mNewData)
+                setObsolete(true);
         }
-        // Subsequent calls - restore new state of object
-        else
+        else // Subsequent calls - restore new state of object
         {
-            CMemoryInStream In(&mNewData[0], mNewData.size(), std::endian::native);
+            CMemoryInStream In(mNewData.data(), mNewData.size(), std::endian::native);
             CBasicBinaryReader Reader(&In, CSerialVersion(0, 0, EGame::Invalid));
             mpObject->Serialize(Reader);
         }
@@ -98,16 +89,8 @@ public:
             mIsActionComplete = pkSerializeCommand->mIsActionComplete;
 
             // Obsolete command if memory buffers match
-            if (mIsActionComplete)
-            {
-                if (mOldData.size() == mNewData.size())
-                {
-                    if (memcmp(mOldData.data(), mNewData.data(), mNewData.size()) == 0)
-                    {
-                        setObsolete(true);
-                    }
-                }
-            }
+            if (mIsActionComplete && mOldData == mNewData)
+                setObsolete(true);
 
             return true;
         }
