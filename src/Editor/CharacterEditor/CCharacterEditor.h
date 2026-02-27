@@ -56,7 +56,7 @@ public:
     void SetSelectedBone(CBone *pBone);
     CCharacterEditorViewport* Viewport() const override;
 
-public slots:
+private slots:
     void ToggleGrid(bool Enable);
     void ToggleMeshVisible(bool Visible);
     void ToggleSkeletonVisible(bool Visible);
