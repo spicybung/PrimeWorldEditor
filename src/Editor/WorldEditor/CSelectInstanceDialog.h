@@ -33,7 +33,7 @@ public:
 
     CScriptObject* SelectedInstance() const;
 
-public slots:
+private slots:
     void OnTabChanged(int NewTabIndex);
     void OnTreeClicked(const QModelIndex& Index);
     void OnTreeDoubleClicked(const QModelIndex& Index);
