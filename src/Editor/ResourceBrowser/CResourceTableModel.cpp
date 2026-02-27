@@ -163,29 +163,27 @@ Qt::DropActions CResourceTableModel::supportedDropActions() const
 // ************ FUNCTIONALITY ************
 QModelIndex CResourceTableModel::GetIndexForEntry(const CResourceEntry *pEntry) const
 {
-    const auto Iter = std::find(mEntries.cbegin(), mEntries.cend(), pEntry);
-
-    if (Iter == mEntries.cend())
+    const auto iter = std::ranges::find(mEntries, pEntry);
+    if (iter == mEntries.cend())
         return {};
 
-    const int Index = std::distance(mEntries.begin(), Iter);
-    return index(mDirectories.size() + Index, 0);
+    const auto idx = std::distance(mEntries.begin(), iter);
+    return index(int(mDirectories.size() + idx), 0);
 }
 
 QModelIndex CResourceTableModel::GetIndexForDirectory(const CVirtualDirectory *pDir) const
 {
-    for (int DirIdx = 0; DirIdx < mDirectories.size(); DirIdx++)
-    {
-        if (mDirectories[DirIdx] == pDir)
-            return index(DirIdx, 0);
-    }
+    const auto iter = std::ranges::find(mDirectories, pDir);
+    if (iter == mDirectories.end())
+        return {};
 
-    return {};
+    const auto Index = std::distance(mDirectories.begin(), iter);
+    return index(int(Index), 0);
 }
 
 CResourceEntry* CResourceTableModel::IndexEntry(const QModelIndex& rkIndex) const
 {
-    const int Index = rkIndex.row() - mDirectories.size();
+    const auto Index = rkIndex.row() - mDirectories.size();
     return (Index >= 0 ? mEntries[Index] : nullptr);
 }
 
@@ -291,7 +289,7 @@ void CResourceTableModel::RefreshAllIndices()
 
     if (NumRows > 0 && NumCols > 0)
     {
-        emit dataChanged( index(0,0), index(NumRows-1, NumCols-1) );
+        emit dataChanged(index(0, 0), index(NumRows - 1, NumCols - 1));
     }
 }
 
@@ -310,12 +308,12 @@ void CResourceTableModel::CheckAddResource(CResourceEntry *pEntry)
 
 void CResourceTableModel::CheckRemoveResource(CResourceEntry *pEntry)
 {
-    const int Index = mEntries.indexOf(pEntry);
-
+    const auto Index = mEntries.indexOf(pEntry);
     if (Index == -1)
         return;
 
-    const int RowIndex = Index + mDirectories.size();
+    const auto RowIndex = int(Index + mDirectories.size());
+
     beginRemoveRows(QModelIndex(), RowIndex, RowIndex);
     mEntries.removeAt(Index);
     endRemoveRows();
@@ -334,7 +332,7 @@ void CResourceTableModel::CheckAddDirectory(CVirtualDirectory *pDir)
 
 void CResourceTableModel::CheckRemoveDirectory(CVirtualDirectory *pDir)
 {
-    const int Index = mDirectories.indexOf(pDir);
+    const auto Index = int(mDirectories.indexOf(pDir));
 
     if (Index == -1)
         return;
