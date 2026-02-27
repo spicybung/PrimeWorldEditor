@@ -60,7 +60,7 @@ public:
     EPickType GetRealPickType(bool AltPressed) const;
     QModelIndex GetSelectedRow() const;
 
-public slots:
+private slots:
     void UpdateModelHighlights();
     void SetHighlightSelected();
     void SetHighlightAll();
