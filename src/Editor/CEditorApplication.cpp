@@ -339,7 +339,7 @@ void CEditorApplication::TickEditors()
 
 void CEditorApplication::OnEditorClose()
 {
-    IEditor *pEditor = qobject_cast<IEditor*>(sender());
+    auto* pEditor = qobject_cast<IEditor*>(sender());
     ASSERT(pEditor);
 
     if (pEditor == mpWorldEditor)
@@ -350,14 +350,9 @@ void CEditorApplication::OnEditorClose()
     }
     else
     {
-        for (auto Iter = mEditingMap.begin(); Iter != mEditingMap.end(); Iter++)
-        {
-            if (Iter.value() == pEditor)
-            {
-                mEditingMap.erase(Iter);
-                break;
-            }
-        }
+        const auto iter = std::ranges::find(mEditingMap, pEditor);
+        if (iter != mEditingMap.end())
+            mEditingMap.erase(iter);
 
         mEditorWindows.removeOne(pEditor);
 
