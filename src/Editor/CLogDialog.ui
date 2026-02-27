@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>CErrorLogDialog</class>
- <widget class="QDialog" name="CErrorLogDialog">
+ <class>CLogDialog</class>
+ <widget class="QDialog" name="CLogDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,18 +11,18 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Errors</string>
+   <string>Log Window</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>The following errors were encountered while loading the area:</string>
+      <string>Log output:</string>
      </property>
     </widget>
    </item>
    <item>
-    <widget class="QTextEdit" name="ErrorLogTextEdit">
+    <widget class="QTextEdit" name="LogTextEdit">
      <property name="readOnly">
       <bool>true</bool>
      </property>

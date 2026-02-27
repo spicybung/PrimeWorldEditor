@@ -6,6 +6,7 @@
 #include "Editor/CEditorApplication.h"
 #include "Editor/CExportGameDialog.h"
 #include "Editor/CGeneratePropertyNamesDialog.h"
+#include "Editor/CLogDialog.h"
 #include "Editor/CNodeCopyMimeData.h"
 #include "Editor/CProjectSettingsDialog.h"
 #include "Editor/CQuickplayPropertyEditor.h"
@@ -214,6 +215,7 @@ CWorldEditor::CWorldEditor(QWidget *parent)
     connect(ui->ActionDrawSky, &QAction::triggered, this, &CWorldEditor::ToggleDrawSky);
     connect(ui->ActionGameMode, &QAction::triggered, this, &CWorldEditor::ToggleGameMode);
     connect(ui->ActionDisableAlpha, &QAction::triggered, this, &CWorldEditor::ToggleDisableAlpha);
+    connect(ui->ActionShowLog, &QAction::triggered, this, &CWorldEditor::OnShowLogClicked);
     connect(ui->ActionNoLighting, &QAction::triggered, this, &CWorldEditor::SetNoLighting);
     connect(ui->ActionBasicLighting, &QAction::triggered, this, &CWorldEditor::SetBasicLighting);
     connect(ui->ActionWorldLighting, &QAction::triggered, this, &CWorldEditor::SetWorldLighting);
@@ -1376,4 +1378,20 @@ void CWorldEditor::EditLayers()
     CLayerEditor Editor(this);
     Editor.SetArea(mpArea);
     Editor.exec();
+}
+
+void CWorldEditor::OnShowLogClicked(bool show)
+{
+    if (!mpLogDialog)
+    {
+        mpLogDialog = new CLogDialog(this);
+
+        // If the dialog is ever hidden or closed from within the dialog itself
+        // we need to adjust UI state accordingly.
+        connect(mpLogDialog, &QDialog::finished, [this] {
+            ui->ActionShowLog->setChecked(false);
+        });
+    }
+
+    mpLogDialog->setVisible(show);
 }

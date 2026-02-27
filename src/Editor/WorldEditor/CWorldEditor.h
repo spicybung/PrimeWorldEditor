@@ -19,6 +19,7 @@ class CCollisionRenderSettingsDialog;
 class CGameArea;
 class CGeneratePropertyNamesDialog;
 class CLinkDialog;
+class CLogDialog;
 class CPoiMapSidebar;
 class CScriptEditSidebar;
 class CScriptObject;
@@ -75,6 +76,8 @@ class CWorldEditor : public INodeEditor
     CPoiMapSidebar* mpPoiMapSidebar;
 
     QAction* mpPoiMapAction;
+
+    CLogDialog* mpLogDialog = nullptr;
 
 public:
     explicit CWorldEditor(QWidget *parent = nullptr);
@@ -175,6 +178,8 @@ private slots:
     void IncrementGizmo();
     void DecrementGizmo();
     void EditLayers();
+
+    void OnShowLogClicked(bool show);
 
 signals:
     void MapChanged(CWorld *pNewWorld, CGameArea *pNewArea);
