@@ -28,7 +28,7 @@ public:
     explicit CQuickplayPropertyEditor(SQuickplayParameters& Parameters, QWidget* pParent = nullptr);
     ~CQuickplayPropertyEditor() override;
 
-public slots:
+private slots:
     void BrowseForDolphin();
     void OnDolphinPathChanged(const QString& kNewPath);
     void OnBootToAreaToggled(bool Enabled);
