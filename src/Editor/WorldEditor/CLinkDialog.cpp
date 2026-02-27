@@ -50,8 +50,11 @@ void CLinkDialog::NewLink(CScriptObject *pSender, CScriptObject *pReceiver)
     mpEditLink = nullptr;
     SetSender(pSender);
     SetReceiver(pReceiver);
-    if (pSender)   ui->SenderStateComboBox->setCurrentIndex(0);
-    if (pReceiver) ui->ReceiverMessageComboBox->setCurrentIndex(0);
+
+    if (pSender)
+        ui->SenderStateComboBox->setCurrentIndex(0);
+    if (pReceiver)
+        ui->ReceiverMessageComboBox->setCurrentIndex(0);
 }
 
 void CLinkDialog::EditLink(CLink *pLink)
@@ -70,17 +73,18 @@ void CLinkDialog::EditLink(CLink *pLink)
 
 void CLinkDialog::SetGame(CGameTemplate *pGame)
 {
-    if (mpGame != pGame)
-    {
-        mpGame = pGame;
-        mSenderStateModel.SetGameTemplate(pGame);
-        mReceiverMessageModel.SetGameTemplate(pGame);
-    }
+    if (mpGame == pGame)
+        return;
+
+    mpGame = pGame;
+    mSenderStateModel.SetGameTemplate(pGame);
+    mReceiverMessageModel.SetGameTemplate(pGame);
 }
 
 void CLinkDialog::SetSender(CScriptObject *pSender)
 {
-    bool HadSender = mpSender != nullptr;
+    const bool HadSender = mpSender != nullptr;
+
     mpSender = pSender;
     mSenderStateModel.SetScriptTemplate(pSender ? pSender->Template() : nullptr);
     UpdateSenderNameLabel();
@@ -88,7 +92,9 @@ void CLinkDialog::SetSender(CScriptObject *pSender)
 
     if (pSender)
     {
-        if (!HadSender) ui->SenderStateComboBox->setCurrentIndex(0);
+        if (!HadSender)
+            ui->SenderStateComboBox->setCurrentIndex(0);
+
         ui->SenderStateComboBox->setEnabled(true);
     }
     else
@@ -100,7 +106,8 @@ void CLinkDialog::SetSender(CScriptObject *pSender)
 
 void CLinkDialog::SetReceiver(CScriptObject *pReceiver)
 {
-    bool HadReceiver = mpReceiver != nullptr;
+    const bool HadReceiver = mpReceiver != nullptr;
+
     mpReceiver = pReceiver;
     mReceiverMessageModel.SetScriptTemplate(pReceiver ? pReceiver->Template() : nullptr);
     UpdateReceiverNameLabel();
@@ -108,7 +115,9 @@ void CLinkDialog::SetReceiver(CScriptObject *pReceiver)
 
     if (pReceiver)
     {
-        if (!HadReceiver) ui->ReceiverMessageComboBox->setCurrentIndex(0);
+        if (!HadReceiver)
+            ui->ReceiverMessageComboBox->setCurrentIndex(0);
+
         ui->ReceiverMessageComboBox->setEnabled(true);
     }
     else
@@ -164,13 +173,12 @@ void CLinkDialog::accept()
 
     if (!mpEditLink)
     {
-        CAddLinkCommand *pCmd = new CAddLinkCommand(mpEditor, Link);
+        auto* pCmd = new CAddLinkCommand(mpEditor, Link);
         mpEditor->UndoStack().push(pCmd);
     }
-
     else if (Link != *mpEditLink)
     {
-        CEditLinkCommand *pCmd = new CEditLinkCommand(mpEditor, mpEditLink, Link);
+        auto* pCmd = new CEditLinkCommand(mpEditor, mpEditLink, Link);
         mpEditor->UndoStack().push(pCmd);
     }
 
@@ -187,7 +195,7 @@ void CLinkDialog::OnSwapClicked()
 
 void CLinkDialog::OnPickFromViewportClicked()
 {
-    QPushButton *pButton = qobject_cast<QPushButton*>(sender());
+    const auto* pButton = qobject_cast<QPushButton*>(sender());
 
     if (pButton && pButton->isChecked())
     {
@@ -195,7 +203,7 @@ void CLinkDialog::OnPickFromViewportClicked()
         connect(mpEditor, &CWorldEditor::PickModeClick, this, &CLinkDialog::OnPickModeClick);
         connect(mpEditor, &CWorldEditor::PickModeExited, this, &CLinkDialog::OnPickModeExit);
 
-        QPushButton *pOtherButton = (pButton == ui->SenderPickFromViewport ? ui->ReceiverPickFromViewport : ui->SenderPickFromViewport);
+        auto* pOtherButton = (pButton == ui->SenderPickFromViewport ? ui->ReceiverPickFromViewport : ui->SenderPickFromViewport);
         pOtherButton->setChecked(false);
 
         mIsPicking = true;
@@ -208,7 +216,7 @@ void CLinkDialog::OnPickFromViewportClicked()
 
 void CLinkDialog::OnPickModeClick(const SRayIntersection& rkHit, QMouseEvent* /*pEvent*/)
 {
-    CScriptNode *pScript = static_cast<CScriptNode*>(rkHit.pNode);
+    auto* pScript = static_cast<CScriptNode*>(rkHit.pNode);
 
     if (ui->SenderPickFromViewport->isChecked())
         SetSender(pScript->Instance());
@@ -231,13 +239,13 @@ void CLinkDialog::OnPickFromListClicked()
 {
     CSelectInstanceDialog Dialog(mpEditor, this);
     Dialog.exec();
-    CScriptObject *pResult = Dialog.SelectedInstance();
 
-    if (pResult)
-    {
-        if (sender() == ui->SenderPickFromList)
-            SetSender(pResult);
-        else
-            SetReceiver(pResult);
-    }
+    CScriptObject* pResult = Dialog.SelectedInstance();
+    if (!pResult)
+        return;
+
+    if (sender() == ui->SenderPickFromList)
+        SetSender(pResult);
+    else
+        SetReceiver(pResult);
 }
