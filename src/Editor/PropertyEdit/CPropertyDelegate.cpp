@@ -25,7 +25,7 @@
 // This macro should be used on every widget where changes should be reflected in realtime and not just when the edit is finished.
 #define CONNECT_RELAY(Widget, Index, Signal) \
     do { \
-        CPropertyRelay *pRelay = new CPropertyRelay(Widget, Index); \
+        auto* pRelay = new CPropertyRelay(Widget, Index); \
         connect(Widget, Signal, pRelay, &CPropertyRelay::OnWidgetEdited); \
         connect(pRelay, &CPropertyRelay::WidgetEdited, this, &CPropertyDelegate::WidgetEdited); \
     } while (false)
@@ -50,7 +50,9 @@ void CPropertyDelegate::SetPropertyModel(CPropertyModel* pModel)
 
 QWidget* CPropertyDelegate::createEditor(QWidget* pParent, const QStyleOptionViewItem& /*rkOption*/, const QModelIndex& rkIndex) const
 {
-    if (!mpModel) return nullptr;
+    if (!mpModel)
+        return nullptr;
+
     IProperty *pProp = mpModel->PropertyForIndex(rkIndex, false);
     QWidget *pOut = nullptr;
 
@@ -172,7 +174,7 @@ QWidget* CPropertyDelegate::createEditor(QWidget* pParent, const QStyleOptionVie
     else if (rkIndex.internalId() & 0x80000000)
     {
         pProp = mpModel->PropertyForIndex(rkIndex, true);
-        EPropertyType Type = mpModel->GetEffectiveFieldType(pProp);
+        const EPropertyType Type = mpModel->GetEffectiveFieldType(pProp);
 
         // Handle character
         if (Type == EPropertyType::AnimationSet)
@@ -191,7 +193,7 @@ QWidget* CPropertyDelegate::createEditor(QWidget* pParent, const QStyleOptionVie
     if (pOut)
     {
         pOut->setFocusPolicy(Qt::StrongFocus);
-        QSize Size = mpModel->data(rkIndex, Qt::SizeHintRole).toSize();
+        const QSize Size = mpModel->data(rkIndex, Qt::SizeHintRole).toSize();
         pOut->setFixedHeight(Size.height());
     }
 
@@ -217,7 +219,6 @@ void CPropertyDelegate::setEditorData(QWidget *pEditor, const QModelIndex &rkInd
 
                 switch (Type)
                 {
-
                 case EPropertyType::Bool:
                 {
                     auto* pCheckBox = static_cast<QCheckBox*>(pEditor);
@@ -340,7 +341,7 @@ void CPropertyDelegate::setEditorData(QWidget *pEditor, const QModelIndex &rkInd
         else if (rkIndex.internalId() & 0x80000000)
         {
             pProp = mpModel->PropertyForIndex(rkIndex, true);
-            EPropertyType Type = mpModel->GetEffectiveFieldType(pProp);
+            const EPropertyType Type = mpModel->GetEffectiveFieldType(pProp);
 
             if (Type == EPropertyType::AnimationSet)
             {
@@ -549,7 +550,7 @@ bool CPropertyDelegate::eventFilter(QObject *pObject, QEvent *pEvent)
 {
     if (pEvent->type() == QEvent::Wheel)
     {
-        QWidget *pWidget = static_cast<QWidget*>(pObject);
+        auto* pWidget = static_cast<QWidget*>(pObject);
 
         if (!pWidget->hasFocus())
             return true;
@@ -649,7 +650,7 @@ void CPropertyDelegate::SetCharacterModelData(QWidget *pEditor, const QModelInde
     }
     else if (Type == EPropertyType::Int)
     {
-        int UnkIndex = (Params.Version() <= EGame::Echoes ? rkIndex.row() - 2 : rkIndex.row() - 1);
+        const int UnkIndex = (Params.Version() <= EGame::Echoes ? rkIndex.row() - 2 : rkIndex.row() - 1);
         Params.SetUnknown(UnkIndex, static_cast<WIntegralSpinBox*>(pEditor)->value());
     }
 
