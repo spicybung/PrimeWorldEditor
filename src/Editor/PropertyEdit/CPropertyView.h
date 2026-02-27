@@ -41,7 +41,7 @@ public:
 
     CPropertyModel* PropertyModel() const { return mpModel; }
 
-public slots:
+private slots:
     void SetPersistentEditors(const QModelIndex& rkIndex);
     void ClosePersistentEditors(const QModelIndex& rkIndex);
     void OnPropertyModified(const QModelIndex& rkIndex);
