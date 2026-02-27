@@ -1,6 +1,7 @@
 #include "Editor/CErrorLogDialog.h"
 #include "ui_CErrorLogDialog.h"
 
+#include <Common/Log.h>
 #include "Editor/UICommon.h"
 
 #include <spdlog/spdlog.h>
@@ -14,11 +15,10 @@ CErrorLogDialog::CErrorLogDialog(QWidget *pParent)
     connect(ui->CloseButton, &QPushButton::clicked, this, &CErrorLogDialog::close);
 
     constexpr int max_lines = 300;
-    auto axio = spdlog::get("axio");
-    axio->sinks().push_back(std::make_shared<spdlog::sinks::qt_color_sink_mt>(ui->ErrorLogTextEdit, max_lines, false, true));
+    NLog::Get()->sinks().push_back(std::make_shared<spdlog::sinks::qt_color_sink_mt>(ui->ErrorLogTextEdit, max_lines, false, true));
 }
 
 CErrorLogDialog::~CErrorLogDialog()
 {
-    spdlog::get("axio")->sinks().pop_back();
+    NLog::Get()->sinks().pop_back();
 }
