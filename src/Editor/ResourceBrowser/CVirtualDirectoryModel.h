@@ -40,14 +40,16 @@ public:
     CVirtualDirectory* IndexDirectory(const QModelIndex& rkIndex) const;
     void SetRoot(CVirtualDirectory *pDir);
 
+public slots:
+    void FinishModelChanges();
+
 protected:
     std::optional<std::pair<QModelIndex, int>> GetProposedIndex(const QString& Path) const;
 
-public slots:
+private slots:
     void OnDirectoryAboutToBeMoved(const CVirtualDirectory *pDir, const QString& NewPath);
     void OnDirectoryAboutToBeCreated(const QString& DirPath);
     void OnDirectoryAboutToBeDeleted(const CVirtualDirectory *pDir);
-    void FinishModelChanges();
 };
 
 #endif // CVIRTUALDIRECTORYMODEL
