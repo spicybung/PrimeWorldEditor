@@ -98,6 +98,10 @@ public:
     void SetInspectedEntry(CResourceEntry *pEntry) { mpInspectedEntry = pEntry; }
 
 public slots:
+    void ClearFilters();
+    bool Delete(QList<CResourceEntry*> Resources, QList<CVirtualDirectory*> Directories);
+
+private slots:
     void RefreshResources();
     void RefreshDirectories();
     void UpdateDescriptionLabel();
@@ -107,7 +111,6 @@ public slots:
     void OnSortModeChanged(int Index);
     void OnCreateAssetAction();
     bool CreateDir();
-    bool Delete(QList<CResourceEntry*> Resources, QList<CVirtualDirectory*> Directories);
     void OnSearchStringChanged(const QString& SearchString);
     void OnDirectorySelectionChanged(const QModelIndex& rkNewIndex);
     void OnDoubleClickTable(const QModelIndex& Index);
@@ -124,7 +127,6 @@ public slots:
     void ExportAssetNames();
     void RebuildResourceDB();
 
-    void ClearFilters();
     void ResetSearch();
     void ResetTypeFilter();
     void OnFilterTypeBoxTicked(bool Checked);
