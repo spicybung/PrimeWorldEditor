@@ -44,7 +44,7 @@ public:
 
         OutPointers.resize(mInstances.size());
 
-        for (int i = 0; i < mInstances.size(); i++)
+        for (qsizetype i = 0; i < mInstances.size(); i++)
             OutPointers[i] = mInstances[i]->PropertyData();
     }
 };
