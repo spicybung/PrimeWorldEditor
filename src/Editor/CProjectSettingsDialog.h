@@ -29,7 +29,7 @@ public:
     explicit CProjectSettingsDialog(QWidget *pParent = nullptr);
     ~CProjectSettingsDialog() override;
 
-public slots:
+private slots:
     void ActiveProjectChanged(CGameProject *pProj);
     void GameNameChanged();
     void SetupPackagesList();
