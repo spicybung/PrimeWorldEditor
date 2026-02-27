@@ -59,7 +59,14 @@ public:
     // Accessors
     CStringTable* StringTable() const { return mpStringTable; }
 
+signals:
+    void StringNameEdited();
+    void StringEdited();
+
 public slots:
+    void OnMoveString(int StringIndex, int NewIndex);
+
+private slots:
     void UpdateUI();
     void OnStringSelected(const QModelIndex& kIndex);
     void OnLanguageChanged(int LanguageIndex);
@@ -67,16 +74,11 @@ public slots:
     void OnStringTextEdited();
     void OnAddString();
     void OnRemoveString();
-    void OnMoveString(int StringIndex, int NewIndex);
     
     void IncrementStringIndex();
     void DecrementStringIndex();
     void IncrementLanguageIndex();
     void DecrementLanguageIndex();
-
-signals:
-    void StringNameEdited();
-    void StringEdited();
 };
 
 #endif // CSTRINGEDITOR_H
