@@ -117,14 +117,9 @@ void CPoiMapModel::RemoveMapping(const QModelIndex& rkIndex, const CModelNode *p
     const auto iter = mModelMap.find(pPOI);
 
     if (iter != mModelMap.cend())
-    {
         iter->removeOne(pNode);
-        mpPoiToWorld->RemovePoiMeshMap(pPOI->Instance()->InstanceID(), pNode->FindMeshID());
-    }
-    else
-    {
-        mpPoiToWorld->RemovePoiMeshMap(pPOI->Instance()->InstanceID(), pNode->FindMeshID());
-    }
+
+    mpPoiToWorld->RemovePoiMeshMap(pPOI->Instance()->InstanceID(), pNode->FindMeshID());
 }
 
 bool CPoiMapModel::IsPoiTracked(const CScriptNode* pPOI) const
