@@ -25,7 +25,7 @@ public:
     explicit CSelectResourcePanel(CResourceSelector *pSelector);
     ~CSelectResourcePanel() override;
 
-public slots:
+private slots:
     void FocusChanged(QWidget *pOld, QWidget *pNew);
     void SearchStringChanged(const QString& SearchString);
     void ResourceClicked(const QModelIndex& Index);
