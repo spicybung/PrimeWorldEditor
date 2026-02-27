@@ -132,13 +132,12 @@ bool CPoiMapModel::IsModelMapped(const QModelIndex& rkIndex, const CModelNode *p
     if (!pNode)
         return false;
 
-    const CScriptNode* pPOI = PoiNodePointer(rkIndex);
+    const auto* pPOI = PoiNodePointer(rkIndex);
     const auto iter = mModelMap.constFind(pPOI);
+    if (iter == mModelMap.cend())
+        return false;
 
-    if (iter != mModelMap.cend())
-        return iter->contains(pNode);
-
-    return false;
+    return iter->contains(pNode);
 }
 
 CScriptNode* CPoiMapModel::PoiNodePointer(const QModelIndex& rkIndex) const
