@@ -57,7 +57,7 @@ public:
     bool ExportSucceeded() const { return mExportSuccess; }
     const QString& ProjectPath() const  { return mNewProjectPath; }
 
-public slots:
+private slots:
     void BrowseOutputDirectory();
     void BrowseAssetNameMap();
     void BrowseGameEditorInfo();
