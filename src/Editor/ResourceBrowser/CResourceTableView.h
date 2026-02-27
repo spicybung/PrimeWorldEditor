@@ -20,7 +20,7 @@ public:
 
     void dragEnterEvent(QDragEnterEvent *pEvent) override;
 
-public slots:
+private slots:
     void DeleteSelected();
 };
 
