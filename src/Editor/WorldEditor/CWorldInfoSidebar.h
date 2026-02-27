@@ -25,7 +25,7 @@ public:
     explicit CWorldInfoSidebar(CWorldEditor *pEditor);
     ~CWorldInfoSidebar() override;
 
-public slots:
+private slots:
     void OnActiveProjectChanged(const CGameProject* pProj);
     void OnAreaFilterStringChanged(const QString& rkFilter);
     void OnWorldTreeClicked(const QModelIndex& Index);
