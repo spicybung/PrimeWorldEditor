@@ -15,7 +15,7 @@ class CValidityLabel : public QLabel
     QString mInvalidString;
 
     /** Whether we are displaying the valid or invalid string */
-    bool mValid;
+    bool mValid{};
 
 public:
     explicit CValidityLabel(QWidget* pParent = nullptr)
