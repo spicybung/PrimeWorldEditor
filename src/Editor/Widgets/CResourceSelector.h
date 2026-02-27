@@ -65,21 +65,22 @@ public:
     const CResTypeFilter& TypeFilter() const { return mTypeFilter; }
     bool IsEditable() const                  { return mIsEditable; }
 
+signals:
+    void ResourceChanged(CResourceEntry* pNewRes);
+
 public slots:
+    void Clear();
+
+private slots:
     void CreateContextMenu(const QPoint& rkPoint);
     void Select();
     void Find();
-    void Clear();
     void EditAsset();
     void CopyName();
     void CopyPath();
     void OnResourceChanged();
     void OnResourceMoved(CResourceEntry *pEntry);
     void UpdateUI();
-
-signals:
-    void ResourceChanged(CResourceEntry *pNewRes);
 };
 
 #endif // CRESOURCESELECTOR
-
