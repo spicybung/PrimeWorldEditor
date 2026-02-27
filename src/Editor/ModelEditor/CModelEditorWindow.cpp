@@ -103,8 +103,8 @@ CModelEditorWindow::CModelEditorWindow(CModel *pModel, QWidget *pParent)
     connect(ui->CameraModeButton, &QPushButton::clicked, this, &CModelEditorWindow::ToggleCameraMode);
     connect(ui->ToggleGridButton, &QPushButton::toggled, this, &CModelEditorWindow::ToggleGrid);
 
-    connect(ui->SetSelectionComboBox, &QComboBox::currentIndexChanged, this, qOverload<int>(&CModelEditorWindow::UpdateUI));
-    connect(ui->MatSelectionComboBox, &QComboBox::currentIndexChanged, this, qOverload<int>(&CModelEditorWindow::UpdateUI));
+    connect(ui->SetSelectionComboBox, &QComboBox::currentIndexChanged, this, &CModelEditorWindow::UpdateUI);
+    connect(ui->MatSelectionComboBox, &QComboBox::currentIndexChanged, this, &CModelEditorWindow::UpdateUI);
     connect(ui->EnableTransparencyCheck, &QCheckBox::toggled, this, qOverload<int>(&CModelEditorWindow::UpdateMaterial));
     connect(ui->EnablePunchthroughCheck, &QCheckBox::toggled, this, qOverload<int>(&CModelEditorWindow::UpdateMaterial));
     connect(ui->EnableReflectionCheck, &QCheckBox::toggled, this, qOverload<int>(&CModelEditorWindow::UpdateMaterial));
