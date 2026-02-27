@@ -58,7 +58,7 @@ CRotateNodeCommand::~CRotateNodeCommand() = default;
 
 int CRotateNodeCommand::id() const
 {
-    return (int) EUndoCommand::RotateNodeCmd;
+    return int(EUndoCommand::RotateNodeCmd);
 }
 
 bool CRotateNodeCommand::mergeWith(const QUndoCommand *pkOther)
@@ -66,7 +66,7 @@ bool CRotateNodeCommand::mergeWith(const QUndoCommand *pkOther)
     if (mCommandEnded)
         return false;
 
-    if (pkOther->id() == (int) EUndoCommand::RotateNodeCmd)
+    if (pkOther->id() == int(EUndoCommand::RotateNodeCmd))
     {
         const auto* pkCmd = static_cast<const CRotateNodeCommand*>(pkOther);
 
