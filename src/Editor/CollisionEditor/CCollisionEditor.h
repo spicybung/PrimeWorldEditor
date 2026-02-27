@@ -36,7 +36,7 @@ public:
 
     CCollisionEditorViewport* Viewport() const override;
 
-public slots:
+private slots:
     void OnGridToggled(bool Enabled);
     void OnOrbitToggled(bool Enabled);
     void OnOBBTreeDepthChanged(int NewValue);
