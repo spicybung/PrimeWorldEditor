@@ -2,6 +2,9 @@
 
 #include "Editor/Undo/UndoCommands.h"
 #include <Core/SRayIntersection.h>
+
+#include <QActionGroup>
+#include <QComboBox>
 #include <QMouseEvent>
 
 INodeEditor::INodeEditor(QWidget *pParent)

@@ -8,13 +8,13 @@
 #include <Core/Scene/CScene.h>
 
 #include <QAction>
-#include <QActionGroup>
-#include <QComboBox>
 #include <QList>
 
 #include <memory>
 
 class CScriptObject;
+class QActionGroup;
+class QComboBox;
 
 class INodeEditor : public IEditor
 {
