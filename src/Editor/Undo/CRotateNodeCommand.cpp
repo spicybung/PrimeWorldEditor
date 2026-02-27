@@ -63,7 +63,8 @@ int CRotateNodeCommand::id() const
 
 bool CRotateNodeCommand::mergeWith(const QUndoCommand *pkOther)
 {
-    if (mCommandEnded) return false;
+    if (mCommandEnded)
+        return false;
 
     if (pkOther->id() == (int) EUndoCommand::RotateNodeCmd)
     {
@@ -92,7 +93,8 @@ bool CRotateNodeCommand::mergeWith(const QUndoCommand *pkOther)
 
 void CRotateNodeCommand::undo()
 {
-    if (!mpEditor) return;
+    if (!mpEditor)
+        return;
 
     for (SNodeRotate& Rotate : mNodeList)
     {
@@ -106,7 +108,8 @@ void CRotateNodeCommand::undo()
 
 void CRotateNodeCommand::redo()
 {
-    if (!mpEditor) return;
+    if (!mpEditor)
+        return;
 
     for (SNodeRotate& Rotate : mNodeList)
     {
@@ -120,7 +123,7 @@ void CRotateNodeCommand::redo()
 
 CRotateNodeCommand* CRotateNodeCommand::End()
 {
-    CRotateNodeCommand *pCmd = new CRotateNodeCommand();
+    auto* pCmd = new CRotateNodeCommand();
     pCmd->mCommandEnded = true;
     return pCmd;
 }
