@@ -21,7 +21,7 @@ public:
     explicit CCollisionRenderSettingsDialog(CWorldEditor *pEditor, QWidget *pParent = nullptr);
     ~CCollisionRenderSettingsDialog() override;
 
-public slots:
+private slots:
     void SetupWidgets();
     void OnHideMaskChanged(const QString& NewMask);
     void OnHighlightMaskChanged(const QString& NewMask);
