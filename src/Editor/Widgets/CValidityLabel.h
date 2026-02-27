@@ -31,10 +31,10 @@ public:
     }
 
     /** Configure the strings to display */
-    void SetValidityText(const QString& rkValidText, const QString& rkInvalidText)
+    void SetValidityText(QString rkValidText, QString rkInvalidText)
     {
-        mValidString = rkValidText;
-        mInvalidString = rkInvalidText;
+        mValidString = std::move(rkValidText);
+        mInvalidString = std::move(rkInvalidText);
         setText(mValid ? mValidString : mInvalidString);
     }
 
