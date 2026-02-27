@@ -42,7 +42,7 @@ public:
     const QList<CModelNode*>& GetPoiMeshList(const QModelIndex& rkIndex);
     const QList<CModelNode*>& GetPoiMeshList(const CScriptNode* pPOI);
 
-public slots:
+private slots:
     void OnMapChange(CWorld*, CGameArea *pArea);
 };
 
