@@ -25,7 +25,7 @@ public:
 
     void SetArea(CGameArea *pArea);
 
-public slots:
+private slots:
     void SetCurrentIndex(int Index);
     void EditLayerName(const QString& rkName);
     void EditLayerActive(bool Active);
