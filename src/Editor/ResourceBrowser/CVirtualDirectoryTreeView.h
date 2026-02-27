@@ -20,7 +20,7 @@ public:
     void dragEnterEvent(QDragEnterEvent *pEvent) override;
     void setModel(QAbstractItemModel *pModel) override;
 
-public slots:
+private slots:
     void OnDirectoryAboutToBeMoved(const CVirtualDirectory *pDir);
     void OnDirectoryMoved(const CVirtualDirectory *pDir);
 };
