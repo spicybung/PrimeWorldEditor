@@ -34,9 +34,6 @@ CSelectInstanceDialog::CSelectInstanceDialog(CWorldEditor *pEditor, QWidget *pPa
     ui->TypesTreeView->header()->resizeSection(0, Col0Width);
     ui->TypesTreeView->header()->resizeSection(1, Col1Width);
 
-    ui->LayersTreeView->expand(mLayersProxyModel.index(0, 0));
-    ui->TypesTreeView->expand(mTypesProxyModel.index(0, 0));
-
     ui->ButtonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
 
     connect(ui->TabWidget, &QTabWidget::currentChanged, this, &CSelectInstanceDialog::OnTabChanged);
@@ -49,6 +46,10 @@ CSelectInstanceDialog::CSelectInstanceDialog(CWorldEditor *pEditor, QWidget *pPa
     // signal/slot setups), so give both models a punt to load relevant data.
     mLayersModel.LoadForDialog(gpEdApp->ActiveProject());
     mTypesModel.LoadForDialog(gpEdApp->ActiveProject());
+
+    // Expand the top nodes to reduce needing to click through the trees
+    ui->LayersTreeView->expand(mLayersProxyModel.index(0, 0));
+    ui->TypesTreeView->expand(mTypesProxyModel.index(0, 0));
 }
 
 CSelectInstanceDialog::~CSelectInstanceDialog() = default;
