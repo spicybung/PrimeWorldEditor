@@ -619,7 +619,7 @@ void CInstancesModel::GenerateList()
                 mTemplateList.push_back(pTemp);
         }
 
-        std::sort(mTemplateList.begin(), mTemplateList.end(), [](const CScriptTemplate *pLeft, const CScriptTemplate *pRight) {
+        std::ranges::sort(mTemplateList, [](const CScriptTemplate *pLeft, const CScriptTemplate *pRight) {
             return pLeft->Name() < pRight->Name();
         });
     }
