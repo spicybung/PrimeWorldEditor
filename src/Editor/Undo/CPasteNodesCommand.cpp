@@ -32,7 +32,10 @@ void CPasteNodesCommand::undo()
         CScriptObject *pInst = (pNode->NodeType() == ENodeType::Script ? static_cast<CScriptNode*>(pNode)->Instance() : nullptr);
         mpEditor->NotifyNodeAboutToBeDeleted(pNode);
         mpEditor->Scene()->DeleteNode(pNode);
-        if (pInst) mpEditor->ActiveArea()->DeleteInstance(pInst);
+
+        if (pInst)
+            mpEditor->ActiveArea()->DeleteInstance(pInst);
+
         mpEditor->NotifyNodeDeleted();
     }
 
