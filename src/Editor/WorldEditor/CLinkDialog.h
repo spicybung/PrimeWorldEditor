@@ -52,7 +52,7 @@ public:
     bool IsPickingSender() const { return mIsPicking && ui->SenderPickFromViewport->isChecked(); }
     bool IsPickingReceiver() const { return mIsPicking && ui->ReceiverPickFromViewport->isChecked(); }
 
-public slots:
+private slots:
     void accept() override;
     void OnSwapClicked();
     void OnPickFromViewportClicked();
