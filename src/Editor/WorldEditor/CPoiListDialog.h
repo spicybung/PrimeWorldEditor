@@ -47,7 +47,7 @@ public:
 
     const QList<CScriptNode*>& Selection() const { return mSelection; }
 
-public slots:
+private slots:
     void OnOkClicked();
     void OnCancelClicked();
 };
