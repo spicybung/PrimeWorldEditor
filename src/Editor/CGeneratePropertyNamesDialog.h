@@ -62,7 +62,7 @@ public:
     /** Populate the ID pool with the children of the given property */
     void AddChildrenToIDPool(IProperty* pProperty, bool Recursive);
 
-public slots:
+private slots:
     /** Show event override */
     void showEvent(QShowEvent* pEvent) override;
 
