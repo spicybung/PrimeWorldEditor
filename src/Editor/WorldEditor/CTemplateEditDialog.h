@@ -40,21 +40,20 @@ public:
 signals:
     void PerformedTypeConversion();
 
-public slots:
+protected:
+    void UpdateDescription(const TString& rkNewDesc);
+    void UpdateTypeName(const TString& kNewTypeName, bool AllowOverride);
+    void FindEquivalentProperties(IProperty *pProperty);
+
+private slots:
     void ApplyChanges();
     void RefreshTypeNameOverride();
 
-protected slots:
     void ConvertPropertyType(EPropertyType Type);
     void ConvertToInt();
     void ConvertToChoice();
     void ConvertToSound();
     void ConvertToFlags();
-
-protected:
-    void UpdateDescription(const TString& rkNewDesc);
-    void UpdateTypeName(const TString& kNewTypeName, bool AllowOverride);
-    void FindEquivalentProperties(IProperty *pProperty);
 };
 
 #endif // CTEMPLATEEDITDIALOG_H
