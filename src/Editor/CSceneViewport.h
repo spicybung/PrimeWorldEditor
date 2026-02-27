@@ -77,18 +77,18 @@ public:
     void SetLinkLineEnabled(bool Enable)                                     { mLinkLineEnabled = Enable; }
     void SetLinkLine(const CVector3f& rkPointA, const CVector3f& rkPointB)   { mLinkLine.SetPoints(rkPointA, rkPointB); }
 
-protected:
-    void CreateContextMenu();
-    QMouseEvent CreateMouseEvent();
-    void FindConnectedObjects(CInstanceID InstanceID, bool SearchOutgoing, bool SearchIncoming, QList<CInstanceID>& rIDList);
-
 signals:
     void InputProcessed(const SRayIntersection& rkIntersect, QMouseEvent *pEvent);
     void ViewportClick(const SRayIntersection& rkIntersect, QMouseEvent *pEvent);
     void GizmoMoved();
     void CameraOrbit();
 
-protected slots:
+private:
+    void CreateContextMenu();
+    QMouseEvent CreateMouseEvent() const;
+    void FindConnectedObjects(CInstanceID InstanceID, bool SearchOutgoing, bool SearchIncoming, QList<CInstanceID>& rIDList);
+
+private slots:
     void CheckUserInput() override;
     void Paint() override;
     void ContextMenu(QContextMenuEvent *pEvent) override;

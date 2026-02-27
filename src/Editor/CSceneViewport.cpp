@@ -238,7 +238,7 @@ void CSceneViewport::CreateContextMenu()
     mpContextMenu->insertMenu(mpHideSelectionSeparator, mpSelectConnectedMenu);
 }
 
-QMouseEvent CSceneViewport::CreateMouseEvent()
+QMouseEvent CSceneViewport::CreateMouseEvent() const
 {
     return QMouseEvent(QEvent::MouseMove, mapFromGlobal(QCursor::pos()), QCursor::pos(), Qt::NoButton, qApp->mouseButtons(), qApp->keyboardModifiers());
 }
