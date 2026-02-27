@@ -41,7 +41,7 @@ CTranslateNodeCommand::~CTranslateNodeCommand() = default;
 
 int CTranslateNodeCommand::id() const
 {
-    return (int) EUndoCommand::TranslateNodeCmd;
+    return int(EUndoCommand::TranslateNodeCmd);
 }
 
 bool CTranslateNodeCommand::mergeWith(const QUndoCommand *pkOther)
@@ -49,7 +49,7 @@ bool CTranslateNodeCommand::mergeWith(const QUndoCommand *pkOther)
     if (mCommandEnded)
         return false;
 
-    if (pkOther->id() == (int) EUndoCommand::TranslateNodeCmd)
+    if (pkOther->id() == int(EUndoCommand::TranslateNodeCmd))
     {
         const auto* pkCmd = static_cast<const CTranslateNodeCommand*>(pkOther);
 
@@ -97,7 +97,7 @@ void CTranslateNodeCommand::redo()
 
 CTranslateNodeCommand* CTranslateNodeCommand::End()
 {
-    CTranslateNodeCommand *pCmd = new CTranslateNodeCommand();
+    auto* pCmd = new CTranslateNodeCommand();
     pCmd->mCommandEnded = true;
     return pCmd;
 }
