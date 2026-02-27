@@ -2,6 +2,7 @@
 
 #include "Editor/UICommon.h"
 #include "Editor/WorldEditor/CWorldEditor.h"
+#include <Common/Macros.h>
 #include <Core/Resource/CPoiToWorld.h>
 #include <Core/Resource/CWorld.h>
 #include <Core/Resource/Scan/CScan.h>
@@ -129,6 +130,8 @@ bool CPoiMapModel::IsPoiTracked(const CScriptNode* pPOI) const
 
 bool CPoiMapModel::IsModelMapped(const QModelIndex& rkIndex, const CModelNode *pNode) const
 {
+    if (!rkIndex.isValid())
+        return false;
     if (!pNode)
         return false;
 
@@ -143,14 +146,10 @@ bool CPoiMapModel::IsModelMapped(const QModelIndex& rkIndex, const CModelNode *p
 CScriptNode* CPoiMapModel::PoiNodePointer(const QModelIndex& rkIndex) const
 {
     const auto rowIndex = static_cast<size_t>(rkIndex.row());
+    ASSERT(rowIndex < mpPoiToWorld->NumMappedPOIs());
 
-    if (rowIndex < mpPoiToWorld->NumMappedPOIs())
-    {
-        const CPoiToWorld::SPoiMap *pkMap = mpPoiToWorld->MapByIndex(rowIndex);
-        return mpEditor->Scene()->NodeForInstanceID(pkMap->PoiID);
-    }
-
-    return nullptr;
+    const auto* pkMap = mpPoiToWorld->MapByIndex(rowIndex);
+    return mpEditor->Scene()->NodeForInstanceID(pkMap->PoiID);
 }
 
 const QList<CModelNode*>& CPoiMapModel::GetPoiMeshList(const QModelIndex& rkIndex)
