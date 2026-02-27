@@ -54,7 +54,7 @@ public:
     {
         // Restore old state of object
         CMemoryInStream In(&mOldData[0], mOldData.size(), std::endian::native);
-        CBasicBinaryReader Reader(&In, CSerialVersion(0,0,EGame::Invalid));
+        CBasicBinaryReader Reader(&In, CSerialVersion(0, 0, EGame::Invalid));
         mpObject->Serialize(Reader);
     }
 
@@ -83,7 +83,7 @@ public:
         else
         {
             CMemoryInStream In(&mNewData[0], mNewData.size(), std::endian::native);
-            CBasicBinaryReader Reader(&In, CSerialVersion(0,0,EGame::Invalid));
+            CBasicBinaryReader Reader(&In, CSerialVersion(0, 0, EGame::Invalid));
             mpObject->Serialize(Reader);
         }
     }
@@ -92,8 +92,7 @@ public:
     {
         if (!mIsActionComplete && pkOther->id() == id())
         {
-            const TSerializeUndoCommand* pkSerializeCommand =
-                    static_cast<const TSerializeUndoCommand*>(pkOther);
+            const auto* pkSerializeCommand = static_cast<const TSerializeUndoCommand*>(pkOther);
 
             mNewData = pkSerializeCommand->mNewData;
             mIsActionComplete = pkSerializeCommand->mIsActionComplete;
