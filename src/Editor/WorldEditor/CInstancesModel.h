@@ -63,7 +63,11 @@ public:
 
     void LoadForDialog(const CGameProject* proj);
 
-public slots:
+    // Static
+    static EIndexType IndexType(const QModelIndex& rkIndex);
+    static ENodeType IndexNodeType(const QModelIndex& rkIndex);
+
+private slots:
     void OnActiveProjectChanged(CGameProject *pProj);
     void OnMapChange();
 
@@ -75,10 +79,6 @@ public slots:
     void PropertyModified(IProperty *pProp, CScriptObject *pInst);
     void InstancesLayerPreChange();
     void InstancesLayerPostChange(const QList<CScriptNode*>& rkInstanceList);
-
-    // Static
-    static EIndexType IndexType(const QModelIndex& rkIndex);
-    static ENodeType IndexNodeType(const QModelIndex& rkIndex);
 
 private:
     void GenerateList();
