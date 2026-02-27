@@ -9,6 +9,7 @@
 
 class CBasicViewport;
 class CProjectSettingsDialog;
+class CResource;
 class CResourceBrowser;
 class CResourceEntry;
 class CWorldEditor;
@@ -69,6 +70,11 @@ signals:
     void ActiveProjectChanged(CGameProject *pNewProj);
     void AssetsModified();
     void PackagesCooked();
+
+private:
+    // Returns nullptr if an editor for a particular resource type cannot be created.
+    // Usually encountered when a particular resource type isn't directly handled yet.
+    IEditor* CreateEditor(CResourceEntry* entry, CResource* resource);
 };
 
 #define gpEdApp static_cast<CEditorApplication*>(qApp)

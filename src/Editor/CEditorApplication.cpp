@@ -118,94 +118,90 @@ bool CEditorApplication::OpenProject(const QString& rkProjPath)
     }
 }
 
-void CEditorApplication::EditResource(CResourceEntry *pEntry)
+void CEditorApplication::EditResource(CResourceEntry* pEntry)
 {
     ASSERT(pEntry != nullptr);
 
     // Check if we're already editing this resource
     if (mEditingMap.contains(pEntry))
     {
-        IEditor *pEd = mEditingMap[pEntry];
+        IEditor* pEd = mEditingMap[pEntry];
         pEd->show();
         pEd->raise();
+        return;
     }
-    else
+
+    // Attempt to load asset
+    CResource* pRes = pEntry->Load();
+    if (!pRes)
     {
-        // Attempt to load asset
-        CResource *pRes = pEntry->Load();
+        UICommon::ErrorMsg(mpWorldEditor, tr("Failed to load resource!"));
+        return;
+    }
 
-        if (!pRes)
+    // Create and show an editor if the particular resource can be handled
+    if (auto* editor = CreateEditor(pEntry, pRes))
+    {
+        editor->show();
+
+        if (pEntry->ResourceType() != EResourceType::Tweaks)
+            mEditingMap[pEntry] = editor;
+    }
+    else if (pEntry->ResourceType() != EResourceType::Area)
+    {
+        UICommon::InfoMsg(mpWorldEditor, tr("Unsupported Resource"), tr("This resource type is currently unsupported for editing."));
+    }
+}
+
+
+IEditor* CEditorApplication::CreateEditor(CResourceEntry* entry, CResource* res)
+{
+    switch (entry->ResourceType())
+    {
+    case EResourceType::Area:
+        // We can't open an area on its own. Find a world that contains this area.
+        for (const auto& entry : entry->ResourceStore()->MakeTypedResourceView(EResourceType::World))
         {
-            UICommon::ErrorMsg(mpWorldEditor, tr("Failed to load resource!"));
-            return;
-        }
-
-        // Launch editor window
-        IEditor *pEd = nullptr;
-
-        switch (pEntry->ResourceType())
-        {
-        case EResourceType::Area:
-            // We can't open an area on its own. Find a world that contains this area.
-            for (const auto& entry : pEntry->ResourceStore()->MakeTypedResourceView(EResourceType::World))
+            if (entry->Dependencies()->HasDependency(entry->ID()))
             {
-                if (entry->Dependencies()->HasDependency(pEntry->ID()))
-                {
-                    auto* world = static_cast<CWorld*>(entry->Load());
-                    const auto areaIdx = world->AreaIndex(pEntry->ID());
+                auto* world = static_cast<CWorld*>(entry->Load());
+                const auto areaIdx = world->AreaIndex(entry->ID());
 
-                    if (areaIdx != UINT32_MAX)
-                    {
-                        mpWorldEditor->SetArea(world, areaIdx);
-                        break;
-                    }
+                if (areaIdx != UINT32_MAX)
+                {
+                    mpWorldEditor->SetArea(world, areaIdx);
+                    break;
                 }
             }
-            break;
-
-        case EResourceType::Model:
-            pEd = new CModelEditorWindow(static_cast<CModel*>(pRes), mpWorldEditor);
-            break;
-
-        case EResourceType::AnimSet:
-            pEd = new CCharacterEditor(static_cast<CAnimSet*>(pRes), mpWorldEditor);
-            break;
-
-        case EResourceType::Scan:
-            pEd = new CScanEditor(static_cast<CScan*>(pRes), mpWorldEditor);
-            break;
-
-        case EResourceType::StringTable:
-            pEd = new CStringEditor(static_cast<CStringTable*>(pRes), mpWorldEditor);
-            break;
-
-        case EResourceType::Tweaks:
-        {
-            CTweakEditor* pTweakEditor = mpWorldEditor->TweakEditor();
-            pTweakEditor->SetActiveTweakData(static_cast<CTweakData*>(pRes));
-            pEd = pTweakEditor;
-            break;
         }
+        // Handled by the world editor, so technically it's already been created.
+        return nullptr;
 
-        case EResourceType::DynamicCollision:
-        {
-            pEd = new CCollisionEditor(static_cast<CCollisionMeshGroup*>(pRes), mpWorldEditor);
-            break;
-        }
-        default: break;
-        }
+    case EResourceType::Model:
+        return new CModelEditorWindow(static_cast<CModel*>(res), mpWorldEditor);
 
-        if (pEd)
-        {
-            pEd->show();
+    case EResourceType::AnimSet:
+        return new CCharacterEditor(static_cast<CAnimSet*>(res), mpWorldEditor);
 
-            if (pEntry->ResourceType() != EResourceType::Tweaks)
-                mEditingMap[pEntry] = pEd;
-        }
-        else if (pEntry->ResourceType() != EResourceType::Area)
-        {
-            UICommon::InfoMsg(mpWorldEditor, tr("Unsupported Resource"), tr("This resource type is currently unsupported for editing."));
-        }
+    case EResourceType::Scan:
+        return new CScanEditor(static_cast<CScan*>(res), mpWorldEditor);
+
+    case EResourceType::StringTable:
+        return new CStringEditor(static_cast<CStringTable*>(res), mpWorldEditor);
+
+    case EResourceType::Tweaks:
+    {
+        auto* pTweakEditor = mpWorldEditor->TweakEditor();
+        pTweakEditor->SetActiveTweakData(static_cast<CTweakData*>(res));
+        return pTweakEditor;
+    }
+
+    case EResourceType::DynamicCollision:
+        return new CCollisionEditor(static_cast<CCollisionMeshGroup*>(res), mpWorldEditor);
+
+    default:
+        // Unhandled resource.
+        return nullptr;
     }
 }
 
