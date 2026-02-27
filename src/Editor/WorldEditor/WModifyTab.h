@@ -44,7 +44,10 @@ public:
     void ClearUI();
     CPropertyView* PropertyView() const;
 
-public slots:
+    bool IsPicking() const { return mIsPicking; }
+    CSceneNode* EditNode() const { return mpSelectedNode; }
+
+private slots:
     void GenerateUI();
     void OnInstanceLinksModified(const QList<CScriptObject*>& rkInstances);
     void OnWorldSelectionTransformed();
@@ -57,14 +60,10 @@ public slots:
     void OnDeleteLinksClicked();
     void OnEditLinkClicked();
 
-    bool IsPicking() const       { return mIsPicking; }
-    CSceneNode* EditNode() const { return mpSelectedNode; }
+    void OnLinkTableDoubleClick(const QModelIndex& Index);
 
 private:
     std::unique_ptr<Ui::WModifyTab> ui;
-
-private slots:
-    void OnLinkTableDoubleClick(const QModelIndex& Index);
 };
 
 #endif // WMODIFYTAB_H
