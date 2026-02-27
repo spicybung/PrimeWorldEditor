@@ -30,8 +30,7 @@ public:
     CResourceTableContextMenu(CResourceBrowser *pBrowser, QTableView *pView, CResourceTableModel *pModel, CResourceProxyModel *pProxy);
     ~CResourceTableContextMenu() override;
 
-public slots:
-    void InitMenu();
+private slots:
     void ShowMenu(const QPoint& rkPos);
 
     // Menu Options
@@ -49,6 +48,9 @@ public slots:
 
     // Asset Specific
     void CreateSCAN();
+
+private:
+    void InitMenu();
 };
 
 #endif // CRESOURCETABLECONTEXTMENU_H
