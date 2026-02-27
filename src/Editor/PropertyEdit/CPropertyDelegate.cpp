@@ -20,15 +20,19 @@
 #include <QEvent>
 #include <QLineEdit>
 
+#include <concepts>
 #include <memory>
+#include <type_traits>
 
-// This macro should be used on every widget where changes should be reflected in realtime and not just when the edit is finished.
-#define CONNECT_RELAY(Widget, Index, Signal) \
-    do { \
-        auto* pRelay = new CPropertyRelay(Widget, Index); \
-        connect(Widget, Signal, pRelay, &CPropertyRelay::OnWidgetEdited); \
-        connect(pRelay, &CPropertyRelay::WidgetEdited, this, &CPropertyDelegate::WidgetEdited); \
-    } while (false)
+// This function should be used on every widget where changes should be reflected in realtime and not just when the edit is finished.
+template <typename Widget, typename MemPtr>
+requires(std::derived_from<Widget, QWidget> && std::is_member_function_pointer_v<MemPtr>)
+static void ConnectRelay(const CPropertyDelegate* delegate, Widget* widget, const QModelIndex& idx, MemPtr signal)
+{
+    auto* relay = new CPropertyRelay(widget, idx);
+    delegate->connect(widget, signal, relay, &CPropertyRelay::OnWidgetEdited);
+    delegate->connect(relay, &CPropertyRelay::WidgetEdited, delegate, &CPropertyDelegate::WidgetEdited);
+}
 
 CPropertyDelegate::CPropertyDelegate(QObject* pParent)
     : QStyledItemDelegate(pParent)
@@ -65,7 +69,7 @@ QWidget* CPropertyDelegate::createEditor(QWidget* pParent, const QStyleOptionVie
         case EPropertyType::Bool:
         {
             auto* pCheckBox = new QCheckBox(pParent);
-            CONNECT_RELAY(pCheckBox, rkIndex, &QCheckBox::toggled);
+            ConnectRelay(this, pCheckBox, rkIndex, &QCheckBox::toggled);
             pOut = pCheckBox;
             break;
         }
@@ -76,7 +80,7 @@ QWidget* CPropertyDelegate::createEditor(QWidget* pParent, const QStyleOptionVie
             pSpinBox->setMinimum(INT16_MIN);
             pSpinBox->setMaximum(INT16_MAX);
             pSpinBox->setSuffix(TO_QSTRING(pProp->Suffix()));
-            CONNECT_RELAY(pSpinBox, rkIndex, &WIntegralSpinBox::valueChanged);
+            ConnectRelay(this, pSpinBox, rkIndex, &WIntegralSpinBox::valueChanged);
             pOut = pSpinBox;
             break;
         }
@@ -87,7 +91,7 @@ QWidget* CPropertyDelegate::createEditor(QWidget* pParent, const QStyleOptionVie
             pSpinBox->setMinimum(INT32_MIN);
             pSpinBox->setMaximum(INT32_MAX);
             pSpinBox->setSuffix(TO_QSTRING(pProp->Suffix()));
-            CONNECT_RELAY(pSpinBox, rkIndex, &WIntegralSpinBox::valueChanged);
+            ConnectRelay(this, pSpinBox, rkIndex, &WIntegralSpinBox::valueChanged);
             pOut = pSpinBox;
             break;
         }
@@ -97,7 +101,7 @@ QWidget* CPropertyDelegate::createEditor(QWidget* pParent, const QStyleOptionVie
             auto* pSpinBox = new WDraggableSpinBox(pParent);
             pSpinBox->setSingleStep(0.1);
             pSpinBox->setSuffix(TO_QSTRING(pProp->Suffix()));
-            CONNECT_RELAY(pSpinBox, rkIndex, &WDraggableSpinBox::valueChanged);
+            ConnectRelay(this, pSpinBox, rkIndex, &WDraggableSpinBox::valueChanged);
             pOut = pSpinBox;
             break;
         }
@@ -105,7 +109,7 @@ QWidget* CPropertyDelegate::createEditor(QWidget* pParent, const QStyleOptionVie
         case EPropertyType::Color:
         {
             auto* pColorPicker = new WColorPicker(pParent);
-            CONNECT_RELAY(pColorPicker, rkIndex, &WColorPicker::ColorChanged);
+            ConnectRelay(this, pColorPicker, rkIndex, &WColorPicker::ColorChanged);
             pOut = pColorPicker;
             break;
         }
@@ -115,7 +119,7 @@ QWidget* CPropertyDelegate::createEditor(QWidget* pParent, const QStyleOptionVie
             auto* pSpinBox = new WIntegralSpinBox(pParent);
             pSpinBox->setMinimum(-1);
             pSpinBox->setMaximum(0xFFFF);
-            CONNECT_RELAY(pSpinBox, rkIndex, &WIntegralSpinBox::valueChanged);
+            ConnectRelay(this, pSpinBox, rkIndex, &WIntegralSpinBox::valueChanged);
             pOut = pSpinBox;
             break;
         }
@@ -123,7 +127,7 @@ QWidget* CPropertyDelegate::createEditor(QWidget* pParent, const QStyleOptionVie
         case EPropertyType::String:
         {
             auto* pLineEdit = new QLineEdit(pParent);
-            CONNECT_RELAY(pLineEdit, rkIndex, &QLineEdit::textEdited);
+            ConnectRelay(this, pLineEdit, rkIndex, &QLineEdit::textEdited);
             pOut = pLineEdit;
             break;
         }
@@ -137,7 +141,7 @@ QWidget* CPropertyDelegate::createEditor(QWidget* pParent, const QStyleOptionVie
             for (size_t ValueIdx = 0; ValueIdx < pEnum->NumPossibleValues(); ValueIdx++)
                 pComboBox->addItem(TO_QSTRING(pEnum->ValueName(ValueIdx)));
 
-            CONNECT_RELAY(pComboBox, rkIndex, &QComboBox::currentIndexChanged);
+            ConnectRelay(this, pComboBox, rkIndex, &QComboBox::currentIndexChanged);
             pOut = pComboBox;
             break;
         }
@@ -150,7 +154,7 @@ QWidget* CPropertyDelegate::createEditor(QWidget* pParent, const QStyleOptionVie
             auto* pAsset = TPropCast<CAssetProperty>(pProp);
             pSelector->SetTypeFilter(pAsset->GetTypeFilter());
 
-            CONNECT_RELAY(pSelector, rkIndex, &CResourceSelector::ResourceChanged);
+            ConnectRelay(this, pSelector, rkIndex, &CResourceSelector::ResourceChanged);
             pOut = pSelector;
             break;
         }
@@ -185,7 +189,7 @@ QWidget* CPropertyDelegate::createEditor(QWidget* pParent, const QStyleOptionVie
         {
             // Handle flags
             auto* pCheckBox = new QCheckBox(pParent);
-            CONNECT_RELAY(pCheckBox, rkIndex, &QCheckBox::toggled);
+            ConnectRelay(this, pCheckBox, rkIndex, &QCheckBox::toggled);
             pOut = pCheckBox;
         }
     }
@@ -582,7 +586,7 @@ QWidget* CPropertyDelegate::CreateCharacterEditor(QWidget *pParent, const QModel
         else
             pSelector->SetTypeFilter(gpEdApp->CurrentGame(), "CHAR");
 
-        CONNECT_RELAY(pSelector, rkIndex, &CResourceSelector::ResourceChanged);
+        ConnectRelay(this, pSelector, rkIndex, &CResourceSelector::ResourceChanged);
         return pSelector;
     }
 
@@ -597,14 +601,14 @@ QWidget* CPropertyDelegate::CreateCharacterEditor(QWidget *pParent, const QModel
                 pComboBox->addItem(TO_QSTRING(character.Name));
         }
 
-        CONNECT_RELAY(pComboBox, rkIndex, &QComboBox::currentIndexChanged);
+        ConnectRelay(this, pComboBox, rkIndex, &QComboBox::currentIndexChanged);
         return pComboBox;
     }
 
     if (Type == EPropertyType::Int)
     {
         auto* pSpinBox = new WIntegralSpinBox(pParent);
-        CONNECT_RELAY(pSpinBox, rkIndex, &WIntegralSpinBox::valueChanged);
+        ConnectRelay(this, pSpinBox, rkIndex, &WIntegralSpinBox::valueChanged);
         return pSpinBox;
     }
 
