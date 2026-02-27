@@ -50,7 +50,7 @@ public:
 protected:
     const SWorldInfo& WorldInfoForIndex(const QModelIndex& rkIndex) const;
 
-public slots:
+private slots:
     void OnProjectChanged(CGameProject *pProj);
     void OnMapChanged();
 };
