@@ -208,12 +208,16 @@ void CCharacterEditor::SetActiveAnimSet(CAnimSet *pSet)
 
 void CCharacterEditor::SetSelectedBone(CBone *pBone)
 {
-    if (pBone != mpSelectedBone)
-    {
-        if (mpSelectedBone) mpSelectedBone->SetSelected(false);
-        mpSelectedBone = pBone;
-        if (mpSelectedBone) mpSelectedBone->SetSelected(true);
-    }
+    if (pBone == mpSelectedBone)
+        return;
+
+    if (mpSelectedBone)
+        mpSelectedBone->SetSelected(false);
+
+    mpSelectedBone = pBone;
+
+    if (mpSelectedBone)
+        mpSelectedBone->SetSelected(true);
 }
 
 CCharacterEditorViewport* CCharacterEditor::Viewport() const
@@ -437,7 +441,8 @@ void CCharacterEditor::Rewind()
 void CCharacterEditor::FastForward()
 {
     CAnimation *pAnim = CurrentAnimation();
-    if (pAnim && !mBindPose) SetAnimTime(pAnim->Duration());
+    if (pAnim && !mBindPose)
+        SetAnimTime(pAnim->Duration());
 }
 
 void CCharacterEditor::AnimSpeedSpinBoxChanged(double NewVal)
