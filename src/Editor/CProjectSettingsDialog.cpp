@@ -114,8 +114,8 @@ void CProjectSettingsDialog::SetupPackagesList()
 
 void CProjectSettingsDialog::CookPackage()
 {
-    const auto PackageIdx = static_cast<uint32_t>(mpUI->PackagesList->currentRow());
-    if (PackageIdx == UINT32_MAX)
+    const auto PackageIdx = mpUI->PackagesList->currentRow();
+    if (PackageIdx == -1)
         return;
 
     auto* pkg = mpProject->Packages()[PackageIdx].get();
