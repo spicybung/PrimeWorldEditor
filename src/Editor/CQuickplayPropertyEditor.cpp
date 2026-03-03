@@ -11,6 +11,7 @@
 #include <QFileInfo>
 #include <QListWidgetItem>
 #include <QPushButton>
+#include <QSignalBlocker>
 #include <QValidator>
 
 /** Validator class for Dolphin line edit */
@@ -41,11 +42,11 @@ CQuickplayPropertyEditor::CQuickplayPropertyEditor(SQuickplayParameters& Paramet
     setMinimumWidth(300);
 
     NDolphinIntegration::LoadQuickplayParameters(Parameters);
-    mpUI->DolphinPathLineEdit->setText( NDolphinIntegration::GetDolphinPath() );
-    mpUI->DolphinPathLineEdit->setValidator( new CDolphinValidator(this) );
-    mpUI->BootToAreaCheckBox->setChecked( Parameters.Features.HasFlag(EQuickplayFeature::JumpToArea) );
-    mpUI->SpawnAtCameraLocationCheckBox->setChecked( Parameters.Features.HasFlag(EQuickplayFeature::SetSpawnPosition) );
-    mpUI->GiveAllItemsCheckBox->setChecked( Parameters.Features.HasFlag(EQuickplayFeature::GiveAllItems) );
+    mpUI->DolphinPathLineEdit->setText(NDolphinIntegration::GetDolphinPath());
+    mpUI->DolphinPathLineEdit->setValidator(new CDolphinValidator(this));
+    mpUI->BootToAreaCheckBox->setChecked(Parameters.Features.HasFlag(EQuickplayFeature::JumpToArea));
+    mpUI->SpawnAtCameraLocationCheckBox->setChecked(Parameters.Features.HasFlag(EQuickplayFeature::SetSpawnPosition));
+    mpUI->GiveAllItemsCheckBox->setChecked(Parameters.Features.HasFlag(EQuickplayFeature::GiveAllItems));
 
     connect(mpUI->DolphinPathLineEdit, &QLineEdit::textChanged,
             this, &CQuickplayPropertyEditor::OnDolphinPathChanged);
@@ -66,11 +67,9 @@ CQuickplayPropertyEditor::CQuickplayPropertyEditor(SQuickplayParameters& Paramet
             this, &CQuickplayPropertyEditor::OnLayerListItemChanged);
 
     // Connect to World Editor signals
-    CWorldEditor* pWorldEditor = qobject_cast<CWorldEditor*>(pParent);
-
-    if (pWorldEditor)
+    if (const auto* editor = qobject_cast<CWorldEditor*>(pParent))
     {
-        connect(pWorldEditor, &CWorldEditor::MapChanged,
+        connect(editor, &CWorldEditor::MapChanged,
                 this, &CQuickplayPropertyEditor::OnWorldEditorAreaChanged);
     }
 }
@@ -79,12 +78,11 @@ CQuickplayPropertyEditor::~CQuickplayPropertyEditor() = default;
 
 void CQuickplayPropertyEditor::BrowseForDolphin()
 {
-    QString Path = NDolphinIntegration::AskForDolphinPath(this);
+    const QString Path = NDolphinIntegration::AskForDolphinPath(this);
+    if (Path.isEmpty())
+        return;
 
-    if (!Path.isEmpty())
-    {
-        mpUI->DolphinPathLineEdit->setText(Path);
-    }
+    mpUI->DolphinPathLineEdit->setText(Path);
 }
 
 void CQuickplayPropertyEditor::OnDolphinPathChanged(const QString& kNewPath)
@@ -127,27 +125,24 @@ void CQuickplayPropertyEditor::OnLayerListItemChanged(const QListWidgetItem* pIt
 
 void CQuickplayPropertyEditor::OnWorldEditorAreaChanged(const CWorld* pWorld, const CGameArea* pArea)
 {
+    [[maybe_unused]] const QSignalBlocker blocker{mpUI->LayerList};
+
     mParameters.BootAreaLayerFlags = 0;
-    mpUI->LayerList->blockSignals(true);
     mpUI->LayerList->clear();
 
-    if (pArea)
+    if (!pArea)
+        return;
+
+    for (const auto [idx, layer] : Utils::enumerate(pArea->ScriptLayers()))
     {
-        for (const auto [idx, layer] : Utils::enumerate(pArea->ScriptLayers()))
-        {
-            const bool bActive = layer->IsActive();
+        const bool bActive = layer->IsActive();
 
-            auto* pItem = new QListWidgetItem();
-            pItem->setText(TO_QSTRING(layer->Name()));
-            pItem->setCheckState(bActive ? Qt::Checked : Qt::Unchecked);
-            mpUI->LayerList->addItem(pItem);
+        auto* pItem = new QListWidgetItem();
+        pItem->setText(TO_QSTRING(layer->Name()));
+        pItem->setCheckState(bActive ? Qt::Checked : Qt::Unchecked);
+        mpUI->LayerList->addItem(pItem);
 
-            if (bActive)
-            {
-                mParameters.BootAreaLayerFlags |= (1ULL << idx);
-            }
-        }
+        if (bActive)
+            mParameters.BootAreaLayerFlags |= (1ULL << idx);
     }
-
-    mpUI->LayerList->blockSignals(false);
 }
