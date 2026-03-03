@@ -255,8 +255,8 @@ void CWorldTreeModel::OnProjectChanged(CGameProject *pProj)
             // Sort in alphabetical order for MP3
             if (pProj->Game() >= EGame::Corruption)
             {
-                std::sort(mWorldList.begin(), mWorldList.end(), [](const SWorldInfo& rkA, const SWorldInfo& rkB) -> bool {
-                    return (rkA.WorldName.toUpper() < rkB.WorldName.toUpper());
+                std::ranges::sort(mWorldList, [](const SWorldInfo& rkA, const SWorldInfo& rkB) {
+                    return rkA.WorldName.toUpper() < rkB.WorldName.toUpper();
                 });
             }
         }
@@ -326,7 +326,7 @@ void CWorldTreeModel::OnProjectChanged(CGameProject *pProj)
             }
 
             // Sort FrontEnd world
-            std::sort( pInfo->Areas.begin(), pInfo->Areas.end(), [](const CResourceEntry *pA, const CResourceEntry *pB) {
+            std::ranges::sort(pInfo->Areas, [](const CResourceEntry *pA, const CResourceEntry *pB) {
                 return pA->UppercaseName() < pB->UppercaseName();
             });
         }
@@ -347,7 +347,7 @@ void CWorldTreeModel::OnMapChanged()
 // ************ PROXY MODEL ************
 bool CWorldTreeProxyModel::lessThan(const QModelIndex& rkSourceLeft, const QModelIndex& rkSourceRight) const
 {
-    const CWorldTreeModel *pModel = qobject_cast<CWorldTreeModel*>(sourceModel());
+    const auto* pModel = qobject_cast<CWorldTreeModel*>(sourceModel());
     ASSERT(pModel != nullptr);
 
     if (pModel->IndexIsWorld(rkSourceLeft))
