@@ -125,7 +125,7 @@ void CQuickplayPropertyEditor::OnLayerListItemChanged(const QListWidgetItem* pIt
     }
 }
 
-void CQuickplayPropertyEditor::OnWorldEditorAreaChanged(CWorld* pWorld, CGameArea* pArea)
+void CQuickplayPropertyEditor::OnWorldEditorAreaChanged(const CWorld* pWorld, const CGameArea* pArea)
 {
     mParameters.BootAreaLayerFlags = 0;
     mpUI->LayerList->blockSignals(true);

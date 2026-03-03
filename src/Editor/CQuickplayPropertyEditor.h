@@ -36,7 +36,7 @@ private slots:
     void OnGiveAllItemsToggled(bool Enabled);
     void OnLayerListItemChanged(const QListWidgetItem* pItem);
 
-    void OnWorldEditorAreaChanged(CWorld* pWorld, CGameArea* pArea);
+    void OnWorldEditorAreaChanged(const CWorld* pWorld, const CGameArea* pArea);
 };
 
 #endif // CQUICKPLAYPROPERTYEDITOR_H
