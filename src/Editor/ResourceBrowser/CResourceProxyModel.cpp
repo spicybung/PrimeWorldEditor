@@ -117,11 +117,11 @@ bool CResourceProxyModel::IsTypeAccepted(const CResTypeInfo* pTypeInfo) const
 
 void CResourceProxyModel::SetSortMode(ESortMode Mode)
 {
-    if (mSortMode != Mode)
-    {
-        mSortMode = Mode;
-        sort(0, (mSortMode == ESortMode::ByName ? Qt::AscendingOrder : Qt::DescendingOrder));
-    }
+    if (mSortMode == Mode)
+        return;
+
+    mSortMode = Mode;
+    sort(0, (mSortMode == ESortMode::ByName ? Qt::AscendingOrder : Qt::DescendingOrder));
 }
 
 // ************ SLOTS ************
