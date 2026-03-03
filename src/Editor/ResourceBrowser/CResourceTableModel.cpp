@@ -279,7 +279,7 @@ void CResourceTableModel::RecursiveAddDirectoryContents(CVirtualDirectory *pDir)
 
 int CResourceTableModel::EntryListIndex(const CResourceEntry *pEntry) const
 {
-    return std::lower_bound(mEntries.cbegin(), mEntries.cend(), pEntry) - mEntries.cbegin();
+    return int(std::ranges::lower_bound(mEntries, pEntry) - mEntries.cbegin());
 }
 
 void CResourceTableModel::RefreshAllIndices()
