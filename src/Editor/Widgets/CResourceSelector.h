@@ -45,8 +45,8 @@ public:
     void SetTypeFilter(const CResTypeFilter& rkFilter);
     void SetTypeFilter(EGame Game, const TString& rkTypeList);
     void SetResource(const CAssetID& rkID);
-    void SetResource(CResourceEntry *pEntry);
-    void SetResource(CResource *pRes);
+    void SetResource(CResource* pRes);
+    void SetResourceEntry(CResourceEntry* pEntry);
 
     // Interface
     bool eventFilter(QObject *pWatched, QEvent *pEvent) override;

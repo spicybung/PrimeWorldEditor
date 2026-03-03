@@ -127,32 +127,22 @@ void CResourceSelector::SetTypeFilter(EGame Game, const TString& rkTypeList)
 void CResourceSelector::SetResource(const CAssetID& rkID)
 {
     CResourceEntry* pNewEntry = gpEdApp->ActiveProject()->ResourceStore()->FindEntry(rkID);
-
-    if (mpResEntry != pNewEntry)
-    {
-        mpResEntry = pNewEntry;
-        OnResourceChanged();
-    }
+    SetResourceEntry(pNewEntry);
 }
 
-void CResourceSelector::SetResource(CResourceEntry *pEntry)
+void CResourceSelector::SetResource(CResource* pRes)
 {
-    if (mpResEntry != pEntry)
-    {
-        mpResEntry = pEntry;
-        OnResourceChanged();
-    }
+    CResourceEntry* pNewEntry = (pRes ? pRes->Entry() : nullptr);
+    SetResourceEntry(pNewEntry);
 }
 
-void CResourceSelector::SetResource(CResource *pRes)
+void CResourceSelector::SetResourceEntry(CResourceEntry* pEntry)
 {
-    CResourceEntry *pNewEntry = (pRes ? pRes->Entry() : nullptr);
+    if (mpResEntry == pEntry)
+        return;
 
-    if (mpResEntry != pNewEntry)
-    {
-        mpResEntry = pNewEntry;
-        OnResourceChanged();
-    }
+    mpResEntry = pEntry;
+    OnResourceChanged();
 }
 
 // ************ INTERFACE ************
@@ -239,7 +229,7 @@ void CResourceSelector::dropEvent(QDropEvent* pEvent)
     // Set the new resource
     const auto* pkMimeData = qobject_cast<const CResourceMimeData*>(pEvent->mimeData());
     CResourceEntry* pEntry = pkMimeData->Resources().front();
-    SetResource(pEntry);
+    SetResourceEntry(pEntry);
 }
 
 // ************ SLOTS ************
@@ -285,8 +275,7 @@ void CResourceSelector::Find()
 
 void CResourceSelector::Clear()
 {
-    mpResEntry = nullptr;
-    OnResourceChanged();
+    SetResourceEntry(nullptr);
 }
 
 void CResourceSelector::OnResourceChanged()

@@ -55,7 +55,7 @@ void CSelectResourcePanel::SearchStringChanged(const QString& SearchString)
 void CSelectResourcePanel::ResourceClicked(const QModelIndex& Index)
 {
     const QModelIndex SourceIndex = mProxyModel.mapToSource(Index);
-    CResourceEntry *pEntry = mModel.EntryForIndex(SourceIndex);
-    mpSelector->SetResource(pEntry);
+    CResourceEntry* pEntry = mModel.EntryForIndex(SourceIndex);
+    mpSelector->SetResourceEntry(pEntry);
     close();
 }
