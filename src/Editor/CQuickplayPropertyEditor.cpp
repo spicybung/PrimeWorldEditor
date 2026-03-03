@@ -113,7 +113,7 @@ void CQuickplayPropertyEditor::OnGiveAllItemsToggled(bool Enabled)
     NDolphinIntegration::SaveQuickplayParameters(mParameters);
 }
 
-void CQuickplayPropertyEditor::OnLayerListItemChanged(QListWidgetItem* pItem)
+void CQuickplayPropertyEditor::OnLayerListItemChanged(const QListWidgetItem* pItem)
 {
     const auto LayerIdx = mpUI->LayerList->row(pItem);
     const auto LayerBit = 1ULL << LayerIdx;

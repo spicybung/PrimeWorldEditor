@@ -34,7 +34,7 @@ private slots:
     void OnBootToAreaToggled(bool Enabled);
     void OnSpawnAtCameraLocationToggled(bool Enabled);
     void OnGiveAllItemsToggled(bool Enabled);
-    void OnLayerListItemChanged(QListWidgetItem* pItem);
+    void OnLayerListItemChanged(const QListWidgetItem* pItem);
 
     void OnWorldEditorAreaChanged(CWorld* pWorld, CGameArea* pArea);
 };
