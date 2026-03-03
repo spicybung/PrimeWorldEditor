@@ -62,22 +62,21 @@ CWorldEditor::CWorldEditor(QWidget *parent)
     mpSelection->SetAllowedNodeTypes(ENodeType::Script | ENodeType::Light);
 
     // Add resource browser to the layout
-    QVBoxLayout *pLayout = new QVBoxLayout();
+    auto* pLayout = new QVBoxLayout();
     pLayout->setContentsMargins(0,0,0,0);
 
-    CResourceBrowser *pResourceBrowser = gpEdApp->ResourceBrowser();
+    auto* pResourceBrowser = gpEdApp->ResourceBrowser();
     pResourceBrowser->setParent(this);
-    pLayout->addWidget( pResourceBrowser );
+    pLayout->addWidget(pResourceBrowser);
 
     ui->ResourceBrowserContainer->setLayout(pLayout);
 
     // Initialize splitter
-    const QList<int> SplitterSizes{
-        static_cast<int>(width() * 0.25),
-        static_cast<int>(width() * 0.53),
-        static_cast<int>(width() * 0.22),
-    };
-    ui->splitter->setSizes(SplitterSizes);
+    ui->splitter->setSizes({
+        static_cast<int>(width() * 0.25f),
+        static_cast<int>(width() * 0.53f),
+        static_cast<int>(width() * 0.22f),
+    });
 
     // Initialize UI stuff
     ResetCamera();
@@ -133,7 +132,7 @@ CWorldEditor::CWorldEditor(QWidget *parent)
     mpCollisionDialog = new CCollisionRenderSettingsDialog(this, this);
 
     // Quickplay buttons
-    QToolButton* pQuickplayButton = new QToolButton(this);
+    auto* pQuickplayButton = new QToolButton(this);
     pQuickplayButton->setIcon(QIcon(QStringLiteral(":/icons/Play_32px.svg")));
     pQuickplayButton->setPopupMode(QToolButton::MenuButtonPopup);
     pQuickplayButton->setMenu(new CQuickplayPropertyEditor(mQuickplayParms, this));
@@ -152,7 +151,7 @@ CWorldEditor::CWorldEditor(QWidget *parent)
 
     for (int iAct = 0; iAct < mskMaxRecentProjects; iAct++)
     {
-        QAction *pAction = new QAction(this);
+        auto* pAction = new QAction(this);
         pAction->setVisible(false);
         pAction->setData(iAct);
         connect(pAction, &QAction::triggered, this, &CWorldEditor::OpenRecentProject);
@@ -386,9 +385,9 @@ bool CWorldEditor::Save()
     if (!mpArea)
         return true;
 
-    bool SaveAreaSuccess = mpArea->Entry()->Save();
-    bool SaveEGMCSuccess = mpArea->PoiToWorldMap() ? mpArea->PoiToWorldMap()->Entry()->Save() : true;
-    bool SaveWorldSuccess = mpWorld->Entry()->Save();
+    const bool SaveAreaSuccess = mpArea->Entry()->Save();
+    const bool SaveEGMCSuccess = mpArea->PoiToWorldMap() ? mpArea->PoiToWorldMap()->Entry()->Save() : true;
+    const bool SaveWorldSuccess = mpWorld->Entry()->Save();
 
     if (SaveAreaSuccess)
         mpArea->ClearExtraDependencies();
@@ -420,17 +419,15 @@ void CWorldEditor::Cut()
 
 void CWorldEditor::Copy()
 {
-    if (!mpSelection->IsEmpty())
-    {
-        CNodeCopyMimeData *pMimeData = new CNodeCopyMimeData(this);
-        qApp->clipboard()->setMimeData(pMimeData);
-    }
+    if (mpSelection->IsEmpty())
+        return;
+
+    qApp->clipboard()->setMimeData(new CNodeCopyMimeData(this));
 }
 
 void CWorldEditor::Paste()
 {
-    if (const CNodeCopyMimeData *pkMimeData =
-            qobject_cast<const CNodeCopyMimeData*>(qApp->clipboard()->mimeData()))
+    if (const auto* pkMimeData = qobject_cast<const CNodeCopyMimeData*>(qApp->clipboard()->mimeData()))
     {
         if (pkMimeData->Game() == CurrentGame())
         {
@@ -442,8 +439,8 @@ void CWorldEditor::Paste()
             }
             else
             {
-                CRay Ray = ui->MainViewport->Camera().CastRay(CVector2f(0.f, 0.f));
-                SRayIntersection Intersect = ui->MainViewport->SceneRayCast(Ray);
+                const CRay Ray = ui->MainViewport->Camera().CastRay(CVector2f::Zero());
+                const SRayIntersection Intersect = ui->MainViewport->SceneRayCast(Ray);
 
                 if (Intersect.Hit)
                     PastePoint = Intersect.HitPoint;
@@ -451,8 +448,7 @@ void CWorldEditor::Paste()
                     PastePoint = Ray.PointOnRay(10.f);
             }
 
-            CPasteNodesCommand *pCmd = new CPasteNodesCommand(this, mpScriptSidebar->CreateTab()->SpawnLayer(), PastePoint);
-            UndoStack().push(pCmd);
+            UndoStack().push(new CPasteNodesCommand(this, mpScriptSidebar->CreateTab()->SpawnLayer(), PastePoint));
         }
     }
 }
@@ -514,7 +510,7 @@ void CWorldEditor::About()
 void CWorldEditor::ChangeEditMode(int Mode)
 {
     // This function is connected to the edit mode QButtonGroup.
-    ChangeEditMode((EWorldEditorMode) Mode);
+    ChangeEditMode(EWorldEditorMode(Mode));
 }
 
 void CWorldEditor::ChangeEditMode(EWorldEditorMode Mode)
@@ -550,17 +546,17 @@ void CWorldEditor::SetRenderingMergedWorld(bool RenderMerged)
 
 void CWorldEditor::OpenProjectSettings()
 {
-    CProjectSettingsDialog *pDialog = gpEdApp->ProjectDialog();
+    auto* pDialog = gpEdApp->ProjectDialog();
     pDialog->show();
     pDialog->raise();
 }
 
 void CWorldEditor::OnActiveProjectChanged(CGameProject *pProj)
 {
-    ui->ActionProjectSettings->setEnabled( pProj != nullptr );
-    ui->ActionCloseProject->setEnabled( pProj != nullptr );
-    mpPoiMapAction->setVisible( pProj != nullptr && pProj->Game() >= EGame::EchoesDemo && pProj->Game() <= EGame::Corruption );
-    mpQuickplayAction->setVisible( pProj != nullptr && NDolphinIntegration::IsQuickplaySupported(pProj) );
+    ui->ActionProjectSettings->setEnabled(pProj != nullptr);
+    ui->ActionCloseProject->setEnabled(pProj != nullptr);
+    mpPoiMapAction->setVisible(pProj != nullptr && pProj->Game() >= EGame::EchoesDemo && pProj->Game() <= EGame::Corruption);
+    mpQuickplayAction->setVisible(pProj != nullptr && NDolphinIntegration::IsQuickplaySupported(pProj));
     ResetCamera();
     UpdateWindowTitle();
 
@@ -568,7 +564,7 @@ void CWorldEditor::OnActiveProjectChanged(CGameProject *pProj)
     // We update this here to ensure we can update the menu item correctly without risking
     // that this function runs before the tweak editor has a chance to update its tweak list.
     mpTweakEditor->OnProjectChanged(pProj);
-    ui->ActionEditTweaks->setEnabled( mpTweakEditor->HasTweaks() );
+    ui->ActionEditTweaks->setEnabled(mpTweakEditor->HasTweaks());
 
     // Default bloom to Fake Bloom for Metroid Prime 3; disable for other games
     bool AllowBloom = (CurrentGame() == EGame::CorruptionProto || CurrentGame() == EGame::Corruption);
@@ -594,7 +590,7 @@ void CWorldEditor::OnPropertyModified(IProperty *pProp)
             pScript->PropertyModified(pProp);
 
             // If this is the name, update other parts of the UI to reflect the new value.
-            if ( pProp->Name() == "Name" )
+            if (pProp->Name() == "Name")
             {
                 UpdateStatusBar();
                 UpdateSelectionUI();
@@ -613,8 +609,8 @@ void CWorldEditor::OnPropertyModified(IProperty *pProp)
         // If this is a model/character, then we'll treat this as a modified selection. This is to make sure the selection bounds updates.
         if (pProp->Type() == EPropertyType::Asset)
         {
-            CAssetProperty *pAsset = TPropCast<CAssetProperty>(pProp);
-            const CResTypeFilter& rkFilter = pAsset->GetTypeFilter();
+            const auto* pAsset = TPropCast<CAssetProperty>(pProp);
+            const auto& rkFilter = pAsset->GetTypeFilter();
 
             if (rkFilter.Accepts(EResourceType::Model) || rkFilter.Accepts(EResourceType::AnimSet) || rkFilter.Accepts(EResourceType::Character))
                 ShouldUpdateSelection = true;
@@ -646,51 +642,44 @@ void CWorldEditor::SetSelectionActive(bool Active)
         }
     }
 
-    if (!Objects.isEmpty())
+    if (Objects.isEmpty())
+        return;
+
+    UndoStack().beginMacro(tr("Toggle Active"));
+
+    while (!Objects.isEmpty())
     {
-        UndoStack().beginMacro(tr("Toggle Active"));
+        QList<CScriptObject*> CommandObjects;
+        CScriptTemplate* pTemplate = Objects[0]->Template();
+        CBoolProperty* pActiveProperty = pTemplate->ActiveProperty();
 
-        while (!Objects.isEmpty())
+        for (qsizetype ObjIdx = 0; ObjIdx < Objects.size(); ObjIdx++)
         {
-            QList<CScriptObject*> CommandObjects;
-            CScriptTemplate* pTemplate = Objects[0]->Template();
-            CBoolProperty* pActiveProperty = pTemplate->ActiveProperty();
-
-            for (int ObjIdx = 0; ObjIdx < Objects.size(); ObjIdx++)
+            if (Objects[ObjIdx]->Template() == pTemplate)
             {
-                if (Objects[ObjIdx]->Template() == pTemplate)
-                {
-                    CommandObjects.push_back(Objects[ObjIdx]);
-                    Objects.removeAt(ObjIdx);
-                    ObjIdx--;
-                }
-            }
-
-            if (pActiveProperty)
-            {
-                CPropertyModel* pModel = qobject_cast<CPropertyModel*>(
-                            mpScriptSidebar->ModifyTab()->PropertyView()->model()
-                        );
-
-                CEditScriptPropertyCommand* pCommand = new CEditScriptPropertyCommand(
-                            pActiveProperty,
-                            CommandObjects,
-                            pModel
-                        );
-
-                pCommand->SaveOldData();
-
-                for (CScriptObject* pInstance : CommandObjects)
-                    pInstance->SetActive(Active);
-
-                pCommand->SaveNewData();
-
-                UndoStack().push(pCommand);
+                CommandObjects.push_back(Objects[ObjIdx]);
+                Objects.removeAt(ObjIdx);
+                ObjIdx--;
             }
         }
 
-        UndoStack().endMacro();
+        if (pActiveProperty)
+        {
+            auto* pModel = qobject_cast<CPropertyModel*>(mpScriptSidebar->ModifyTab()->PropertyView()->model());
+            auto* pCommand = new CEditScriptPropertyCommand(pActiveProperty, CommandObjects, pModel);
+
+            pCommand->SaveOldData();
+
+            for (CScriptObject* pInstance : CommandObjects)
+                pInstance->SetActive(Active);
+
+            pCommand->SaveNewData();
+
+            UndoStack().push(pCommand);
+        }
     }
+
+    UndoStack().endMacro();
 }
 
 void CWorldEditor::SetSelectionInstanceNames(const QString& rkNewName, bool IsDone)
@@ -699,8 +688,8 @@ void CWorldEditor::SetSelectionInstanceNames(const QString& rkNewName, bool IsDo
     // this is fine right now because this function is only ever called with a selection of one node, but probably want to fix in the future
     /*if (mpSelection->Size() == 1 && mpSelection->Front()->NodeType() == eScriptNode)
     {
-        CScriptNode *pNode = static_cast<CScriptNode*>(mpSelection->Front());
-        CScriptObject *pInst = pNode->Instance();
+        auto* pNode = static_cast<CScriptNode*>(mpSelection->Front());
+        auto* pInst = pNode->Instance();
 
         if (pName)
         {
@@ -728,11 +717,10 @@ void CWorldEditor::SetSelectionLayer(CScriptLayer *pLayer)
 
 void CWorldEditor::DeleteSelection()
 {
-    if (HasAnyScriptNodesSelected())
-    {
-        CDeleteSelectionCommand *pCmd = new CDeleteSelectionCommand(this);
-        UndoStack().push(pCmd);
-    }
+    if (!HasAnyScriptNodesSelected())
+        return;
+
+    UndoStack().push(new CDeleteSelectionCommand(this));
 }
 
 void CWorldEditor::UpdateOpenRecentActions()
@@ -741,11 +729,9 @@ void CWorldEditor::UpdateOpenRecentActions()
     QStringList RecentProjectsList = Settings.value(QStringLiteral("WorldEditor/RecentProjectsList")).toStringList();
 
     // Bump the current project to the front
-    CGameProject *pProj = gpEdApp->ActiveProject();
-
-    if (pProj)
+    if (const auto* pProj = gpEdApp->ActiveProject())
     {
-        QString ProjPath = TO_QSTRING(pProj->ProjectPath());
+        const QString ProjPath = TO_QSTRING(pProj->ProjectPath());
         RecentProjectsList.removeAll(ProjPath);
         RecentProjectsList.prepend(ProjPath);
     }
@@ -762,11 +748,11 @@ void CWorldEditor::UpdateOpenRecentActions()
     // Set up the menu actions
     for (int iProj = 0; iProj < mskMaxRecentProjects; iProj++)
     {
-        QAction *pAction = mRecentProjectsActions[iProj];
+        QAction* pAction = mRecentProjectsActions[iProj];
 
         if (iProj < RecentProjectsList.size())
         {
-            QString ActionText = tr("&%1 %2").arg(iProj).arg(RecentProjectsList[iProj]);
+            const QString ActionText = tr("&%1 %2").arg(iProj).arg(RecentProjectsList[iProj]);
             pAction->setText(ActionText);
             pAction->setVisible(true);
         }
@@ -780,9 +766,8 @@ void CWorldEditor::UpdateOpenRecentActions()
 void CWorldEditor::UpdateWindowTitle()
 {
     QString WindowTitle = QStringLiteral("%APP_FULL_NAME%");
-    CGameProject *pProj = gpEdApp->ActiveProject();
 
-    if (pProj)
+    if (const auto* pProj = gpEdApp->ActiveProject())
     {
         WindowTitle += QStringLiteral(" - ") + TO_QSTRING(pProj->Name());
 
@@ -889,7 +874,7 @@ void CWorldEditor::UpdateSelectionUI()
     else if (mpSelection->Size() > 1)
         SelectionText = tr("%n objects selected", "", int(mpSelection->Size()));
 
-    QFontMetrics Metrics(ui->SelectionInfoLabel->font());
+    const QFontMetrics Metrics(ui->SelectionInfoLabel->font());
     SelectionText = Metrics.elidedText(SelectionText, Qt::ElideRight, ui->SelectionInfoFrame->width() - 10);
 
     if (ui->SelectionInfoLabel->text() != SelectionText)
@@ -959,7 +944,7 @@ void CWorldEditor::UpdateNewLinkLine()
         // Compensate for missing sender or missing receiver
         else
         {
-            bool IsPicking = (mIsMakingLink || mpLinkDialog->IsPicking() || mpScriptSidebar->ModifyTab()->IsPicking());
+            const bool IsPicking = (mIsMakingLink || mpLinkDialog->IsPicking() || mpScriptSidebar->ModifyTab()->IsPicking());
 
             if (ui->MainViewport->underMouse() && !ui->MainViewport->IsMouseInputActive() && IsPicking)
             {
@@ -1012,12 +997,12 @@ QAction* CWorldEditor::AddEditModeButton(const QIcon& Icon, const QString& ToolT
 {
     ASSERT(mpEditModeButtonGroup->button(Mode) == nullptr);
 
-    QPushButton* pButton = new QPushButton(Icon, {}, this);
+    auto* pButton = new QPushButton(Icon, {}, this);
     pButton->setCheckable(true);
     pButton->setToolTip(ToolTip);
     pButton->setIconSize(QSize(24, 24));
 
-    QAction *pAction = ui->EditModeToolBar->addWidget(pButton);
+    auto* pAction = ui->EditModeToolBar->addWidget(pButton);
     mpEditModeButtonGroup->addButton(pButton, Mode);
     return pAction;
 }
@@ -1046,16 +1031,16 @@ void CWorldEditor::SetSidebar(CWorldEditorSidebar *pSidebar)
 
 void CWorldEditor::GizmoModeChanged(CGizmo::EGizmoMode mode)
 {
-    ui->TransformSpinBox->SetSingleStep( (mode == CGizmo::EGizmoMode::Rotate ? 1.0 : 0.1) );
-    ui->TransformSpinBox->SetDefaultValue( (mode == CGizmo::EGizmoMode::Scale ? 1.0 : 0.0) );
+    ui->TransformSpinBox->SetSingleStep((mode == CGizmo::EGizmoMode::Rotate ? 1.0 : 0.1));
+    ui->TransformSpinBox->SetDefaultValue((mode == CGizmo::EGizmoMode::Scale ? 1.0 : 0.0));
 }
 
 // ************ PRIVATE SLOTS ************
 void CWorldEditor::OnClipboardDataModified()
 {
-    const QMimeData *pkClipboardMimeData = qApp->clipboard()->mimeData();
-    const CNodeCopyMimeData *pkMimeData = qobject_cast<const CNodeCopyMimeData*>(pkClipboardMimeData);
-    bool ValidMimeData = (pkMimeData && pkMimeData->Game() == CurrentGame());
+    const auto* pkClipboardMimeData = qApp->clipboard()->mimeData();
+    const auto* pkMimeData = qobject_cast<const CNodeCopyMimeData*>(pkClipboardMimeData);
+    const bool ValidMimeData = (pkMimeData && pkMimeData->Game() == CurrentGame());
     ui->ActionPaste->setEnabled(ValidMimeData);
 }
 
@@ -1063,7 +1048,7 @@ void CWorldEditor::OnSelectionModified()
 {
     ui->TransformSpinBox->setEnabled(!mpSelection->IsEmpty());
 
-    bool HasScriptNode = HasAnyScriptNodesSelected();
+    const bool HasScriptNode = HasAnyScriptNodesSelected();
     ui->ActionCut->setEnabled(HasScriptNode);
     ui->ActionCopy->setEnabled(HasScriptNode);
     ui->ActionDelete->setEnabled(HasScriptNode);
@@ -1131,8 +1116,8 @@ void CWorldEditor::OnUnlinkClicked()
         if (Dialog.UserChoice() != CConfirmUnlinkDialog::EChoice::Cancel)
         {
             UndoStack().beginMacro(tr("Unlink"));
-            bool UnlinkIncoming = (Dialog.UserChoice() != CConfirmUnlinkDialog::EChoice::OutgoingOnly);
-            bool UnlinkOutgoing = (Dialog.UserChoice() != CConfirmUnlinkDialog::EChoice::IncomingOnly);
+            const bool UnlinkIncoming = (Dialog.UserChoice() != CConfirmUnlinkDialog::EChoice::OutgoingOnly);
+            const bool UnlinkOutgoing = (Dialog.UserChoice() != CConfirmUnlinkDialog::EChoice::IncomingOnly);
 
             for (CScriptNode *pNode : SelectedScriptNodes)
             {
@@ -1143,9 +1128,8 @@ void CWorldEditor::OnUnlinkClicked()
                     QList<uint32_t> LinkIndices;
                     for (uint32_t iLink = 0; iLink < pInst->NumLinks(ELinkType::Incoming); iLink++)
                         LinkIndices.push_back(iLink);
-
-                    CDeleteLinksCommand *pCmd = new CDeleteLinksCommand(this, pInst, ELinkType::Incoming, LinkIndices);
-                    UndoStack().push(pCmd);
+;
+                    UndoStack().push(new CDeleteLinksCommand(this, pInst, ELinkType::Incoming, LinkIndices));
                 }
 
                 if (UnlinkOutgoing)
@@ -1154,8 +1138,7 @@ void CWorldEditor::OnUnlinkClicked()
                     for (uint32_t iLink = 0; iLink < pInst->NumLinks(ELinkType::Outgoing); iLink++)
                         LinkIndices.push_back(iLink);
 
-                    CDeleteLinksCommand *pCmd = new CDeleteLinksCommand(this, pInst, ELinkType::Outgoing, LinkIndices);
-                    UndoStack().push(pCmd);
+                    UndoStack().push(new CDeleteLinksCommand(this, pInst, ELinkType::Outgoing, LinkIndices));
                 }
             }
 
@@ -1176,7 +1159,7 @@ void CWorldEditor::OnPickModeExit()
 
 void CWorldEditor::UpdateCameraOrbit()
 {
-    CCamera *pCamera = &ui->MainViewport->Camera();
+    CCamera* pCamera = &ui->MainViewport->Camera();
 
     if (!mpSelection->IsEmpty())
         pCamera->SetOrbit(mpSelection->Bounds());
@@ -1205,21 +1188,21 @@ void CWorldEditor::OnTransformSpinBoxModified(const CVector3f& Value)
     // Use absolute position/rotation, but relative scale. (This way spinbox doesn't show preview multiplier)
     case CGizmo::EGizmoMode::Translate:
     {
-        CVector3f Delta = Value - mpSelection->Front()->AbsolutePosition();
+        const CVector3f Delta = Value - mpSelection->Front()->AbsolutePosition();
         UndoStack().push(new CTranslateNodeCommand(this, mpSelection->Nodes(), Delta, mTranslateSpace));
         break;
     }
 
     case CGizmo::EGizmoMode::Rotate:
     {
-        CQuaternion Delta = CQuaternion::FromEuler(Value) * mpSelection->Front()->AbsoluteRotation().Inverse();
+        const CQuaternion Delta = CQuaternion::FromEuler(Value) * mpSelection->Front()->AbsoluteRotation().Inverse();
         UndoStack().push(new CRotateNodeCommand(this, mpSelection->Nodes(), true, mGizmo.Position(), mGizmo.Rotation(), Delta, mRotateSpace));
         break;
     }
 
     case CGizmo::EGizmoMode::Scale:
     {
-        CVector3f Delta = Value / mpSelection->Front()->AbsoluteScale();
+        const CVector3f Delta = Value / mpSelection->Front()->AbsoluteScale();
         UndoStack().push(new CScaleNodeCommand(this, mpSelection->Nodes(), true, mGizmo.Position(), Delta));
         break;
     }
