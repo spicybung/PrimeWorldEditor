@@ -40,6 +40,7 @@ public:
     void SetActiveModel(CModel *pModel);
     CModelEditorViewport* Viewport() const override;
 
+private:
     enum class EModelEditorWidget
     {
         SetSelectComboBox,
@@ -83,7 +84,10 @@ public:
         AnimParamDSpinBox,
     };
 
-public slots:
+    void ActivateMatEditUI(bool Active);
+    void RefreshMaterial();
+
+private slots:
     void RefreshViewport();
     void SetActiveMaterial(int MatIndex);
     void SetActivePass(int PassIndex);
@@ -97,11 +101,6 @@ public slots:
     void UpdateUI(int Value);
     void UpdateAnimParamUI(EUVAnimMode Mode);
 
-private:
-    void ActivateMatEditUI(bool Active);
-    void RefreshMaterial();
-
-private slots:
     void Import();
     void ConvertToDDS();
     void ConvertToTXTR();
