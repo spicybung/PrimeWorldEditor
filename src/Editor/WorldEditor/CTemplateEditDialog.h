@@ -40,7 +40,7 @@ public:
 signals:
     void PerformedTypeConversion();
 
-protected:
+private:
     void UpdateDescription(const TString& rkNewDesc);
     void UpdateTypeName(const TString& kNewTypeName, bool AllowOverride);
     void FindEquivalentProperties(IProperty *pProperty);
