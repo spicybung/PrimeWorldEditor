@@ -101,17 +101,17 @@ QModelIndex CInstancesModel::index(int Row, int Column, const QModelIndex& rkPar
         {
             if (mModelType == EInstanceModelType::Layers)
             {
-                CScriptLayer *pLayer = mpArea->ScriptLayer(static_cast<size_t>(rkParent.row()));
-                if (static_cast<size_t>(Row) >= pLayer->NumInstances())
+                const CScriptLayer* pLayer = mpArea->ScriptLayer(size_t(rkParent.row()));
+                if (size_t(Row) >= pLayer->NumInstances())
                     return QModelIndex();
 
-                return createIndex(Row, Column, (*pLayer)[Row]);
+                return createIndex(Row, Column, pLayer->InstanceByIndex(size_t(Row)));
             }
 
             if (mModelType == EInstanceModelType::Types)
             {
                 const std::list<CScriptObject*>& list = mTemplateList[rkParent.row()]->ObjectList();
-                if (static_cast<size_t>(Row) >= list.size())
+                if (size_t(Row) >= list.size())
                 {
                     return QModelIndex();
                 }

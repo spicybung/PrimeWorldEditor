@@ -81,7 +81,8 @@ public:
     bool IsVisible() const       { return mVisible; }
 
     size_t NumInstances() const  { return mInstances.size(); }
-    CScriptObject* InstanceByIndex(size_t Index) const { return mInstances[Index]; }
+    CScriptObject* InstanceByIndex(size_t Index) { return mInstances[Index]; }
+    const CScriptObject* InstanceByIndex(size_t Index) const { return mInstances[Index]; }
     auto Instances() const { return std::views::all(mInstances); }
 
     CScriptObject* InstanceByID(CInstanceID ID) const
@@ -109,10 +110,6 @@ public:
 
         return UINT32_MAX;
     }
-
-    // Operators
-    CScriptObject* operator[](size_t Index) { return InstanceByIndex(Index); }
-    const CScriptObject* operator[](size_t Index) const { return InstanceByIndex(Index); }
 };
 
 #endif // CSCRIPTLAYER_H
