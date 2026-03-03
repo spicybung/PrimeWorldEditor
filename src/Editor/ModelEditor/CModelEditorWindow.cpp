@@ -41,7 +41,7 @@ CModelEditorWindow::CModelEditorWindow(CModel *pModel, QWidget *pParent)
     CCamera& rCamera = ui->Viewport->Camera();
     rCamera.Snap(CVector3f(0, 3, 1));
     rCamera.SetMoveMode(ECameraMoveMode::Orbit);
-    rCamera.SetOrbit(CVector3f(0, 0, 1), 3.f);
+    rCamera.SetOrbit(CVector3f::UnitZ(), 3.f);
     rCamera.SetMoveSpeed(0.5f);
 
     // UI initialization
