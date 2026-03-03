@@ -1,7 +1,7 @@
 #ifndef CGENERATEPROPERTYNAMESDIALOG_H
 #define CGENERATEPROPERTYNAMESDIALOG_H
 
-#include "CProgressBarNotifier.h"
+#include "Editor/CProgressBarNotifier.h"
 #include "Editor/Widgets/TEnumComboBox.h"
 #include <Core/Resource/Script/Property/CPropertyNameGenerator.h>
 #include <Core/Resource/Script/Property/IProperty.h>
@@ -88,7 +88,7 @@ private slots:
     void GenerationComplete();
 
     /** Called when an item in the output tree has been checked or unchecked */
-    void OnTreeItemChecked(QTreeWidgetItem* pItem);
+    void OnTreeItemChecked(QTreeWidgetItem* item, int column);
 
     /** Called when an item in the output tree has been double clicked */
     void OnTreeItemDoubleClicked(QTreeWidgetItem* pItem);

@@ -324,7 +324,7 @@
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
-         <widget class="CCheckableTreeWidget" name="OutputTreeWidget">
+         <widget class="QTreeWidget" name="OutputTreeWidget">
           <property name="font">
            <font>
             <pointsize>10</pointsize>
@@ -454,11 +454,6 @@
   </layout>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>CCheckableTreeWidget</class>
-   <extends>QTreeWidget</extends>
-   <header>Editor/Widgets/CCheckableTreeWidget.h</header>
-  </customwidget>
   <customwidget>
    <class>CNameCasingComboBox</class>
    <extends>QComboBox</extends>

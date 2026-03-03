@@ -2,7 +2,6 @@
 #include "ui_CGeneratePropertyNamesDialog.h"
 
 #include "Editor/UICommon.h"
-#include "Editor/Widgets/CCheckableTreeWidgetItem.h"
 #include <Core/GameProject/CResourceStore.h>
 #include <Core/Resource/Script/NGameList.h>
 #include <Core/Resource/Script/NPropertyMap.h>
@@ -10,6 +9,7 @@
 #include <Common/Log.h>
 
 #include <QtConcurrentRun>
+#include <QSignalBlocker>
 #include <QThreadPool>
 #include <iterator>
 
@@ -31,9 +31,9 @@ CGeneratePropertyNamesDialog::CGeneratePropertyNamesDialog(QWidget* pParent)
     connect(mpUI->CheckAllButton, &QPushButton::pressed, this, &CGeneratePropertyNamesDialog::CheckAll);
     connect(mpUI->UncheckAllButton, &QPushButton::pressed, this, &CGeneratePropertyNamesDialog::UncheckAll);
     connect(mpUI->ApplyButton, &QPushButton::pressed, this, &CGeneratePropertyNamesDialog::ApplyChanges);
-    connect(mpUI->OutputTreeWidget, &CCheckableTreeWidget::CheckStateChanged,
+    connect(mpUI->OutputTreeWidget, &QTreeWidget::itemChanged,
             this, &CGeneratePropertyNamesDialog::OnTreeItemChecked);
-    connect(mpUI->OutputTreeWidget, &CCheckableTreeWidget::itemDoubleClicked,
+    connect(mpUI->OutputTreeWidget, &QTreeWidget::itemDoubleClicked,
             this, &CGeneratePropertyNamesDialog::OnTreeItemDoubleClicked);
 
     // Configure default tree view split sizes
@@ -206,12 +206,15 @@ void CGeneratePropertyNamesDialog::GenerationComplete()
 }
 
 /** Called when an item in the output tree has been checked or unchecked */
-void CGeneratePropertyNamesDialog::OnTreeItemChecked(QTreeWidgetItem* pItem)
+void CGeneratePropertyNamesDialog::OnTreeItemChecked(QTreeWidgetItem* item, int column)
 {
-    if (pItem->checkState(0) == Qt::Checked)
-        mCheckedItems.append(pItem);
+    if (column != 0)
+        return;
+
+    if (item->checkState(0) == Qt::Checked)
+        mCheckedItems.append(item);
     else
-        mCheckedItems.removeOne(pItem);
+        mCheckedItems.removeOne(item);
 
     UpdateUI();
 }
@@ -302,6 +305,8 @@ void CGeneratePropertyNamesDialog::CheckForNewResults()
     const std::list<SGeneratedPropertyName>& rkOutput = mGenerator.GetOutput();
 
     QTreeWidget* pTreeWidget = mpUI->OutputTreeWidget;
+
+    [[maybe_unused]] const QSignalBlocker treeBlock{pTreeWidget};
     const int CurItemCount = pTreeWidget->topLevelItemCount();
 
     // Add new items to the tree
@@ -323,7 +328,7 @@ void CGeneratePropertyNamesDialog::CheckForNewResults()
                 TO_QSTRING(std::string(NPropertyMap::GetPropertyName(rkName.ID, rkName.Type))),
             };
 
-            auto* pItem = new CCheckableTreeWidgetItem(pTreeWidget, ColumnText);
+            auto* pItem = new QTreeWidgetItem(pTreeWidget, ColumnText);
             pItem->setFlags(Qt::ItemIsEnabled |
                             Qt::ItemIsSelectable |
                             Qt::ItemIsUserCheckable);
