@@ -60,7 +60,7 @@ CResourceBrowser::CResourceBrowser(QWidget *pParent)
     connect(&mUndoStack, &QUndoStack::canRedoChanged, this, &CResourceBrowser::UpdateUndoActionStates);
 
     // Configure display mode buttons
-    QButtonGroup *pModeGroup = new QButtonGroup(this);
+    auto* pModeGroup = new QButtonGroup(this);
     pModeGroup->addButton(mpUI->ResourceTreeButton);
     pModeGroup->addButton(mpUI->ResourceListButton);
     pModeGroup->setExclusive(true);
@@ -72,7 +72,7 @@ CResourceBrowser::CResourceBrowser(QWidget *pParent)
     mpUI->ResourceTableView->setModel(mpProxyModel);
     mpUI->ResourceTableView->resizeRowsToContents();
 
-    QHeaderView *pHeader = mpUI->ResourceTableView->horizontalHeader();
+    auto* pHeader = mpUI->ResourceTableView->horizontalHeader();
     pHeader->setSectionResizeMode(0, QHeaderView::Stretch);
 
     mpDelegate = new CResourceBrowserDelegate(this);
@@ -112,8 +112,8 @@ CResourceBrowser::CResourceBrowser(QWidget *pParent)
     CreateFilterCheckboxes();
 
     // Set up the options menu
-    QMenu *pOptionsMenu = new QMenu(this);
-    QMenu *pImportMenu = pOptionsMenu->addMenu(tr("Import Names"));
+    auto* pOptionsMenu = new QMenu(this);
+    auto* pImportMenu = pOptionsMenu->addMenu(tr("Import Names"));
     pOptionsMenu->addAction(tr("Export Names"), this, &CResourceBrowser::ExportAssetNames);
     pOptionsMenu->addSeparator();
 
@@ -121,7 +121,7 @@ CResourceBrowser::CResourceBrowser(QWidget *pParent)
     pImportMenu->addAction(tr("Package Contents List"), this, &CResourceBrowser::ImportPackageContentsList);
     pImportMenu->addAction(tr("Generate Asset Names"), this, &CResourceBrowser::GenerateAssetNames);
 
-    QAction *pDisplayAssetIDsAction = new QAction(tr("Display Asset IDs"), this);
+    auto* pDisplayAssetIDsAction = new QAction(tr("Display Asset IDs"), this);
     pDisplayAssetIDsAction->setCheckable(true);
     connect(pDisplayAssetIDsAction, &QAction::toggled, this, &CResourceBrowser::SetAssetIDDisplayEnabled);
     pOptionsMenu->addAction(pDisplayAssetIDsAction);
@@ -133,9 +133,9 @@ CResourceBrowser::CResourceBrowser(QWidget *pParent)
 #ifndef PUBLIC_RELEASE
     // Only add the store menu in debug builds. We don't want end users editing the editor store.
     pOptionsMenu->addSeparator();
-    QMenu *pStoreMenu = pOptionsMenu->addMenu(tr("Set Store"));
-    QAction *pProjStoreAction = pStoreMenu->addAction(tr("Project Store"), this, &CResourceBrowser::SetProjectStore);
-    QAction *pEdStoreAction = pStoreMenu->addAction(tr("Editor Store"), this, &CResourceBrowser::SetEditorStore);
+    auto* pStoreMenu = pOptionsMenu->addMenu(tr("Set Store"));
+    auto* pProjStoreAction = pStoreMenu->addAction(tr("Project Store"), this, &CResourceBrowser::SetProjectStore);
+    auto* pEdStoreAction = pStoreMenu->addAction(tr("Editor Store"), this, &CResourceBrowser::SetEditorStore);
 
     pProjStoreAction->setCheckable(true);
     pProjStoreAction->setChecked(true);
@@ -185,7 +185,7 @@ void CResourceBrowser::SetActiveDirectory(CVirtualDirectory *pDir)
 
         if (sender() != mpUI->DirectoryTreeView)
         {
-            QModelIndex Index = mpDirectoryModel->GetIndexForDirectory(pDir);
+            const QModelIndex Index = mpDirectoryModel->GetIndexForDirectory(pDir);
             mpUI->DirectoryTreeView->selectionModel()->setCurrentIndex(Index, QItemSelectionModel::ClearAndSelect);
         }
     }
@@ -212,8 +212,8 @@ void CResourceBrowser::SelectResource(CResourceEntry *pEntry, bool ClearFiltersI
     }
 
     // Select resource
-    QModelIndex SourceIndex = mpModel->GetIndexForEntry(pEntry);
-    QModelIndex ProxyIndex = mpProxyModel->mapFromSource(SourceIndex);
+    const QModelIndex SourceIndex = mpModel->GetIndexForEntry(pEntry);
+    const QModelIndex ProxyIndex = mpProxyModel->mapFromSource(SourceIndex);
 
     if (ProxyIndex.isValid())
     {
@@ -241,8 +241,8 @@ void CResourceBrowser::SelectDirectory(CVirtualDirectory *pDir)
     }
 
     // Select directory
-    QModelIndex SourceIndex = mpModel->GetIndexForDirectory(pDir);
-    QModelIndex ProxyIndex = mpProxyModel->mapFromSource(SourceIndex);
+    const QModelIndex SourceIndex = mpModel->GetIndexForDirectory(pDir);
+    const QModelIndex ProxyIndex = mpProxyModel->mapFromSource(SourceIndex);
     mpUI->ResourceTableView->selectionModel()->select(ProxyIndex, QItemSelectionModel::ClearAndSelect);
     mpUI->ResourceTableView->scrollTo(ProxyIndex, QAbstractItemView::PositionAtCenter);
 }
@@ -263,26 +263,26 @@ void CResourceBrowser::CreateFilterCheckboxes()
 
         for (auto* type : TypeList)
         {
-            QCheckBox *pCheck = new QCheckBox(this);
+            auto* pCheck = new QCheckBox(this);
             pCheck->setFont(mFilterBoxFont);
             pCheck->setText(TO_QSTRING(type->TypeName()));
             mTypeList.push_back(SResourceType{type, pCheck});
         }
 
-        std::sort(mTypeList.begin(), mTypeList.end(), [](const SResourceType& rkLeft, const SResourceType& rkRight) {
+        std::ranges::sort(mTypeList, [](const SResourceType& rkLeft, const SResourceType& rkRight) {
             return rkLeft.pTypeInfo->TypeName().ToUpper() < rkRight.pTypeInfo->TypeName().ToUpper();
         });
 
         // Add sorted checkboxes to the UI
         for (const SResourceType& rkType : mTypeList)
         {
-            QCheckBox *pCheck = rkType.pFilterCheckBox;
+            auto* pCheck = rkType.pFilterCheckBox;
             mpFilterBoxesLayout->addWidget(rkType.pFilterCheckBox);
             connect(pCheck, &QCheckBox::toggled, this, &CResourceBrowser::OnFilterTypeBoxTicked);
         }
     }
 
-    QSpacerItem *pSpacer = new QSpacerItem(0, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+    auto* pSpacer = new QSpacerItem(0, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
     mpFilterBoxesLayout->addSpacerItem(pSpacer);
 }
 
@@ -302,7 +302,7 @@ void CResourceBrowser::CreateAddMenu()
         mpAddMenu->addAction(tr("New Folder"), this, &CResourceBrowser::CreateDir);
         mpAddMenu->addSeparator();
 
-        QMenu* pCreateMenu = new QMenu(tr("Create..."), mpAddMenu);
+        auto* pCreateMenu = new QMenu(tr("Create..."), mpAddMenu);
         mpAddMenu->addMenu(pCreateMenu);
         AddCreateAssetMenuActions(pCreateMenu);
 
@@ -321,8 +321,8 @@ void CResourceBrowser::AddCreateAssetMenuActions(QMenu* pMenu)
     {
         if (typeInfo->CanBeCreated())
         {
-            QString TypeName = TO_QSTRING(typeInfo->TypeName());
-            QAction* pAction = pMenu->addAction(TypeName, this, &CResourceBrowser::OnCreateAssetAction);
+            const auto TypeName = TO_QSTRING(typeInfo->TypeName());
+            auto* pAction = pMenu->addAction(TypeName, this, &CResourceBrowser::OnCreateAssetAction);
             pAction->setProperty("TypeInfo", QVariant(static_cast<int>(typeInfo->Type())));
         }
     }
@@ -390,9 +390,9 @@ bool CResourceBrowser::MoveResources(const QList<CResourceEntry*>& rkResources, 
     QList<CResourceEntry*> ConflictingResources;
     QList<CResourceEntry*> ValidResources;
 
-    for (CResourceEntry *pEntry : rkResources)
+    for (auto* pEntry : rkResources)
     {
-        CResourceEntry *pConflict = pNewDir->FindChildResource(pEntry->Name(), pEntry->ResourceType());
+        const auto* pConflict = pNewDir->FindChildResource(pEntry->Name(), pEntry->ResourceType());
 
         if (pConflict != pEntry)
         {
@@ -406,9 +406,9 @@ bool CResourceBrowser::MoveResources(const QList<CResourceEntry*>& rkResources, 
     QList<CVirtualDirectory*> ConflictingDirs;
     QList<CVirtualDirectory*> ValidDirs;
 
-    for (CVirtualDirectory *pDir : rkDirectories)
+    for (auto* pDir : rkDirectories)
     {
-        CVirtualDirectory *pConflict = pNewDir->FindChildDirectory(pDir->Name(), false);
+        const auto* pConflict = pNewDir->FindChildDirectory(pDir->Name(), false);
 
         if (pConflict != pDir)
         {
@@ -424,12 +424,12 @@ bool CResourceBrowser::MoveResources(const QList<CResourceEntry*>& rkResources, 
     {
         QString ErrorMsg = tr("Failed to move; the destination directory has conflicting files.\n\n");
 
-        for (const CVirtualDirectory *pDir : ConflictingDirs)
+        for (const auto* pDir : ConflictingDirs)
         {
             ErrorMsg += tr("* %1").arg(TO_QSTRING(pDir->Name()));
         }
 
-        for (const CResourceEntry *pEntry : ConflictingResources)
+        for (const auto* pEntry : ConflictingResources)
         {
             ErrorMsg += tr("* %1.%2\n").arg(TO_QSTRING(pEntry->Name())).arg(TO_QSTRING(pEntry->CookedExtension().ToString()));
         }
@@ -444,10 +444,10 @@ bool CResourceBrowser::MoveResources(const QList<CResourceEntry*>& rkResources, 
         mUndoStack.beginMacro(tr("Move Resources"));
         mUndoStack.push(new CSaveStoreCommand(mpStore));
 
-        for (CVirtualDirectory* pDir : ValidDirs)
+        for (auto* pDir : ValidDirs)
             mUndoStack.push(new CMoveDirectoryCommand(mpStore, pDir, pNewDir));
 
-        for (CResourceEntry* pEntry : ValidResources)
+        for (auto* pEntry : ValidResources)
             mUndoStack.push(new CMoveResourceCommand(pEntry, pNewDir));
 
         mUndoStack.push(new CSaveStoreCommand(mpStore));
@@ -500,10 +500,10 @@ CResourceEntry* CResourceBrowser::CreateNewResource(EResourceType Type,
     pEntry->Save();
 
     // Select new resource so user can enter a name
-    QModelIndex Index = mpModel->GetIndexForEntry(pEntry);
+    const QModelIndex Index = mpModel->GetIndexForEntry(pEntry);
     ASSERT(Index.isValid());
 
-    QModelIndex ProxyIndex = mpProxyModel->mapFromSource(Index);
+    const QModelIndex ProxyIndex = mpProxyModel->mapFromSource(Index);
     mpUI->ResourceTableView->selectionModel()->select(ProxyIndex, QItemSelectionModel::ClearAndSelect);
     mpUI->ResourceTableView->edit(ProxyIndex);
 
@@ -571,7 +571,7 @@ void CResourceBrowser::RefreshDirectories()
     mpDirectoryModel->SetRoot(mpStore->RootDirectory());
 
     // Clear selection. This function is called when directories are created/deleted and our current selection might not be valid anymore
-    QModelIndex RootIndex = mpDirectoryModel->index(0, 0);
+    const QModelIndex RootIndex = mpDirectoryModel->index(0, 0);
     mpUI->DirectoryTreeView->selectionModel()->setCurrentIndex(RootIndex, QItemSelectionModel::ClearAndSelect);
     mpUI->DirectoryTreeView->setExpanded(RootIndex, true);
 }
@@ -643,68 +643,64 @@ void CResourceBrowser::OnClearButtonPressed()
 
 void CResourceBrowser::OnSortModeChanged(int Index)
 {
-    CResourceProxyModel::ESortMode Mode = (Index == 0 ? CResourceProxyModel::ESortMode::ByName : CResourceProxyModel::ESortMode::BySize);
+    const auto Mode = (Index == 0 ? CResourceProxyModel::ESortMode::ByName : CResourceProxyModel::ESortMode::BySize);
     mpProxyModel->SetSortMode(Mode);
 }
 
 void CResourceBrowser::OnCreateAssetAction()
 {
     // Attempt to retrieve the asset type from the sender. If successful, create the asset.
-    QAction* pSender = qobject_cast<QAction*>(sender());
+    const auto* pSender = qobject_cast<QAction*>(sender());
+    if (!pSender)
+        return;
 
-    if (pSender)
-    {
-        bool Ok;
-        EResourceType Type = (EResourceType) pSender->property("TypeInfo").toInt(&Ok);
+    bool Ok{};
+    const auto Type = EResourceType(pSender->property("TypeInfo").toInt(&Ok));
+    if (!Ok)
+        return;
 
-        if (Ok)
-        {
-            CreateNewResource(Type);
-        }
-    }
+    CreateNewResource(Type);
 }
 
 bool CResourceBrowser::CreateDir()
 {
-    if (mpSelectedDir)
+    if (!mpSelectedDir)
+        return false;
+
+    const TString DirNameBase = "New Folder";
+    TString DirName = DirNameBase;
+    uint32_t AppendNum = 0;
+
+    while (mpSelectedDir->FindChildDirectory(DirName, false) != nullptr)
     {
-        TString DirNameBase = "New Folder";
-        TString DirName = DirNameBase;
-        uint32_t AppendNum = 0;
-
-        while (mpSelectedDir->FindChildDirectory(DirName, false) != nullptr)
-        {
-            AppendNum++;
-            DirName = fmt::format("{} ({})", DirNameBase, AppendNum);
-        }
-
-        // Push create command to actually create the directory
-        mUndoStack.beginMacro(tr("Create Directory"));
-        mUndoStack.push(new CSaveStoreCommand(mpStore));
-        CCreateDirectoryCommand *pCmd = new CCreateDirectoryCommand(mpStore, mpSelectedDir->FullPath(), DirName);
-        mUndoStack.push(pCmd);
-        mUndoStack.push(new CSaveStoreCommand(mpStore));
-        mUndoStack.endMacro();
-
-        // Now fetch the new directory and start editing it so the user can enter a name
-        CVirtualDirectory *pNewDir = mpSelectedDir->FindChildDirectory(DirName, false);
-        if (!pNewDir) return false;
-
-        // todo: edit in the directory tree view instead if it has focus
-        if (!mpUI->DirectoryTreeView->hasFocus())
-        {
-            QModelIndex Index = mpModel->GetIndexForDirectory(pNewDir);
-            ASSERT(Index.isValid());
-
-            QModelIndex ProxyIndex = mpProxyModel->mapFromSource(Index);
-            mpUI->ResourceTableView->selectionModel()->select(ProxyIndex, QItemSelectionModel::ClearAndSelect);
-            mpUI->ResourceTableView->edit(ProxyIndex);
-        }
-
-        return true;
+        AppendNum++;
+        DirName = fmt::format("{} ({})", DirNameBase, AppendNum);
     }
 
-    return false;
+    // Push create command to actually create the directory
+    mUndoStack.beginMacro(tr("Create Directory"));
+    mUndoStack.push(new CSaveStoreCommand(mpStore));
+    mUndoStack.push(new CCreateDirectoryCommand(mpStore, mpSelectedDir->FullPath(), DirName));
+    mUndoStack.push(new CSaveStoreCommand(mpStore));
+    mUndoStack.endMacro();
+
+    // Now fetch the new directory and start editing it so the user can enter a name
+    const auto* pNewDir = mpSelectedDir->FindChildDirectory(DirName, false);
+    if (!pNewDir)
+        return false;
+
+    // todo: edit in the directory tree view instead if it has focus
+    if (!mpUI->DirectoryTreeView->hasFocus())
+    {
+        const QModelIndex Index = mpModel->GetIndexForDirectory(pNewDir);
+        ASSERT(Index.isValid());
+
+        const QModelIndex ProxyIndex = mpProxyModel->mapFromSource(Index);
+        mpUI->ResourceTableView->selectionModel()->select(ProxyIndex, QItemSelectionModel::ClearAndSelect);
+        mpUI->ResourceTableView->edit(ProxyIndex);
+    }
+
+    return true;
 }
 
 bool CResourceBrowser::Delete(QList<CResourceEntry*> Resources, QList<CVirtualDirectory*> Directories)
@@ -796,9 +792,9 @@ bool CResourceBrowser::Delete(QList<CResourceEntry*> Resources, QList<CVirtualDi
 
 void CResourceBrowser::OnSearchStringChanged(const QString& SearchString)
 {
-    bool WasAssetList = InAssetListMode();
+    const bool WasAssetList = InAssetListMode();
     mSearching = !SearchString.isEmpty();
-    bool IsAssetList = InAssetListMode();
+    const bool IsAssetList = InAssetListMode();
 
     // Check if we need to change to/from asset list mode to display/stop displaying search results
     if (WasAssetList != IsAssetList)
@@ -860,8 +856,8 @@ void CResourceBrowser::FindAssetByID()
 
     if (!StringAssetID.IsEmpty())
     {
-        EGame Game = mpStore->Game();
-        EIDLength IDLength = CAssetID::GameIDLength(Game);
+        const EGame Game = mpStore->Game();
+        const EIDLength IDLength = CAssetID::GameIDLength(Game);
         bool WasValid = false;
 
         if (StringAssetID.IsHexString(false, static_cast<int>(IDLength) * 2))
@@ -873,8 +869,8 @@ void CResourceBrowser::FindAssetByID()
             if ((IDLength == EIDLength::k32Bit && StringAssetID.Length() == 8) ||
                 (IDLength == EIDLength::k64Bit && StringAssetID.Length() == 16))
             {
-                CAssetID ID = (IDLength == EIDLength::k32Bit ? StringAssetID.ToInt32(16) : StringAssetID.ToInt64(16));
-                CResourceEntry *pEntry = mpStore->FindEntry(ID);
+                const CAssetID ID = (IDLength == EIDLength::k32Bit ? StringAssetID.ToInt32(16) : StringAssetID.ToInt64(16));
+                CResourceEntry* pEntry = mpStore->FindEntry(ID);
                 WasValid = true;
 
                 if (pEntry)
@@ -906,30 +902,30 @@ void CResourceBrowser::SetAssetIDDisplayEnabled(bool Enable)
 
 void CResourceBrowser::UpdateStore()
 {
-    CGameProject *pProj = gpEdApp->ActiveProject();
-    CResourceStore *pProjStore = (pProj ? pProj->ResourceStore() : nullptr);
-    CResourceStore *pNewStore = (mEditorStore ? gpEditorStore : pProjStore);
+    CGameProject* pProj = gpEdApp->ActiveProject();
+    CResourceStore* pProjStore = (pProj ? pProj->ResourceStore() : nullptr);
+    CResourceStore* pNewStore = (mEditorStore ? gpEditorStore : pProjStore);
 
-    if (mpStore != pNewStore)
-    {
-        mpStore = pNewStore;
+    if (mpStore == pNewStore)
+        return;
 
-        // Clear search
-        mpUI->SearchBar->clear();
-        mSearching = false;
+    mpStore = pNewStore;
 
-        // Refresh project-specific UI
-        CreateAddMenu();
-        CreateFilterCheckboxes();
-        setEnabled(mpStore != nullptr);
+    // Clear search
+    mpUI->SearchBar->clear();
+    mSearching = false;
 
-        // Refresh directory tree
-        mpDirectoryModel->SetRoot(mpStore ? mpStore->RootDirectory() : nullptr);
-        QModelIndex RootIndex = mpDirectoryModel->index(0, 0);
-        mpUI->DirectoryTreeView->expand(RootIndex);
-        mpUI->DirectoryTreeView->clearSelection();
-        OnDirectorySelectionChanged(QModelIndex());
-    }
+    // Refresh project-specific UI
+    CreateAddMenu();
+    CreateFilterCheckboxes();
+    setEnabled(mpStore != nullptr);
+
+    // Refresh directory tree
+    mpDirectoryModel->SetRoot(mpStore ? mpStore->RootDirectory() : nullptr);
+    const QModelIndex RootIndex = mpDirectoryModel->index(0, 0);
+    mpUI->DirectoryTreeView->expand(RootIndex);
+    mpUI->DirectoryTreeView->clearSelection();
+    OnDirectorySelectionChanged(QModelIndex());
 }
 
 void CResourceBrowser::SetProjectStore()
@@ -1001,7 +997,7 @@ void CResourceBrowser::ImportAssetNameMap()
     for (const auto& It : mpStore->MakeResourceView())
     {
         TString Dir, Name;
-        bool AutoDir, AutoName;
+        bool AutoDir{}, AutoName{};
 
         if (Map.GetNameInfo(It->ID(), Dir, Name, AutoDir, AutoName))
             It->MoveAndRename(Dir, Name, AutoDir, AutoName);
@@ -1020,12 +1016,12 @@ void CResourceBrowser::ExportAssetNames()
     if (OutFile.isEmpty())
         return;
 
-    TString OutFileStr = TO_TSTRING(OutFile);
+    const TString OutFileStr = TO_TSTRING(OutFile);
     CAssetNameMap NameMap(mpStore->Game());
 
     if (FileUtil::Exists(OutFileStr))
     {
-        bool LoadSuccess = NameMap.LoadAssetNames(OutFileStr);
+        const bool LoadSuccess = NameMap.LoadAssetNames(OutFileStr);
 
         if (!LoadSuccess || !NameMap.IsValid())
         {
@@ -1035,7 +1031,7 @@ void CResourceBrowser::ExportAssetNames()
     }
 
     NameMap.CopyFromStore(mpStore);
-    bool SaveSuccess = NameMap.SaveAssetNames(OutFileStr);
+    const bool SaveSuccess = NameMap.SaveAssetNames(OutFileStr);
 
     if (!SaveSuccess)
         UICommon::ErrorMsg(this, tr("Failed to export asset names!"));
@@ -1059,10 +1055,10 @@ void CResourceBrowser::ClearFilters()
 
 void CResourceBrowser::ResetSearch()
 {
-    bool WasAssetList = InAssetListMode();
+    const bool WasAssetList = InAssetListMode();
     mpUI->SearchBar->clear();
     mSearching = false;
-    bool IsAssetList = InAssetListMode();
+    const bool IsAssetList = InAssetListMode();
 
     if (IsAssetList != WasAssetList)
         RefreshResources();
@@ -1080,14 +1076,17 @@ void CResourceBrowser::OnFilterTypeBoxTicked(bool Checked)
 {
     // NOTE: there should only be one CResourceBrowser; if that ever changes for some reason change this to a member
     static bool ReentrantGuard = false;
-    if (ReentrantGuard) return;
+    if (ReentrantGuard)
+        return;
+
     ReentrantGuard = true;
 
     if (sender() == mpFilterAllBox)
     {
         if (!Checked && !mpProxyModel->HasTypeFilter())
+        {
             mpFilterAllBox->setChecked(true);
-
+        }
         else if (Checked)
         {
             for (const SResourceType& rkType : mTypeList)
@@ -1097,7 +1096,6 @@ void CResourceBrowser::OnFilterTypeBoxTicked(bool Checked)
             }
         }
     }
-
     else
     {
         for (const SResourceType& rkType : mTypeList)
@@ -1118,11 +1116,11 @@ void CResourceBrowser::OnFilterTypeBoxTicked(bool Checked)
 
 void CResourceBrowser::UpdateFilter()
 {
-    QString SearchText = mpUI->SearchBar->text();
+    const QString SearchText = mpUI->SearchBar->text();
     mSearching = !SearchText.isEmpty();
 
     UpdateDescriptionLabel();
-    mpProxyModel->SetSearchString( TO_TSTRING(mpUI->SearchBar->text()) );
+    mpProxyModel->SetSearchString(TO_TSTRING(mpUI->SearchBar->text()));
     mpProxyModel->invalidate();
 
     // not sure why I need to do this here? but the resize mode seems to get reset otherwise
@@ -1133,9 +1131,9 @@ void CResourceBrowser::UpdateUndoActionStates()
 {
     // Make sure that the undo actions are only enabled when the table view has focus.
     // This is to prevent them from conflicting with world editor undo/redo actions.
-    bool HasFocus = (mpUI->ResourceTableView->hasFocus());
-    mpUndoAction->setEnabled( HasFocus && mUndoStack.canUndo() );
-    mpRedoAction->setEnabled( HasFocus && mUndoStack.canRedo() );
+    const bool HasFocus = mpUI->ResourceTableView->hasFocus();
+    mpUndoAction->setEnabled(HasFocus && mUndoStack.canUndo());
+    mpRedoAction->setEnabled(HasFocus && mUndoStack.canRedo());
 }
 
 void CResourceBrowser::Undo()
