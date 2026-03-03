@@ -70,7 +70,7 @@ public:
             for (uint32_t iTemp = 0; iTemp < mpGame->NumScriptTemplates(); iTemp++)
                 mTemplates.push_back(mpGame->TemplateByIndex(iTemp));
 
-            std::sort(mTemplates.begin(), mTemplates.end(), [](const CScriptTemplate *pLeft, const CScriptTemplate *pRight) {
+            std::ranges::sort(mTemplates, [](const CScriptTemplate *pLeft, const CScriptTemplate *pRight) {
                 return pLeft->Name() < pRight->Name();
             });
         }
@@ -98,11 +98,7 @@ public:
 
     void setModel(QAbstractItemModel* pModel) override
     {
-        if (CTemplateListModel *pTempModel = qobject_cast<CTemplateListModel*>(pModel))
-            mpModel = pTempModel;
-        else
-            mpModel = nullptr;
-
+        mpModel = qobject_cast<CTemplateListModel*>(pModel);
         QListView::setModel(mpModel);
     }
 
