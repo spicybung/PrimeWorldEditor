@@ -82,6 +82,7 @@ signals:
     void ViewportClick(const SRayIntersection& rkIntersect, QMouseEvent *pEvent);
     void GizmoMoved();
     void CameraOrbit();
+    void PlayFromHere(const CSceneNode* node, const CVector3f& position);
 
 private:
     void CreateContextMenu();

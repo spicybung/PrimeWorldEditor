@@ -173,6 +173,7 @@ CWorldEditor::CWorldEditor(QWidget *parent)
     connect(ui->MainViewport, &CSceneViewport::InputProcessed, this, &CWorldEditor::UpdateCursor);
     connect(ui->MainViewport, &CSceneViewport::GizmoMoved, this, &CWorldEditor::OnGizmoMoved);
     connect(ui->MainViewport, &CSceneViewport::CameraOrbit, this, &CWorldEditor::UpdateCameraOrbit);
+    connect(ui->MainViewport, &CSceneViewport::PlayFromHere, this, &CWorldEditor::OnPlayFromHere);
     connect(this, &CWorldEditor::SelectionModified, this, &CWorldEditor::OnSelectionModified);
     connect(this, &CWorldEditor::SelectionTransformed, this, &CWorldEditor::UpdateCameraOrbit);
     connect(this, &CWorldEditor::PickModeEntered, this, &CWorldEditor::OnPickModeEnter);
@@ -980,7 +981,7 @@ void CWorldEditor::UpdateNewLinkLine()
 
 void CWorldEditor::LaunchQuickplay()
 {
-    CVector3f CameraPosition = Viewport()->Camera().Position();
+    const CVector3f& CameraPosition = Viewport()->Camera().Position();
     LaunchQuickplayFromLocation(CameraPosition, false);
 }
 
@@ -1394,4 +1395,12 @@ void CWorldEditor::OnShowLogClicked(bool show)
     }
 
     mpLogDialog->setVisible(show);
+}
+
+void CWorldEditor::OnPlayFromHere(const CSceneNode* node, const CVector3f& position)
+{
+    if (node)
+        LaunchQuickplayFromLocation(position, true);
+    else
+        LaunchQuickplay();
 }

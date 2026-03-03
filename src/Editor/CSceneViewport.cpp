@@ -515,17 +515,7 @@ void CSceneViewport::OnUnhideAll()
 
 void CSceneViewport::OnPlayFromHere()
 {
-    CWorldEditor* pOwnerWorldEd = qobject_cast<CWorldEditor*>(mpEditor);
-    ASSERT( pOwnerWorldEd != nullptr );
-
-    if (mpMenuNode)
-    {
-        pOwnerWorldEd->LaunchQuickplayFromLocation(mMenuPoint, true);
-    }
-    else
-    {
-        pOwnerWorldEd->LaunchQuickplay();
-    }
+    emit PlayFromHere(mpMenuNode, mMenuPoint);
 }
 
 void CSceneViewport::OnContextMenuClose()

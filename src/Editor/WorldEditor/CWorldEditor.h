@@ -181,6 +181,8 @@ private slots:
 
     void OnShowLogClicked(bool show);
 
+    void OnPlayFromHere(const CSceneNode* node, const CVector3f& position);
+
 signals:
     void MapChanged(CWorld *pNewWorld, CGameArea *pNewArea);
     void LayersModified();
