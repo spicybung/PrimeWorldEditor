@@ -283,20 +283,21 @@ void CModelEditorWindow::SetActiveMaterial(int MatIndex)
     }
 
     // Set up the tex coord source combo box so it only shows vertex attributes that exist on this material
+    // User data values line up with the gkCoordSrc array in the shader generator code.
     ui->TexCoordSrcComboBox->clear();
     const FVertexDescription Desc = mpCurrentMat->VtxDesc();
 
-    ui->TexCoordSrcComboBox->addItem(tr("None"));
-    if (Desc.HasFlag(EVertexAttribute::Position)) ui->TexCoordSrcComboBox->addItem(tr("Position"));
-    if (Desc.HasFlag(EVertexAttribute::Normal))   ui->TexCoordSrcComboBox->addItem(tr("Normal"));
-    if (Desc.HasFlag(EVertexAttribute::Tex0))     ui->TexCoordSrcComboBox->addItem(tr("Tex Coord 1"));
-    if (Desc.HasFlag(EVertexAttribute::Tex1))     ui->TexCoordSrcComboBox->addItem(tr("Tex Coord 2"));
-    if (Desc.HasFlag(EVertexAttribute::Tex2))     ui->TexCoordSrcComboBox->addItem(tr("Tex Coord 3"));
-    if (Desc.HasFlag(EVertexAttribute::Tex3))     ui->TexCoordSrcComboBox->addItem(tr("Tex Coord 4"));
-    if (Desc.HasFlag(EVertexAttribute::Tex4))     ui->TexCoordSrcComboBox->addItem(tr("Tex Coord 5"));
-    if (Desc.HasFlag(EVertexAttribute::Tex5))     ui->TexCoordSrcComboBox->addItem(tr("Tex Coord 6"));
-    if (Desc.HasFlag(EVertexAttribute::Tex6))     ui->TexCoordSrcComboBox->addItem(tr("Tex Coord 7"));
-    if (Desc.HasFlag(EVertexAttribute::Tex7))     ui->TexCoordSrcComboBox->addItem(tr("Tex Coord 8"));
+    ui->TexCoordSrcComboBox->addItem(tr("None"), 0xFF);
+    if (Desc.HasFlag(EVertexAttribute::Position)) ui->TexCoordSrcComboBox->addItem(tr("Position"), 0);
+    if (Desc.HasFlag(EVertexAttribute::Normal))   ui->TexCoordSrcComboBox->addItem(tr("Normal"), 1);
+    if (Desc.HasFlag(EVertexAttribute::Tex0))     ui->TexCoordSrcComboBox->addItem(tr("Tex Coord 1"), 4);
+    if (Desc.HasFlag(EVertexAttribute::Tex1))     ui->TexCoordSrcComboBox->addItem(tr("Tex Coord 2"), 5);
+    if (Desc.HasFlag(EVertexAttribute::Tex2))     ui->TexCoordSrcComboBox->addItem(tr("Tex Coord 3"), 6);
+    if (Desc.HasFlag(EVertexAttribute::Tex3))     ui->TexCoordSrcComboBox->addItem(tr("Tex Coord 4"), 7);
+    if (Desc.HasFlag(EVertexAttribute::Tex4))     ui->TexCoordSrcComboBox->addItem(tr("Tex Coord 5"), 8);
+    if (Desc.HasFlag(EVertexAttribute::Tex5))     ui->TexCoordSrcComboBox->addItem(tr("Tex Coord 6"), 9);
+    if (Desc.HasFlag(EVertexAttribute::Tex6))     ui->TexCoordSrcComboBox->addItem(tr("Tex Coord 7"), 10);
+    if (Desc.HasFlag(EVertexAttribute::Tex7))     ui->TexCoordSrcComboBox->addItem(tr("Tex Coord 8"), 11);
 
     // Emit signal from Pass Table to set up the Pass UI
     mIgnoreSignals = false;
@@ -408,10 +409,11 @@ void CModelEditorWindow::UpdateMaterial(int Value)
         break;
 
     case EModelEditorWidget::TevTexSourceComboBox:
-        if (Value >= 3) Value ++;
-        else Value--;
-        mpCurrentPass->SetTexCoordSource(Value);
+    {
+        const auto source = ui->TexCoordSrcComboBox->currentData().toUInt();
+        mpCurrentPass->SetTexCoordSource(source);
         break;
+    }
 
     case EModelEditorWidget::TevColorComboBoxA:
     case EModelEditorWidget::TevColorComboBoxB:
