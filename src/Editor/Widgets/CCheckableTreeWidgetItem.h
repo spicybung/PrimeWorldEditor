@@ -39,20 +39,15 @@ public:
     /** setData override to catch check state changes */
     void setData(int Column, int Role, const QVariant& rkValue) override
     {
-        Qt::CheckState OldState = checkState(0);
+        const Qt::CheckState OldState = checkState(0);
         QTreeWidgetItem::setData(Column, Role, rkValue);
-        Qt::CheckState NewState = checkState(0);
+        const Qt::CheckState NewState = checkState(0);
 
-        if (OldState != NewState)
-        {
-            CCheckableTreeWidget* pCheckableTree =
-                    qobject_cast<CCheckableTreeWidget*>(treeWidget());
-            
-            if (pCheckableTree)
-            {
-                pCheckableTree->CheckStateChanged(this);
-            }
-        }
+        if (OldState == NewState)
+            return;
+
+        if (auto* pCheckableTree = qobject_cast<CCheckableTreeWidget*>(treeWidget()))
+            pCheckableTree->CheckStateChanged(this);
     }
 };
 
