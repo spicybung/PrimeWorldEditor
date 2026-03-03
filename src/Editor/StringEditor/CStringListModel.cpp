@@ -96,15 +96,15 @@ Qt::DropActions CStringListModel::supportedDropActions() const
 QMimeData* CStringListModel::mimeData(const QModelIndexList& kIndexes) const
 {
     // We don't support drag&drop on multiple strings at once
-    ASSERT( kIndexes.size() == 1 );
-    QModelIndex Index = kIndexes.front();
+    ASSERT(kIndexes.size() == 1);
+    const QModelIndex& Index = kIndexes.front();
     return new CStringMimeData(mpStringTable->ID(), Index.row());
 }
 
 bool CStringListModel::canDropMimeData(const QMimeData* pkData, Qt::DropAction Action, int Row, int Column, const QModelIndex& kParent) const
 {
     // Only allow dropping string mime data that originated from our string table
-    const CStringMimeData* pkStringMimeData = qobject_cast<const CStringMimeData*>(pkData);
+    const auto* pkStringMimeData = qobject_cast<const CStringMimeData*>(pkData);
     return Action == Qt::MoveAction && pkStringMimeData != nullptr && pkStringMimeData->AssetID() == mpStringTable->ID();
 }
 
@@ -114,7 +114,7 @@ bool CStringListModel::dropMimeData(const QMimeData* pkData, Qt::DropAction Acti
 
     if (Action == Qt::MoveAction)
     {
-        const CStringMimeData* pkStringMimeData = qobject_cast<const CStringMimeData*>(pkData);
+        const auto* pkStringMimeData = qobject_cast<const CStringMimeData*>(pkData);
 
         if (pkStringMimeData && pkStringMimeData->AssetID() == mpStringTable->ID())
         {
