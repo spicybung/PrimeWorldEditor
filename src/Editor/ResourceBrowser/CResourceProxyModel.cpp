@@ -14,9 +14,8 @@ CResourceProxyModel::~CResourceProxyModel() = default;
 
 void CResourceProxyModel::setSourceModel(QAbstractItemModel* sourceModel)
 {
-    auto* resModel = qobject_cast<CResourceTableModel*>(sourceModel);
-    mpModel = resModel;
-    QSortFilterProxyModel::setSourceModel(resModel);
+    mpModel = qobject_cast<CResourceTableModel*>(sourceModel);
+    QSortFilterProxyModel::setSourceModel(mpModel);
     sort(0);
 }
 
