@@ -240,34 +240,36 @@ void CGeneratePropertyNamesDialog::OnTreeItemDoubleClicked(QTreeWidgetItem* pIte
 /** Check all items in the output tree */
 void CGeneratePropertyNamesDialog::CheckAll()
 {
-    mpUI->OutputTreeWidget->blockSignals(true);
-    mCheckedItems.clear();
-    mCheckedItems.reserve( mpUI->OutputTreeWidget->topLevelItemCount() );
-
-    for (int RowIdx = 0; RowIdx < mpUI->OutputTreeWidget->topLevelItemCount(); RowIdx++)
     {
-        QTreeWidgetItem* pItem = mpUI->OutputTreeWidget->topLevelItem(RowIdx);
-        pItem->setCheckState(0, Qt::Checked);
-        mCheckedItems.push_back(pItem);
-    }
+        [[maybe_unused]] const QSignalBlocker treeBlock{mpUI->OutputTreeWidget};
 
-    mpUI->OutputTreeWidget->blockSignals(false);
+        mCheckedItems.clear();
+        mCheckedItems.reserve(mpUI->OutputTreeWidget->topLevelItemCount());
+
+        for (int RowIdx = 0; RowIdx < mpUI->OutputTreeWidget->topLevelItemCount(); RowIdx++)
+        {
+            auto* pItem = mpUI->OutputTreeWidget->topLevelItem(RowIdx);
+            pItem->setCheckState(0, Qt::Checked);
+            mCheckedItems.push_back(pItem);
+        }
+    }
     UpdateUI();
 }
 
 /** Uncheck all items in the output tree */
 void CGeneratePropertyNamesDialog::UncheckAll()
 {
-    mpUI->OutputGroupBox->blockSignals(true);
-
-    for (int RowIdx = 0; RowIdx < mpUI->OutputTreeWidget->topLevelItemCount(); RowIdx++)
     {
-        QTreeWidgetItem* pItem = mpUI->OutputTreeWidget->topLevelItem(RowIdx);
-        pItem->setCheckState( 0, Qt::Unchecked );
-    }
+        [[maybe_unused]] const QSignalBlocker treeBlock{mpUI->OutputTreeWidget};
 
-    mCheckedItems.clear();
-    mpUI->OutputTreeWidget->blockSignals(false);
+        for (int RowIdx = 0; RowIdx < mpUI->OutputTreeWidget->topLevelItemCount(); RowIdx++)
+        {
+            auto* pItem = mpUI->OutputTreeWidget->topLevelItem(RowIdx);
+            pItem->setCheckState(0, Qt::Unchecked);
+        }
+
+        mCheckedItems.clear();
+    }
     UpdateUI();
 }
 
