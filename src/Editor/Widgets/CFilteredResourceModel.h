@@ -1,7 +1,7 @@
 #ifndef CFILTEREDRESOURCEMODEL_H
 #define CFILTEREDRESOURCEMODEL_H
 
-#include "CResourceSelector.h"
+#include "Editor/Widgets/CResourceSelector.h"
 #include "Editor/UICommon.h"
 
 #include <Core/GameProject/CGameProject.h>
@@ -11,6 +11,9 @@
 
 #include <QAbstractTableModel>
 #include <QSortFilterProxyModel>
+
+#include <algorithm>
+#include <iterator>
 
 class CFilteredResourceModel : public QAbstractTableModel
 {
@@ -32,18 +35,13 @@ public:
             }
         }
 
-        std::sort(mEntries.begin(), mEntries.end(), [](const CResourceEntry* pA, const CResourceEntry* pB) {
+        std::ranges::sort(mEntries, [](const CResourceEntry* pA, const CResourceEntry* pB) {
             return pA->UppercaseName() < pB->UppercaseName();
         });
 
-        for (int ResIdx = 0; ResIdx < mEntries.size(); ResIdx++)
-        {
-            if (mEntries[ResIdx] == pSelector->Entry())
-            {
-                mInitialRow = ResIdx;
-                break;
-            }
-        }
+        const auto iter = std::ranges::find(mEntries, pSelector->Entry());
+        if (iter != mEntries.end())
+            mInitialRow = int(std::distance(mEntries.begin(), iter));
     }
 
     // QAbstractTableModel interface
