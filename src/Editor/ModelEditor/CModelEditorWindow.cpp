@@ -150,9 +150,10 @@ CModelEditorWindow::~CModelEditorWindow() = default;
 
 bool CModelEditorWindow::Save()
 {
-    if (!mpCurrentModel) return true;
-    bool SaveSuccess = mpCurrentModel->Entry()->Save();
+    if (!mpCurrentModel)
+        return true;
 
+    const bool SaveSuccess = mpCurrentModel->Entry()->Save();
     if (SaveSuccess)
         gpEdApp->NotifyAssetsModified();
 
@@ -644,7 +645,8 @@ void CModelEditorWindow::ActivateMatEditUI(bool Active)
 
 void CModelEditorWindow::RefreshMaterial()
 {
-    if (mpCurrentMat) mpCurrentMat->GenerateShader();
+    if (mpCurrentMat)
+        mpCurrentMat->GenerateShader();
 }
 
 void CModelEditorWindow::UpdateAnimParamUI(EUVAnimMode Mode)
