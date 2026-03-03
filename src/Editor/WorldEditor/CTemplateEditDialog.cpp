@@ -264,30 +264,29 @@ void CTemplateEditDialog::UpdateTypeName(const TString& kNewTypeName, bool Allow
     {
         if (FileUtil::IsValidName(kNewTypeName, false))
         {
-            bool WasUnknown = mOriginalTypeName.Contains("Unknown") || mOriginalTypeName.Contains("Struct");
+            const bool WasUnknown = mOriginalTypeName.Contains("Unknown") || mOriginalTypeName.Contains("Struct");
 
             // Get a list of properties to update.
             for (int GameIdx = 0; GameIdx < GamesMinusMP1R; GameIdx++)
             {
-                if (WasUnknown && (EGame) GameIdx != mpProperty->Game())
+                const auto Game = EGame(GameIdx);
+                if (WasUnknown && Game != mpProperty->Game())
                     continue;
 
-                CGameTemplate* pGame = NGameList::GetGameTemplate( (EGame) GameIdx );
+                CGameTemplate* pGame = NGameList::GetGameTemplate(Game);
+                if (!pGame)
+                    continue;
 
-                if (pGame)
+                IProperty* pArchetype = pGame->FindPropertyArchetype(mOriginalTypeName);
+                if (!pArchetype)
+                    continue;
+
+                pGame->RenamePropertyArchetype(mOriginalTypeName, kNewTypeName);
+
+                if (pArchetype->Type() == EPropertyType::Enum || pArchetype->Type() == EPropertyType::Choice)
                 {
-                    IProperty* pArchetype = pGame->FindPropertyArchetype(mOriginalTypeName);
-
-                    if (pArchetype)
-                    {
-                        pGame->RenamePropertyArchetype(mOriginalTypeName, kNewTypeName);
-
-                        if (pArchetype->Type() == EPropertyType::Enum || pArchetype->Type() == EPropertyType::Choice)
-                        {
-                            CEnumProperty* pEnum = TPropCast<CEnumProperty>(pArchetype);
-                            pEnum->SetOverrideTypeName(AllowOverride);
-                        }
-                    }
+                    auto* pEnum = TPropCast<CEnumProperty>(pArchetype);
+                    pEnum->SetOverrideTypeName(AllowOverride);
                 }
             }
         }
