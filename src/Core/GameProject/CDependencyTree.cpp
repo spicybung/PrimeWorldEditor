@@ -18,8 +18,8 @@ IDependencyNode::~IDependencyNode() = default;
 
 bool IDependencyNode::HasDependency(const CAssetID& id) const
 {
-    return std::any_of(mChildren.cbegin(), mChildren.cend(),
-                       [&id](const auto& entry) { return entry->HasDependency(id); });
+    return std::ranges::any_of(mChildren,
+                               [&id](const auto& entry) { return entry->HasDependency(id); });
 }
 
 void IDependencyNode::GetAllResourceReferences(std::set<CAssetID>& rOutSet) const
