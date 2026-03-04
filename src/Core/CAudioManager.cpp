@@ -31,7 +31,7 @@ void CAudioManager::LoadAssets()
             mAudioGroups.emplace_back(group);
     }
 
-    std::sort(mAudioGroups.begin(), mAudioGroups.end(), [](const CAudioGroup *pLeft, const CAudioGroup *pRight) {
+    std::ranges::sort(mAudioGroups, [](const CAudioGroup* pLeft, const CAudioGroup* pRight) {
         return pLeft->GroupID() < pRight->GroupID();
     });
 
