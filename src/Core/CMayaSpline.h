@@ -9,10 +9,10 @@
 class CMayaSplineKnot
 {
 public:
-    float Time;
-    float Amplitude;
+    float Time{};
+    float Amplitude{};
 
-    mutable uint32_t Flags;
+    mutable uint32_t Flags{};
     mutable CVector2f CachedTangentA;
     mutable CVector2f CachedTangentB;
 
