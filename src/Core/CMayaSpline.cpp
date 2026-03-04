@@ -213,7 +213,7 @@ float CMayaSpline::EvaluateAtUnclamped(float Time) const
 
             std::vector<CVector2f> ControlPoints;
             FindControlPoints(PrevKnot, ControlPoints);
-            CalculateHermiteCoefficients(ControlPoints, mCachedHermiteCoefficients);
+            CalculateHermiteCoefficients(ControlPoints, mCachedHermiteCoefficients.data());
             mCachedMinTime = ControlPoints.front().X;
         }
     }

@@ -2,6 +2,7 @@
 #define CMAYASPLINE_H
 
 #include <Common/Math/CVector2f.h>
+#include <array>
 #include <cstdint>
 #include <vector>
 
@@ -33,7 +34,7 @@ class CMayaSpline
     mutable int mUnknown1 = 0; // 0x24
     mutable uint8_t mDirtyFlags = 0; // 0x28
     mutable float mCachedMinTime = 0.0f; // 0x2C
-    mutable float mCachedHermiteCoefficients[4] = {}; // 0x30, 0x34, 0x38, 0x3C
+    mutable std::array<float, 4> mCachedHermiteCoefficients{}; // 0x30, 0x34, 0x38, 0x3C
 
 public:
     CMayaSpline() = default;
