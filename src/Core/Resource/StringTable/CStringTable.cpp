@@ -5,6 +5,7 @@
 #include <Common/Macros.h>
 #include <algorithm>
 #include <array>
+#include <span>
 #include <utility>
 
 /**
@@ -51,7 +52,7 @@ constexpr std::array gkSupportedLanguagesDKCR{
 };
 
 // Utility function - retrieve the language array for a given game/region
-static std::pair<const ELanguage*, size_t> GetSupportedLanguages(EGame Game, ERegion Region)
+static std::span<const ELanguage> GetSupportedLanguages(EGame Game, ERegion Region)
 {
     switch (Game)
     {
@@ -59,20 +60,20 @@ static std::pair<const ELanguage*, size_t> GetSupportedLanguages(EGame Game, ERe
     case EGame::PrimeDemo:
     case EGame::Prime:
         if (Region == ERegion::NTSC)
-            return {gkSupportedLanguagesMP1.data(), gkSupportedLanguagesMP1.size()};
+            return gkSupportedLanguagesMP1;
         else
-            return {gkSupportedLanguagesMP1PAL.data(), gkSupportedLanguagesMP1PAL.size()};
+            return gkSupportedLanguagesMP1PAL;
 
     case EGame::EchoesDemo:
     case EGame::Echoes:
     case EGame::CorruptionProto:
-        return {gkSupportedLanguagesMP1PAL.data(), gkSupportedLanguagesMP1PAL.size()};
+        return gkSupportedLanguagesMP1PAL;
 
     case EGame::Corruption:
-        return {gkSupportedLanguagesMP3.data(), gkSupportedLanguagesMP3.size()};
+        return gkSupportedLanguagesMP3;
 
     case EGame::DKCReturns:
-        return {gkSupportedLanguagesDKCR.data(), gkSupportedLanguagesDKCR.size()};
+        return gkSupportedLanguagesDKCR;
     }
 }
 
@@ -239,13 +240,13 @@ void CStringTable::RemoveString(size_t StringIndex)
 void CStringTable::InitializeNewResource()
 {
     // Initialize data for whatever languages are supported by our game/region
-    const ERegion Region = ( Entry() && Entry()->Project() ? Entry()->Project()->Region() : ERegion::NTSC );
-    const auto [data, dataSize] = GetSupportedLanguages(Game(), Region);
-    mLanguages.resize(dataSize);
+    const ERegion Region = (Entry() && Entry()->Project() ? Entry()->Project()->Region() : ERegion::NTSC);
+    const auto langs = GetSupportedLanguages(Game(), Region);
+    mLanguages.resize(langs.size());
 
-    for (size_t i = 0; i < dataSize; i++)
+    for (size_t i = 0; i < langs.size(); i++)
     {
-        mLanguages[i].Language = data[i];
+        mLanguages[i].Language = langs[i];
         mLanguages[i].Strings.resize(1);
     }
 }
@@ -401,6 +402,6 @@ TString CStringTable::StripFormatting(const TString& kInString)
 /** Static - Returns whether a given language is supported by the given game/region combination */
 bool CStringTable::IsLanguageSupported(ELanguage Language, EGame Game, ERegion Region)
 {
-    const auto [data, dataSize] = GetSupportedLanguages(Game, Region);
-    return std::any_of(data, data + dataSize, [Language](const auto lang) { return lang == Language; });
+    const auto langs = GetSupportedLanguages(Game, Region);
+    return std::ranges::contains(langs, Language);
 }
