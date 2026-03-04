@@ -19,7 +19,8 @@
 
 namespace NCoreTests
 {
-
+namespace
+{
 /** Checks for a parameter in the commandline stream */
 static const char* ParseParameter(std::string_view parmName, int argc, char* argv[])
 {
@@ -54,6 +55,28 @@ static bool ParseToken(std::string_view token, int argc, char* argv[])
 static std::string_view ValidateUsageString()
 {
     return "Usage: ValidateCooker -type=<ResourceType> [-allowdump] [-project=<Project>]";
+}
+
+struct CompareDataResult
+{
+    bool valid{};
+    std::string error;
+
+    explicit operator bool() const { return valid; }
+};
+
+static CompareDataResult CompareData(std::span<const uint8_t> lhs, std::span<const char> rhs, size_t compareSize)
+{
+    const auto lhsEnd = lhs.begin() + compareSize;
+    const auto [first1, first2] = std::mismatch(lhs.begin(), lhsEnd, rhs.begin(),
+                                                [](auto l, auto r) { return l == uint8_t(r); });
+
+    // No mismatch
+    if (first1 == lhsEnd)
+        return {true, ""};
+
+    const auto mismatchIdx = std::distance(lhs.begin(), first1);
+    return {false, fmt::format("Data mismatch at index {} (0x{:X}):\nOriginal data: 0x{:X}, Cooked data: 0x{:X}\n\n", mismatchIdx, mismatchIdx, *first1, *first2)};
 }
 
 /** Validate all cooker output for the given resource type matches the original asset data */
@@ -91,7 +114,7 @@ static bool ValidateCooker(EResourceType ResourceType, bool DumpInvalidFileConte
         const size_t kAlignment         = (resource->Game() >= EGame::Corruption ? 64 : 32);
         const auto kAlignedOriginalSize = Math::Align(OriginalData.size(), kAlignment);
         const auto kAlignedNewSize      = Math::Align(NewData.size(), kAlignment);
-        const char* pkInvalidReason     = "";
+        std::string InvalidReason       = "";
         bool IsValid                    = false;
 
         if (kAlignedOriginalSize == kAlignedNewSize &&
@@ -103,21 +126,15 @@ static bool ValidateCooker(EResourceType ResourceType, bool DumpInvalidFileConte
             // indicate malformed data.
             const auto DataSize = std::min(OriginalData.size(), NewData.size());
 
-            if (memcmp(OriginalData.data(), NewData.data(), DataSize) == 0)
+            if (auto compareResult = CompareData(OriginalData, NewData, DataSize))
             {
                 // Verify any missing data at the end is padding.
                 bool MissingData = false;
 
                 if (OriginalData.size() > NewData.size())
                 {
-                    for (size_t i = DataSize; i < OriginalData.size(); i++)
-                    {
-                        if (OriginalData[i] != 0xFF)
-                        {
-                            MissingData = true;
-                            break;
-                        }
-                    }
+                    MissingData = std::any_of(OriginalData.begin() + DataSize, OriginalData.end(),
+                                              [](auto value) { return value != 0xFF; });
                 }
 
                 if (!MissingData)
@@ -127,17 +144,17 @@ static bool ValidateCooker(EResourceType ResourceType, bool DumpInvalidFileConte
                 }
                 else
                 {
-                    pkInvalidReason = "missing data";
+                    InvalidReason = "missing data";
                 }
             }
             else
             {
-                pkInvalidReason = "data mismatch";
+                InvalidReason = std::move(compareResult.error);
             }
         }
         else
         {
-            pkInvalidReason = "size mismatch";
+            InvalidReason = "size mismatch";
         }
 
         // Print test results
@@ -148,7 +165,7 @@ static bool ValidateCooker(EResourceType ResourceType, bool DumpInvalidFileConte
         }
         else
         {
-            NLog::Debug("[FAILED: {}] {}", pkInvalidReason, CookedPath);
+            NLog::Debug("[FAILED: {}] {}", InvalidReason, CookedPath);
             NumInvalid++;
         }
 
@@ -178,6 +195,7 @@ static bool ValidateCooker(EResourceType ResourceType, bool DumpInvalidFileConte
 
     return TestSuccess;
 }
+} // Anonymous namespace
 
 /** Check commandline input to see if the user is running a test */
 bool RunTests(int argc, char* argv[])
