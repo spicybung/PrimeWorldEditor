@@ -1,6 +1,7 @@
 #ifndef CVERTEXARRAYMANAGER_H
 #define CVERTEXARRAYMANAGER_H
 
+#include <cstdint>
 #include <unordered_map>
 #include <vector>
 #include <GL/glew.h>
