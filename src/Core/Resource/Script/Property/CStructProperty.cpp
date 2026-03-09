@@ -52,8 +52,8 @@ void CStructProperty::Destruct(void* pData)
 
 bool CStructProperty::MatchesDefault(const void* pData) const
 {
-    return std::any_of(mChildren.cbegin(), mChildren.cend(),
-                       [pData](const auto* child) { return child->MatchesDefault(pData); });
+    return std::ranges::any_of(mChildren,
+                               [pData](const auto* child) { return child->MatchesDefault(pData); });
 }
 
 void CStructProperty::RevertToDefault(void* pData)
@@ -191,6 +191,6 @@ bool CStructProperty::ShouldSerialize() const
     if (IProperty::ShouldSerialize())
         return true;
 
-    return std::any_of(mChildren.cbegin(), mChildren.cend(),
-                       [](const auto* child) { return child->ShouldSerialize(); });
+    return std::ranges::any_of(mChildren,
+                               [](const auto* child) { return child->ShouldSerialize(); });
 }
