@@ -5,9 +5,9 @@
 #include "Core/OpenGL/CShader.h"
 #include "Core/Resource/CMaterial.h"
 #include <array>
-#include <fstream>
-#include <sstream>
 #include <string_view>
+
+#include <fmt/format.h>
 #include <GL/glew.h>
 
 using namespace std::string_view_literals;
@@ -144,196 +144,213 @@ constexpr std::array gkTevRigid{
     "C2"sv,
 };
 
+// Encapsulates general formatting facilities
+struct FormatBuffer
+{
+    std::string buffer;
+
+    FormatBuffer() { buffer.reserve(2048); }
+
+    template <typename... Args>
+    void Append(fmt::format_string<Args...> fmt, Args&&... args)
+    {
+        fmt::format_to(std::back_inserter(buffer), fmt, std::forward<Args>(args)...);
+    }
+    void Append(char c)
+    {
+        buffer += c;
+    }
+};
+
 CShaderGenerator::CShaderGenerator() = default;
 
 CShaderGenerator::~CShaderGenerator() = default;
 
 bool CShaderGenerator::CreateVertexShader(const CMaterial& rkMat)
 {
-    std::ostringstream ShaderCode;
+    FormatBuffer ShaderCode;
 
-    ShaderCode << "#version 330 core\n"
-                  "\n";
+    ShaderCode.Append("#version 330 core\n\n");
 
     // Input
-    ShaderCode << "// Input\n";
+    ShaderCode.Append("// Input\n");
     const FVertexDescription VtxDesc = rkMat.VtxDesc();
     ASSERT(VtxDesc.HasFlag(EVertexAttribute::Position));
 
-    ShaderCode                                                      << "layout(location = 0) in vec3 RawPosition;\n";
-    if (VtxDesc.HasFlag(EVertexAttribute::Normal))      ShaderCode  << "layout(location = 1) in vec3 RawNormal;\n";
-    if (VtxDesc.HasFlag(EVertexAttribute::Color0))      ShaderCode  << "layout(location = 2) in vec4 RawColor0;\n";
-    if (VtxDesc.HasFlag(EVertexAttribute::Color1))      ShaderCode  << "layout(location = 3) in vec4 RawColor1;\n";
-    if (VtxDesc.HasFlag(EVertexAttribute::Tex0))        ShaderCode  << "layout(location = 4) in vec2 RawTex0;\n";
-    if (VtxDesc.HasFlag(EVertexAttribute::Tex1))        ShaderCode  << "layout(location = 5) in vec2 RawTex1;\n";
-    if (VtxDesc.HasFlag(EVertexAttribute::Tex2))        ShaderCode  << "layout(location = 6) in vec2 RawTex2;\n";
-    if (VtxDesc.HasFlag(EVertexAttribute::Tex3))        ShaderCode  << "layout(location = 7) in vec2 RawTex3;\n";
-    if (VtxDesc.HasFlag(EVertexAttribute::Tex4))        ShaderCode  << "layout(location = 8) in vec2 RawTex4;\n";
-    if (VtxDesc.HasFlag(EVertexAttribute::Tex5))        ShaderCode  << "layout(location = 9) in vec2 RawTex5;\n";
-    if (VtxDesc.HasFlag(EVertexAttribute::Tex6))        ShaderCode  << "layout(location = 10) in vec2 RawTex6;\n";
-    if (VtxDesc.HasFlag(EVertexAttribute::Tex7))        ShaderCode  << "layout(location = 11) in vec2 RawTex7;\n";
-    if (VtxDesc.HasFlag(EVertexAttribute::BoneIndices)) ShaderCode  << "layout(location = 12) in int BoneIndices;\n";
-    if (VtxDesc.HasFlag(EVertexAttribute::BoneWeights)) ShaderCode  << "layout(location = 13) in vec4 BoneWeights;\n";
-    ShaderCode << '\n';
+    ShaderCode                                                    .Append("layout(location = 0) in vec3 RawPosition;\n");
+    if (VtxDesc.HasFlag(EVertexAttribute::Normal))      ShaderCode.Append("layout(location = 1) in vec3 RawNormal;\n");
+    if (VtxDesc.HasFlag(EVertexAttribute::Color0))      ShaderCode.Append("layout(location = 2) in vec4 RawColor0;\n");
+    if (VtxDesc.HasFlag(EVertexAttribute::Color1))      ShaderCode.Append("layout(location = 3) in vec4 RawColor1;\n");
+    if (VtxDesc.HasFlag(EVertexAttribute::Tex0))        ShaderCode.Append("layout(location = 4) in vec2 RawTex0;\n");
+    if (VtxDesc.HasFlag(EVertexAttribute::Tex1))        ShaderCode.Append("layout(location = 5) in vec2 RawTex1;\n");
+    if (VtxDesc.HasFlag(EVertexAttribute::Tex2))        ShaderCode.Append("layout(location = 6) in vec2 RawTex2;\n");
+    if (VtxDesc.HasFlag(EVertexAttribute::Tex3))        ShaderCode.Append("layout(location = 7) in vec2 RawTex3;\n");
+    if (VtxDesc.HasFlag(EVertexAttribute::Tex4))        ShaderCode.Append("layout(location = 8) in vec2 RawTex4;\n");
+    if (VtxDesc.HasFlag(EVertexAttribute::Tex5))        ShaderCode.Append("layout(location = 9) in vec2 RawTex5;\n");
+    if (VtxDesc.HasFlag(EVertexAttribute::Tex6))        ShaderCode.Append("layout(location = 10) in vec2 RawTex6;\n");
+    if (VtxDesc.HasFlag(EVertexAttribute::Tex7))        ShaderCode.Append("layout(location = 11) in vec2 RawTex7;\n");
+    if (VtxDesc.HasFlag(EVertexAttribute::BoneIndices)) ShaderCode.Append("layout(location = 12) in int BoneIndices;\n");
+    if (VtxDesc.HasFlag(EVertexAttribute::BoneWeights)) ShaderCode.Append("layout(location = 13) in vec4 BoneWeights;\n");
+    ShaderCode.Append('\n');
 
     // Output
-    ShaderCode << "// Output\n";
-    if (VtxDesc.HasFlag(EVertexAttribute::Normal)) ShaderCode  << "out vec3 Normal;\n";
-    if (VtxDesc.HasFlag(EVertexAttribute::Color0)) ShaderCode  << "out vec4 Color0;\n";
-    if (VtxDesc.HasFlag(EVertexAttribute::Color1)) ShaderCode  << "out vec4 Color1;\n";
+    ShaderCode.Append("// Output\n");
+    if (VtxDesc.HasFlag(EVertexAttribute::Normal)) ShaderCode.Append("out vec3 Normal;\n");
+    if (VtxDesc.HasFlag(EVertexAttribute::Color0)) ShaderCode.Append("out vec4 Color0;\n");
+    if (VtxDesc.HasFlag(EVertexAttribute::Color1)) ShaderCode.Append("out vec4 Color1;\n");
 
     for (const auto [idx, pass] : Utils::enumerate(rkMat.Passes()))
     {
         if (pass->TexCoordSource() != 0xFF)
-            ShaderCode << "out vec3 Tex" << idx << ";\n";
+            ShaderCode.Append("out vec3 Tex{};\n", idx);
     }
 
-    ShaderCode  << "out vec4 COLOR0A0;\n"
-                   "out vec4 COLOR1A1;\n"
-                    "\n";
+    ShaderCode.Append("out vec4 COLOR0A0;\n"
+                      "out vec4 COLOR1A1;\n"
+                      "\n");
 
     // Uniforms
-    ShaderCode  << "// Uniforms\n"
-                   "layout(std140) uniform MVPBlock\n"
-                   "{\n"
-                   "    mat4 ModelMtx;\n"
-                   "    mat4 ViewMtx;\n"
-                   "    mat4 ProjMtx;\n"
-                   "};\n"
-                   "\n"
-                   "layout(std140) uniform VertexBlock\n"
-                   "{\n"
-                   "    mat4 TexMtx[10];\n"
-                   "    mat4 PostMtx[20];\n"
-                   "    vec4 COLOR0_Amb;\n"
-                   "    vec4 COLOR0_Mat;\n"
-                   "    vec4 COLOR1_Amb;\n"
-                   "    vec4 COLOR1_Mat;\n"
-                   "};\n"
-                   "\n"
-                   "struct GXLight\n"
-                   "{\n"
-                   "    vec4 Position;\n"
-                   "    vec4 Direction;\n"
-                   "    vec4 Color;\n"
-                   "    vec4 DistAtten;\n"
-                   "    vec4 AngleAtten;\n"
-                   "};\n"
-                   "\n"
-                   "layout(std140) uniform LightBlock\n"
-                   "{\n"
-                   "    GXLight Lights[8];\n"
-                   "};\n"
-                   "uniform int NumLights;\n"
-                   "\n";
+    ShaderCode.Append("// Uniforms\n"
+                      "layout(std140) uniform MVPBlock\n"
+                      "{{\n"
+                      "    mat4 ModelMtx;\n"
+                      "    mat4 ViewMtx;\n"
+                      "    mat4 ProjMtx;\n"
+                      "}};\n"
+                      "\n"
+                      "layout(std140) uniform VertexBlock\n"
+                      "{{\n"
+                      "    mat4 TexMtx[10];\n"
+                      "    mat4 PostMtx[20];\n"
+                      "    vec4 COLOR0_Amb;\n"
+                      "    vec4 COLOR0_Mat;\n"
+                      "    vec4 COLOR1_Amb;\n"
+                      "    vec4 COLOR1_Mat;\n"
+                      "}};\n"
+                      "\n"
+                      "struct GXLight\n"
+                      "{{\n"
+                      "    vec4 Position;\n"
+                      "    vec4 Direction;\n"
+                      "    vec4 Color;\n"
+                      "    vec4 DistAtten;\n"
+                      "    vec4 AngleAtten;\n"
+                      "}};\n"
+                      "\n"
+                      "layout(std140) uniform LightBlock\n"
+                      "{{\n"
+                      "    GXLight Lights[8];\n"
+                      "}};\n"
+                      "uniform int NumLights;\n"
+                      "\n");
 
     const bool HasSkinning = (rkMat.VtxDesc().HasAnyFlags(EVertexAttribute::BoneIndices | EVertexAttribute::BoneWeights));
     if (HasSkinning)
     {
-        ShaderCode  << "layout(std140) uniform BoneTransformBlock\n"
-                       "{\n"
-                       "    mat4 BoneTransforms[100];\n"
-                       "};\n"
-                       "\n";
+        ShaderCode.Append("layout(std140) uniform BoneTransformBlock\n"
+                          "{{\n"
+                          "    mat4 BoneTransforms[100];\n"
+                          "}};\n"
+                          "\n");
     }
 
     // Main
-    ShaderCode  << "// Main\n"
-                   "void main()\n"
-                   "{\n"
-                   "    mat4 MV = ModelMtx * ViewMtx;\n"
-                   "    mat4 MVP = MV * ProjMtx;\n";
+    ShaderCode.Append("// Main\n"
+                      "void main()\n"
+                      "{{\n"
+                      "    mat4 MV = ModelMtx * ViewMtx;\n"
+                      "    mat4 MVP = MV * ProjMtx;\n");
 
-    if (VtxDesc.HasFlag(EVertexAttribute::Color0)) ShaderCode << "    Color0 = RawColor0;\n";
-    if (VtxDesc.HasFlag(EVertexAttribute::Color1)) ShaderCode << "    Color1 = RawColor1;\n";
-    ShaderCode << "\n";
+    if (VtxDesc.HasFlag(EVertexAttribute::Color0)) ShaderCode.Append("    Color0 = RawColor0;\n");
+    if (VtxDesc.HasFlag(EVertexAttribute::Color1)) ShaderCode.Append("    Color1 = RawColor1;\n");
+    ShaderCode.Append('\n');
 
     // Skinning
     if (HasSkinning)
     {
-        ShaderCode  << "    // Skinning\n"
-                       "    vec3 ModelSpacePos = vec3(0,0,0);\n";
+        ShaderCode.Append("    // Skinning\n"
+                          "    vec3 ModelSpacePos = vec3(0,0,0);\n");
 
         if (VtxDesc.HasFlag(EVertexAttribute::Normal))
-            ShaderCode  << "    vec3 ModelSpaceNormal = vec3(0,0,0);\n";
+            ShaderCode.Append("    vec3 ModelSpaceNormal = vec3(0,0,0);\n");
 
-        ShaderCode  << "    \n"
-                       "    for (int iBone = 0; iBone < 4; iBone++)\n"
-                       "    {\n"
-                       "        int Shift = (8 * iBone);\n"
-                       "        int BoneIdx = (BoneIndices >> Shift) & 0xFF;\n"
-                       "        float Weight = BoneWeights[iBone];\n"
-                       "        \n"
-                       "        if (BoneIdx > 0)\n"
-                       "        {\n"
-                       "            ModelSpacePos += vec3(vec4(RawPosition, 1) * BoneTransforms[BoneIdx] * Weight);\n";
-
-        if (VtxDesc.HasFlag(EVertexAttribute::Normal))
-            ShaderCode  << "            ModelSpaceNormal += RawNormal.xyz * inverse(transpose(mat3(BoneTransforms[BoneIdx]))) * Weight;\n";
-
-        ShaderCode  << "        }\n"
-                       "    }\n"
-                       "    \n";
+        ShaderCode.Append("    \n"
+                          "    for (int iBone = 0; iBone < 4; iBone++)\n"
+                          "    {{\n"
+                          "        int Shift = (8 * iBone);\n"
+                          "        int BoneIdx = (BoneIndices >> Shift) & 0xFF;\n"
+                          "        float Weight = BoneWeights[iBone];\n"
+                          "        \n"
+                          "        if (BoneIdx > 0)\n"
+                          "        {{\n"
+                          "            ModelSpacePos += vec3(vec4(RawPosition, 1) * BoneTransforms[BoneIdx] * Weight);\n");
 
         if (VtxDesc.HasFlag(EVertexAttribute::Normal))
-            ShaderCode  << "    ModelSpaceNormal = normalize(ModelSpaceNormal);\n"
-                           "    \n";
+            ShaderCode.Append("            ModelSpaceNormal += RawNormal.xyz * inverse(transpose(mat3(BoneTransforms[BoneIdx]))) * Weight;\n");
+
+        ShaderCode.Append("        }}\n"
+                          "    }}\n"
+                          "    \n");
+
+        if (VtxDesc.HasFlag(EVertexAttribute::Normal))
+            ShaderCode.Append("    ModelSpaceNormal = normalize(ModelSpaceNormal);\n"
+                              "    \n");
     }
     else
     {
-        ShaderCode  << "    vec3 ModelSpacePos = RawPosition;\n";
+        ShaderCode.Append("    vec3 ModelSpacePos = RawPosition;\n");
 
         if (VtxDesc.HasFlag(EVertexAttribute::Normal))
-            ShaderCode  << "    vec3 ModelSpaceNormal = RawNormal.xyz;\n";
+            ShaderCode.Append("    vec3 ModelSpaceNormal = RawNormal.xyz;\n");
 
-        ShaderCode << '\n';
+        ShaderCode.Append('\n');
     }
 
-    ShaderCode  << "    gl_Position = vec4(ModelSpacePos, 1) * MVP;\n";
+    ShaderCode.Append("    gl_Position = vec4(ModelSpacePos, 1) * MVP;\n");
 
     if (VtxDesc.HasFlag(EVertexAttribute::Normal))
-        ShaderCode  << "    Normal = normalize(ModelSpaceNormal * inverse(transpose(mat3(MV))));\n";
+        ShaderCode.Append("    Normal = normalize(ModelSpaceNormal * inverse(transpose(mat3(MV))));\n");
 
     // Per-vertex lighting
-    ShaderCode  << "\n"
-                   "    // Dynamic Lighting\n";
+    ShaderCode.Append("\n"
+                      "    // Dynamic Lighting\n");
 
     // This bit could do with some cleaning up
     // It took a lot of experimentation to get dynamic lights working and I never went back and cleaned it up after
     if (rkMat.IsLightingEnabled())
     {
-        ShaderCode  << "    vec4 Illum = vec4(0.0);\n"
-                       "    vec3 PositionMV = vec3(vec4(ModelSpacePos, 1.0) * MV);\n"
-                       "    \n"
-                       "    for (int iLight = 0; iLight < NumLights; iLight++)\n"
-                       "    {\n"
-                       "        vec3 LightPosMV = vec3(Lights[iLight].Position * ViewMtx);\n"
-                       "        vec3 LightDirMV = normalize(Lights[iLight].Direction.xyz * inverse(transpose(mat3(ViewMtx))));\n"
-                       "        vec3 LightDist = LightPosMV.xyz - PositionMV.xyz;\n"
-                       "        float DistSquared = dot(LightDist, LightDist);\n"
-                       "        float Dist = sqrt(DistSquared);\n"
-                       "        LightDist /= Dist;\n"
-                       "        vec3 AngleAtten = Lights[iLight].AngleAtten.xyz;\n"
-                       "        AngleAtten = vec3(AngleAtten.x, AngleAtten.y, AngleAtten.z);\n"
-                       "        float Atten = max(0, dot(LightDist, LightDirMV.xyz));\n"
-                       "        Atten = max(0, dot(AngleAtten, vec3(1.0, Atten, Atten * Atten))) / dot(Lights[iLight].DistAtten.xyz, vec3(1.0, Dist, DistSquared));\n"
-                       "        float DiffuseAtten = max(0, dot(Normal, LightDist));\n"
-                       "        Illum += (Atten * DiffuseAtten * Lights[iLight].Color);\n"
-                       "    }\n"
-                       "    COLOR0A0 = COLOR0_Mat * (Illum + COLOR0_Amb);\n"
-                       "    COLOR1A1 = COLOR1_Mat * (Illum + COLOR1_Amb);\n"
-                       "    \n";
+        ShaderCode.Append("    vec4 Illum = vec4(0.0);\n"
+                          "    vec3 PositionMV = vec3(vec4(ModelSpacePos, 1.0) * MV);\n"
+                          "    \n"
+                          "    for (int iLight = 0; iLight < NumLights; iLight++)\n"
+                          "    {{\n"
+                          "        vec3 LightPosMV = vec3(Lights[iLight].Position * ViewMtx);\n"
+                          "        vec3 LightDirMV = normalize(Lights[iLight].Direction.xyz * inverse(transpose(mat3(ViewMtx))));\n"
+                          "        vec3 LightDist = LightPosMV.xyz - PositionMV.xyz;\n"
+                          "        float DistSquared = dot(LightDist, LightDist);\n"
+                          "        float Dist = sqrt(DistSquared);\n"
+                          "        LightDist /= Dist;\n"
+                          "        vec3 AngleAtten = Lights[iLight].AngleAtten.xyz;\n"
+                          "        AngleAtten = vec3(AngleAtten.x, AngleAtten.y, AngleAtten.z);\n"
+                          "        float Atten = max(0, dot(LightDist, LightDirMV.xyz));\n"
+                          "        Atten = max(0, dot(AngleAtten, vec3(1.0, Atten, Atten * Atten))) / dot(Lights[iLight].DistAtten.xyz, vec3(1.0, Dist, DistSquared));\n"
+                          "        float DiffuseAtten = max(0, dot(Normal, LightDist));\n"
+                          "        Illum += (Atten * DiffuseAtten * Lights[iLight].Color);\n"
+                          "    }}\n"
+                          "    COLOR0A0 = COLOR0_Mat * (Illum + COLOR0_Amb);\n"
+                          "    COLOR1A1 = COLOR1_Mat * (Illum + COLOR1_Amb);\n"
+                          "    \n");
     }
     else
     {
-        ShaderCode  << "    COLOR0A0 = COLOR0_Mat;\n"
-                       "    COLOR1A1 = COLOR1_Mat;\n"
-                       "\n";
+        ShaderCode.Append("    COLOR0A0 = COLOR0_Mat;\n"
+                          "    COLOR1A1 = COLOR1_Mat;\n"
+                          "\n");
     }
 
     // Texture coordinate generation
-    ShaderCode  << "    \n"
-                   "    // TexGen\n";
+    ShaderCode.Append("    \n"
+                      "    // TexGen\n");
 
     for (const auto [idx, pass] : Utils::enumerate(rkMat.Passes()))
     {
@@ -343,28 +360,29 @@ bool CShaderGenerator::CreateVertexShader(const CMaterial& rkMat)
         const auto AnimMode = pass->AnimMode();
         if (AnimMode == EUVAnimMode::NoUVAnim) // No animation
         {
-            ShaderCode << "    Tex" << idx << " = vec3(" << gkCoordSrc[pass->TexCoordSource()] << ");\n";
+            ShaderCode.Append("    Tex{} = vec3({});\n", idx, gkCoordSrc[pass->TexCoordSource()]);
         }
         else // Animation used - texture matrix at least, possibly normalize/post-transform
         {
             // Texture Matrix
-            ShaderCode << "    Tex" << idx << " = vec3(vec4(" << gkCoordSrc[pass->TexCoordSource()] << ", 1.0) * TexMtx[" << idx << "]).xyz;\n";
+            ShaderCode.Append("    Tex{} = vec3(vec4({}, 1.0) * TexMtx[{}]).xyz;\n",
+                              idx, gkCoordSrc[pass->TexCoordSource()], idx);
 
             if ((AnimMode < EUVAnimMode::UVScroll) || (AnimMode > EUVAnimMode::VFilmstrip))
             {
                 // Normalization + Post-Transform
-                ShaderCode  << "    Tex" << idx << " = normalize(Tex" << idx << ");\n"
-                            << "    Tex" << idx << " = vec3(vec4(Tex" << idx << ", 1.0) * PostMtx[" << idx << "]).xyz;\n";
+                ShaderCode.Append("    Tex{0} = normalize(Tex{0});\n"
+                                  "    Tex{0} = vec3(vec4(Tex{0}, 1.0) * PostMtx[{0}]).xyz;\n", idx);
             }
         }
 
-        ShaderCode << '\n';
+        ShaderCode.Append('\n');
     }
-    ShaderCode << "}\n\n";
+    ShaderCode.Append("}}\n\n");
 
 
     // Done!
-    return mpShader->CompileVertexSource(ShaderCode.str());
+    return mpShader->CompileVertexSource(ShaderCode.buffer);
 }
 
 static std::string GetColorInputExpression(const CMaterialPass* pPass, ETevColorInput iInput)
@@ -393,135 +411,129 @@ static std::string GetAlphaInputExpression(const CMaterialPass* pPass, ETevAlpha
 
 bool CShaderGenerator::CreatePixelShader(const CMaterial& rkMat)
 {
-    std::ostringstream ShaderCode;
-    ShaderCode << "#version 330 core\n"
-                  "\n";
+    FormatBuffer ShaderCode;
+    ShaderCode.Append("#version 330 core\n\n");
 
     const FVertexDescription VtxDesc = rkMat.VtxDesc();
-    if (VtxDesc.HasFlag(EVertexAttribute::Position)) ShaderCode << "in vec3 Position;\n";
-    if (VtxDesc.HasFlag(EVertexAttribute::Normal))   ShaderCode << "in vec3 Normal;\n";
-    if (VtxDesc.HasFlag(EVertexAttribute::Color0))   ShaderCode << "in vec4 Color0;\n";
-    if (VtxDesc.HasFlag(EVertexAttribute::Color1))   ShaderCode << "in vec4 Color1;\n";
+    if (VtxDesc.HasFlag(EVertexAttribute::Position)) ShaderCode.Append("in vec3 Position;\n");
+    if (VtxDesc.HasFlag(EVertexAttribute::Normal))   ShaderCode.Append("in vec3 Normal;\n");
+    if (VtxDesc.HasFlag(EVertexAttribute::Color0))   ShaderCode.Append("in vec4 Color0;\n");
+    if (VtxDesc.HasFlag(EVertexAttribute::Color1))   ShaderCode.Append("in vec4 Color1;\n");
 
     for (const auto [idx, pass] : Utils::enumerate(rkMat.Passes()))
     {
         if (pass->TexCoordSource() != 0xFF)
-            ShaderCode << "in vec3 Tex" << idx << ";\n";
+            ShaderCode.Append("in vec3 Tex{};\n", idx);
     }
 
-    ShaderCode << "in vec4 COLOR0A0;\n"
-                  "in vec4 COLOR1A1;\n"
-                  "\n"
-                  "out vec4 PixelColor;\n"
-                  "\n"
-                  "layout(std140) uniform PixelBlock {\n"
-                  "    vec4 KonstColors[4];\n"
-                  "    vec4 TevColor[4];\n"
-                  "    vec4 TintColor;\n"
-                  "    float LightmapMultiplier;\n"
-                  "};\n\n";
+    ShaderCode.Append("in vec4 COLOR0A0;\n"
+                      "in vec4 COLOR1A1;\n"
+                      "\n"
+                      "out vec4 PixelColor;\n"
+                      "\n"
+                      "layout(std140) uniform PixelBlock {{\n"
+                      "    vec4 KonstColors[4];\n"
+                      "    vec4 TevColor[4];\n"
+                      "    vec4 TintColor;\n"
+                      "    float LightmapMultiplier;\n"
+                      "}};\n\n");
 
     for (const auto [idx, pass] : Utils::enumerate(rkMat.Passes()))
     {
         if (pass->Texture() != nullptr)
-            ShaderCode << "uniform sampler2D Texture" << idx << ";\n";
+            ShaderCode.Append("uniform sampler2D Texture{};\n", idx);
     }
 
-    ShaderCode << '\n';
+    ShaderCode.Append('\n');
 
-    ShaderCode << "void main()\n"
-                  "{\n"
-                  "    vec4 TevInA = vec4(0, 0, 0, 0), TevInB = vec4(0, 0, 0, 0), TevInC = vec4(0, 0, 0, 0), TevInD = vec4(0, 0, 0, 0);\n"
-                  "    vec4 Prev = TevColor[0], C0 = TevColor[1], C1 = TevColor[2], C2 = TevColor[3];\n"
-                  "    vec4 Ras = vec4(0, 0, 0, 1), Tex = vec4(0, 0, 0, 0);\n"
-                  "    vec4 Konst = vec4(1, 1, 1, 1);\n";
+    ShaderCode.Append("void main()\n"
+                      "{{\n"
+                      "    vec4 TevInA = vec4(0, 0, 0, 0), TevInB = vec4(0, 0, 0, 0), TevInC = vec4(0, 0, 0, 0), TevInD = vec4(0, 0, 0, 0);\n"
+                      "    vec4 Prev = TevColor[0], C0 = TevColor[1], C1 = TevColor[2], C2 = TevColor[3];\n"
+                      "    vec4 Ras = vec4(0, 0, 0, 1), Tex = vec4(0, 0, 0, 0);\n"
+                      "    vec4 Konst = vec4(1, 1, 1, 1);\n");
 
-    ShaderCode << "    vec2 TevCoord = vec2(0, 0);\n"
-                  "    \n";
+    ShaderCode.Append("    vec2 TevCoord = vec2(0, 0);\n"
+                      "    \n");
 
     bool Lightmap = false;
     for (const auto [idx, pass] : Utils::enumerate(rkMat.Passes()))
     {
         const CFourCC PassType = pass->Type();
 
-        ShaderCode << "    // TEV Stage " << idx << " - " << PassType.ToString() << "\n";
+        ShaderCode.Append("    // TEV Stage {} - {}\n", idx, PassType.ToString());
         if (PassType == CFourCC("DIFF"))
             Lightmap = true;
 
         if (!pass->IsEnabled())
         {
-            ShaderCode << "    // Pass is disabled\n\n";
+            ShaderCode.Append("    // Pass is disabled\n\n");
             continue;
         }
 
         if (pass->TexCoordSource() != 0xFF)
-            ShaderCode << "    TevCoord = (Tex" << idx << ".z == 0.0 ? Tex" << idx << ".xy : Tex" << idx << ".xy / Tex" << idx << ".z);\n";
+            ShaderCode.Append("    TevCoord = (Tex{0}.z == 0.0 ? Tex{0}.xy : Tex{0}.xy / Tex{0}.z);\n", idx);
 
         if (pass->Texture())
-            ShaderCode << "    Tex = texture(Texture" << idx << ", TevCoord)";
+            ShaderCode.Append("    Tex = texture(Texture{}, TevCoord)", idx);
 
         // Apply lightmap multiplier
-        bool UseLightmapMultiplier = (PassType == CFourCC("DIFF")) ||
-                                     (PassType == CFourCC("CUST") && rkMat.Options().HasFlag(EMaterialOption::Lightmap) && idx == 0);
+        const bool UseLightmapMultiplier = (PassType == CFourCC("DIFF")) ||
+                                           (PassType == CFourCC("CUST") && rkMat.Options().HasFlag(EMaterialOption::Lightmap) && idx == 0);
         if (UseLightmapMultiplier && pass->Texture())
-            ShaderCode << " * LightmapMultiplier";
+            ShaderCode.Append(" * LightmapMultiplier");
 
-        ShaderCode << ";\n";
+        ShaderCode.Append(";\n");
 
-        ShaderCode << "    Konst = vec4(" << gkKonstColor[pass->KColorSel()] << ", " << gkKonstAlpha[pass->KAlphaSel()] << ");\n";
+        ShaderCode.Append("    Konst = vec4({}, {});\n", gkKonstColor[pass->KColorSel()], gkKonstAlpha[pass->KAlphaSel()]);
 
         if (pass->RasSel() != kRasColorNull)
-            ShaderCode << "    Ras = " << gkRasSel[pass->RasSel()] << ";\n";
+            ShaderCode.Append("    Ras = {};\n", gkRasSel[pass->RasSel()]);
 
         for (uint8_t iInput = 0; iInput < 4; iInput++)
         {
-            char TevChar = iInput + 0x41; // the current stage number represented as an ASCII letter; eg 0 is 'A'
+            // The current stage number represented as an ASCII letter; eg 0 is 'A'
+            const char TevChar = iInput + 0x41;
 
-            ShaderCode << "    TevIn" << TevChar << " = vec4("
-                       << GetColorInputExpression(pass, ETevColorInput(pass->ColorInput(iInput) & 0xF))
-                       << ", "
-                       << GetAlphaInputExpression(pass, ETevAlphaInput(pass->AlphaInput(iInput) & 0x7))
-                       << ")";
+            ShaderCode.Append("    TevIn{} = vec4({}, {})", TevChar,
+                              GetColorInputExpression(pass, ETevColorInput(pass->ColorInput(iInput) & 0xF)),
+                              GetAlphaInputExpression(pass, ETevAlphaInput(pass->AlphaInput(iInput) & 0x7)));
             if (UseLightmapMultiplier && !pass->Texture() && iInput == 1)
-                ShaderCode << " * LightmapMultiplier";
-            ShaderCode << ";\n";
+                ShaderCode.Append(" * LightmapMultiplier");
+            ShaderCode.Append(";\n");
         }
 
-        ShaderCode << "    // RGB Combine\n"
-                   << "    "
-                   << gkTevRigid[pass->ColorOutput()]
-                   << ".rgb = ";
+        ShaderCode.Append("    // RGB Combine\n"
+                          "    {}.rgb = ", gkTevRigid[pass->ColorOutput()]);
 
-        ShaderCode << "clamp(vec3(TevInD.rgb + ((1.0 - TevInC.rgb) * TevInA.rgb + TevInC.rgb * TevInB.rgb)) * " << pass->TevColorScale();
-        ShaderCode << ", vec3(0, 0, 0), vec3(1.0, 1.0, 1.0));\n";
+        ShaderCode.Append("clamp(vec3(TevInD.rgb + ((1.0 - TevInC.rgb) * TevInA.rgb + TevInC.rgb * TevInB.rgb)) * {}", pass->TevColorScale());
+        ShaderCode.Append(", vec3(0, 0, 0), vec3(1.0, 1.0, 1.0));\n");
 
-        ShaderCode << "    // Alpha Combine\n"
-                   << "    "
-                   << gkTevRigid[pass->AlphaOutput()]
-                   << ".a = ";
+        ShaderCode.Append("    // Alpha Combine\n"
+                          "    {}.a = ", gkTevRigid[pass->AlphaOutput()]);
 
-        ShaderCode << "clamp((TevInD.a + ((1.0 - TevInC.a) * TevInA.a + TevInC.a * TevInB.a)) * " << pass->TevAlphaScale() << ", 0.0, 1.0);\n\n";
+        ShaderCode.Append("clamp((TevInD.a + ((1.0 - TevInC.a) * TevInA.a + TevInC.a * TevInB.a)) * {}, 0.0, 1.0);\n\n", pass->TevAlphaScale());
     }
 
     if (rkMat.Options().HasFlag(EMaterialOption::Masked))
     {
         if (rkMat.Version() < EGame::CorruptionProto)
         {
-            ShaderCode << "    if (Prev.a <= 0.25) discard;\n"
-                          "    else Prev.a = 1.0;\n\n";
+            ShaderCode.Append("    if (Prev.a <= 0.25) discard;\n"
+                              "    else Prev.a = 1.0;\n\n");
         }
         else
         {
-            ShaderCode << "    if (Prev.a <= 0.75) discard;\n"
-                          "    else Prev.a = 0.0;\n\n";
+            ShaderCode.Append("    if (Prev.a <= 0.75) discard;\n"
+                              "    else Prev.a = 0.0;\n\n");
         }
     }
 
-    ShaderCode << "    PixelColor = Prev.rgba * TintColor;\n"
-                  "}\n\n";
+    ShaderCode.Append("    PixelColor = Prev.rgba * TintColor;\n"
+                      "}}\n\n");
 
     // Done!
-    return mpShader->CompilePixelSource(ShaderCode.str());
+    return mpShader->CompilePixelSource(ShaderCode.buffer);
 }
 
 CShader* CShaderGenerator::GenerateShader(const CMaterial& rkMat)
