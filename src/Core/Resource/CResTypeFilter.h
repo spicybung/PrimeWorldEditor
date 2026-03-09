@@ -75,8 +75,8 @@ public:
 
     bool Accepts(const CResTypeFilter& filter) const
     {
-        return std::any_of(mAcceptedTypes.cbegin(), mAcceptedTypes.cend(),
-                           [&filter](const auto& entry) { return filter.Accepts(entry); });
+        return std::ranges::any_of(mAcceptedTypes,
+                                   [&filter](const auto& entry) { return filter.Accepts(entry); });
     }
 
     bool operator==(const CResTypeFilter& rkOther) const
