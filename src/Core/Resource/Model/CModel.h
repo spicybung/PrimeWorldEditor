@@ -27,7 +27,7 @@ class CModel : public CBasicModel
     
 public:
     explicit CModel(CResourceEntry *pEntry = nullptr);
-    CModel(CMaterialSet *pSet, bool OwnsMatSet);
+    explicit CModel(CMaterialSet *pSet, bool OwnsMatSet);
     ~CModel() override;
 
     std::unique_ptr<CDependencyTree> BuildDependencyTree() override;
