@@ -150,7 +150,7 @@ CShaderGenerator::~CShaderGenerator() = default;
 
 bool CShaderGenerator::CreateVertexShader(const CMaterial& rkMat)
 {
-    std::stringstream ShaderCode;
+    std::ostringstream ShaderCode;
 
     ShaderCode << "#version 330 core\n"
                   "\n";
@@ -393,7 +393,7 @@ static std::string GetAlphaInputExpression(const CMaterialPass* pPass, ETevAlpha
 
 bool CShaderGenerator::CreatePixelShader(const CMaterial& rkMat)
 {
-    std::stringstream ShaderCode;
+    std::ostringstream ShaderCode;
     ShaderCode << "#version 330 core\n"
                   "\n";
 
