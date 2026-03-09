@@ -1,7 +1,9 @@
 #include "GLCommon.h"
+
+#include <array>
 #include <Common/Macros.h>
 
-const std::array<GLenum, 8> gBlendFactor
+constexpr std::array<GLenum, 8> sBlendFactor
 {
     GL_ZERO,                // GX_BL_ZERO
     GL_ONE,                 // GX_BL_ONE
@@ -13,8 +15,7 @@ const std::array<GLenum, 8> gBlendFactor
     GL_ONE_MINUS_DST_ALPHA  // GX_BL_INVDSTALPHA
 };
 
-
-const std::array<GLenum, 7> gZMode
+constexpr std::array<GLenum, 7> sZMode
 {
     GL_NEVER,    // GX_NEVER
     GL_LESS,     // GX_LESS
@@ -24,6 +25,16 @@ const std::array<GLenum, 7> gZMode
     GL_NOTEQUAL, // GX_NEQUAL
     GL_ALWAYS    // GX_ALWAYS
 };
+
+GLenum GetBlendFactor(size_t index)
+{
+    return sBlendFactor[index];
+}
+
+GLenum GetZMode(size_t index)
+{
+    return sZMode[index];
+}
 
 GLenum GXPrimToGLPrim(EPrimitiveType Type)
 {

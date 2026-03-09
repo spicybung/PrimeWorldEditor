@@ -2,7 +2,7 @@
 #define GLCOMMON_H
 
 #include <GL/glew.h>
-#include <array>
+#include <cstddef>
 
 enum class EBlendFactor
 {
@@ -29,8 +29,8 @@ enum class EPrimitiveType
     Points          = 0xB8
 };
 
-extern const std::array<GLenum, 8> gBlendFactor;
-extern const std::array<GLenum, 7> gZMode;
+GLenum GetBlendFactor(size_t index);
+GLenum GetZMode(size_t index);
 GLenum GXPrimToGLPrim(EPrimitiveType Type);
 
 #endif // GLCOMMON_H

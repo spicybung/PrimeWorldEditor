@@ -115,8 +115,8 @@ std::unique_ptr<CMaterial> CMaterialLoader::ReadPrimeMaterial()
     }
 
     // Blend mode
-    pMat->mBlendDstFac = gBlendFactor[mpFile->ReadU16()];
-    pMat->mBlendSrcFac = gBlendFactor[mpFile->ReadU16()];
+    pMat->mBlendDstFac = GetBlendFactor(mpFile->ReadU16());
+    pMat->mBlendSrcFac = GetBlendFactor(mpFile->ReadU16());
 
     // Indirect texture
     if (pMat->mOptions.HasFlag(EMaterialOption::IndStage))
