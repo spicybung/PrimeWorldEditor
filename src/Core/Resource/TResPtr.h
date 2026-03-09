@@ -18,7 +18,7 @@ public:
         *this = pPtr;
     }
 
-    TResPtr(const TResPtr<ResType>& rkSource)
+    TResPtr(const TResPtr& rkSource)
     {
         *this = rkSource;
     }
@@ -73,7 +73,7 @@ public:
         return mpRes;
     }
 
-    TResPtr<ResType>& operator=(void *pPtr)
+    TResPtr& operator=(void *pPtr)
     {
         // todo: this probably crashes if you try to pass a non-CResource-derived pointer. is there a safer way?
         // dynamic_cast seems like the best option for type-checking here. other methods don't catch inheritance
@@ -81,7 +81,7 @@ public:
         if (mpRes)
             mpRes->Release();
 
-        CResource *pRes = (CResource*) pPtr;
+        auto* pRes = static_cast<CResource*>(pPtr);
         mpRes = dynamic_cast<ResType*>(pRes);
 
         if (mpRes)
@@ -90,7 +90,7 @@ public:
         return *this;
     }
 
-    TResPtr<ResType>& operator=(const TResPtr<ResType>& rkRight)
+    TResPtr& operator=(const TResPtr& rkRight)
     {
         if (mpRes)
             mpRes->Release();
