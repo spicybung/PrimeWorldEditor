@@ -11,7 +11,6 @@
 CModelNode::CModelNode(CScene *pScene, uint32_t NodeID, CSceneNode *pParent, CModel *pModel)
     : CSceneNode(pScene, NodeID, pParent)
 {
-    mScale = CVector3f::One();
     SetModel(pModel);
 }
 
