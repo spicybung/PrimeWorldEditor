@@ -28,7 +28,7 @@ public:
 
     TString ValueAsString(const void* pData) const override
     {
-        return Value(pData).ToString();
+        return ValueRef(pData).ToString();
     }
 };
 
