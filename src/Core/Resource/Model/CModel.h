@@ -23,8 +23,8 @@ class CModel : public CBasicModel
     TResPtr<CSkin> mpSkin;
     std::vector<CMaterialSet*> mMaterialSets;
     std::vector<std::vector<CIndexBuffer>> mSurfaceIndexBuffers;
-    bool mHasOwnMaterials;
-    
+    bool mHasOwnMaterials = true;
+
 public:
     explicit CModel(CResourceEntry *pEntry = nullptr);
     explicit CModel(CMaterialSet *pSet, bool OwnsMatSet);

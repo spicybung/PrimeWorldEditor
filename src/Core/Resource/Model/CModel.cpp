@@ -13,15 +13,13 @@
 CModel::CModel(CResourceEntry *pEntry)
     : CBasicModel(pEntry)
 {
-    mHasOwnMaterials = true;
     mHasOwnSurfaces = true;
 }
 
 CModel::CModel(CMaterialSet *pSet, bool OwnsMatSet)
+    : mHasOwnMaterials{OwnsMatSet}
 {
-    mHasOwnMaterials = OwnsMatSet;
     mHasOwnSurfaces = true;
-
     mMaterialSets.push_back(pSet);
 }
 
